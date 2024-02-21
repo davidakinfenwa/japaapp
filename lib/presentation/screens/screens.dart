@@ -1,5 +1,5 @@
 export 'splashScreen.dart';
-export 'startScreen.dart';
+export 'onboard/startscreen.dart';
 export 'account/login.dart';
 export 'account/registration.dart';
 export 'account/otp_screen.dart';
