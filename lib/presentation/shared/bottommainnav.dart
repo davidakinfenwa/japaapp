@@ -22,7 +22,7 @@ class BottomMainNav extends StatelessWidget {
           height: Sizing.kSizingMultiple * 7.h,
           width: MediaQuery.sizeOf(context).width.w,
           padding: EdgeInsets.symmetric(
-              horizontal: Sizing.kSizingMultiple * 3.w,
+              horizontal: Sizing.kSizingMultiple.w,
               vertical: Sizing.kSizingMultiple.w),
           decoration: const BoxDecoration(
             color: CustomTypography.kWhiteColor,
@@ -37,97 +37,63 @@ class BottomMainNav extends StatelessWidget {
               },
               title: "Home",
               svg: value.pageIndex == 0
-                  ? "assets/svg/Home.svg"
-                  : "assets/svg/Home.svg",
+                  ? "assets/svg/homefill.svg"
+                  : "assets/svg/homenotfill.svg",
               color: value.pageIndex == 0
-                  ? CustomTypography.kSecondaryColor
-                  : CustomTypography.kGreyColor60,
+                  ? CustomTypography.kPrimaryColorJapa200
+                  : CustomTypography.kTabNotFill,
               svgColor: value.pageIndex == 0
-                  ? CustomTypography.kSecondaryColor
-                  : CustomTypography.kGreyColor60,
+                  ? CustomTypography.kPrimaryColorJapa200
+                  : CustomTypography.kTabNotFill,
             ),
             BottomNavWidget(
               onTap: () {
                 value.pageIndex = 1;
               },
-              title: "Message",
+              height:24,
+              width: 24,
+              title: "My Process",
               svg: value.pageIndex == 1
                   ? "assets/svg/chat.svg"
                   : "assets/svg/chat.svg",
               color: value.pageIndex == 1
-                  ? CustomTypography.kSecondaryColor
-                  : CustomTypography.kGreyColor60,
+                ? CustomTypography.kPrimaryColorJapa200
+                  : CustomTypography.kTabNotFill,
               svgColor: value.pageIndex == 1
-                  ? CustomTypography.kSecondaryColor
-                  : CustomTypography.kGreyColor60,
+                  ? CustomTypography.kPrimaryColorJapa200
+                  : CustomTypography.kTabNotFill,
             ),
-            // BottomNavWidget(
-            //   onTap: () {
-            //     value.pageIndex = 2;
-            //   },
-            //   title: "Add",
-            //   svg: value.pageIndex == 2
-            //       ? "assets/svg/chat.svg"
-            //       : "assets/svg/chat.svg",
-            // ),
-            Material(
-              elevation: 0,
-              shape: RoundedRectangleBorder(borderRadius:BorderRadius.circular(22.0) ),
-              clipBehavior: Clip.none,
-              child: InkWell(
-                onTap: () => value.pageIndex = 2,
-                child: Container(
-                  alignment: Alignment.center,
-                  padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
-                  decoration: BoxDecoration(
-                      color: CustomTypography.kSecondaryColornew,
-                      shape: BoxShape.circle,
-                      boxShadow: [
-                        BoxShadow(
-                          color: const Color(0xFF5D6976).withOpacity(0.4),
-                          spreadRadius: 3,
-                          blurRadius: 20.r,
-                          offset: const Offset(0, 12),
-                        )
-                      ]),
-                  child: Icon(
-                    Icons.add,
-                    size: Sizing.kIconImagesHeightSize,
-                    color: CustomTypography.kWhiteColor,
-                  ),
-                ),
-              ),
-            ),
+  
 
+            BottomNavWidget(
+              onTap: () {
+                value.pageIndex = 2;
+              },
+              title: "Thrive",
+              svg: value.pageIndex == 2
+                  ? "assets/svg/globefill.svg"
+                  : "assets/svg/globe.svg",
+              color: value.pageIndex == 2
+               ? CustomTypography.kPrimaryColorJapa200
+                  : CustomTypography.kTabNotFill,
+              svgColor: value.pageIndex == 2
+                  ? CustomTypography.kPrimaryColorJapa200
+                  : CustomTypography.kTabNotFill,
+            ),
             BottomNavWidget(
               onTap: () {
                 value.pageIndex = 3;
               },
-              title: "Listing",
+              title: "Account",
               svg: value.pageIndex == 3
-                  ? "assets/svg/paperplus.svg"
-                  : "assets/svg/paperplus.svg",
+                  ? "assets/svg/accountfill.svg"
+                  : "assets/svg/account.svg",
               color: value.pageIndex == 3
-                  ? CustomTypography.kSecondaryColor
-                  : CustomTypography.kGreyColor60,
+                  ? CustomTypography.kPrimaryColorJapa200
+                  : CustomTypography.kTabNotFill,
               svgColor: value.pageIndex == 3
-                  ? CustomTypography.kSecondaryColor
-                  : CustomTypography.kGreyColor60,
-            ),
-            BottomNavWidget(
-              onTap: () {
-                value.pageIndex = 4;
-              },
-              title: "Calender",
-              svg: value.pageIndex == 4
-                  ? "assets/svg/timecircle.svg"
-                  : "assets/svg/timecircle.svg",
-              color: value.pageIndex == 4
-                  ? CustomTypography.kSecondaryColor
-                  : CustomTypography.kGreyColor60,
-              svgColor: value.pageIndex == 4
-                  ? CustomTypography.kSecondaryColor
-                  : CustomTypography.kGreyColor60,
+                  ? CustomTypography.kPrimaryColorJapa200
+                  : CustomTypography.kTabNotFill,
             ),
           ]),
         ),

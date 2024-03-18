@@ -1,9 +1,12 @@
 // ignore_for_file: no_leading_underscores_for_local_identifiers
 
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:japaapp/core/constants.dart';
 import 'package:japaapp/core/theme/custom_typography.dart';
 import 'package:japaapp/presentation/shared/response_indicators/loading_indicator.dart';
+import 'package:lottie/lottie.dart';
 
 
 class ButtonType<T> {
@@ -38,7 +41,7 @@ class ButtonType<T> {
               borderRadius ?? BorderRadius.circular(Sizing.kBorderRadius);
 
           return SizedBox(
-            height: Sizing.kButtonHeight,
+            height: Sizing.kHSpacing35,
             child: Row(
               children: [
                 Expanded(
@@ -64,7 +67,7 @@ class ButtonType<T> {
                                   label,
                                   style: Theme.of(context)
                                       .textTheme
-                                      .titleLarge!
+                                      .labelLarge!
                                       .copyWith(color: _textColor),
                                 ),
                           ),
@@ -178,6 +181,10 @@ class ButtonType<T> {
     BorderRadius? borderRadius,
     bool? isLoadingMode,
     Color? borderColor,
+    bool? svgImageChecker =false,
+    String? svgImage,
+    double? width,
+    double? itemSpacingWidth,
   }) {
     return ButtonType._(
       child: Builder(
@@ -194,6 +201,7 @@ class ButtonType<T> {
 
           return SizedBox(
             height: Sizing.kButtonHeight,
+            width:width,
             child: Row(
               children: [
                 Expanded(
@@ -217,12 +225,21 @@ class ButtonType<T> {
                                     CustomTypography.kGreyColor10,
                               ),
                             ),
-                            child: Text(
-                              label,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .titleLarge!
-                                  .copyWith(color: _textColor),
+                            child: Padding(
+                              padding: const EdgeInsets.all(12.0),
+                              child: Row(
+                                children: [
+                                svgImageChecker !=false?  SvgPicture.asset('assets/svg/$svgImage'):const SizedBox(),
+                                SizedBox(width: itemSpacingWidth,),
+                                  Text(
+                                    label,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .labelLarge!
+                                        .copyWith(color: _textColor),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         ),
@@ -253,6 +270,193 @@ class ButtonType<T> {
     );
   }
 
+
+
+    factory ButtonType.withBorderIconFontButton({
+    required Function() onTap,
+    required String label,
+    Color? textColor,
+    BorderRadius? borderRadius,
+    bool? isLoadingMode,
+    Color? borderColor,
+    bool? svgImageChecker =false,
+    String? svgImage,
+    double? width,
+    double? itemSpacingWidth,
+    String? lotties,
+  }) {
+    return ButtonType._(
+      child: Builder(
+        builder: (context) {
+          final _isLoadingMode = isLoadingMode ?? false;
+
+          final _backgroundColor = _isLoadingMode
+              ? CustomTypography.kGreyColor
+              : CustomTypography.kTransparentColor;
+          final _textColor = textColor ?? CustomTypography.kWhiteColor;
+
+          final _borderRadius =
+              borderRadius ?? BorderRadius.circular(Sizing.kBorderRadius);
+
+          return SizedBox(
+            height: Sizing.kButtonHeight,
+            width:width,
+            child: Row(
+              children: [
+                Expanded(
+                  child: Stack(
+                    children: [
+                      Material(
+                        color: _backgroundColor,
+                        borderRadius: _borderRadius,
+                        child: InkWell(
+                          onTap: onTap,
+                          borderRadius: _borderRadius,
+                          child: Container(
+                            height: Sizing.kButtonHeight,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              color: CustomTypography.kTransparentColor,
+                              borderRadius: _borderRadius,
+                              border: Border.all(
+                                width: Sizing.kButtonBorderWidth,
+                                color: borderColor ??
+                                    CustomTypography.kGreyColor10,
+                              ),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(12.0),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    label,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .labelLarge!
+                                        .copyWith(color: _textColor),
+                                  ),
+                                SizedBox(width: itemSpacingWidth,),
+                                svgImageChecker !=false?  SvgPicture.asset('assets/svg/$svgImage'): Lottie.asset('assets/lottie/$lotties'),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                              right: Sizing.kSizingMultiple * 2),
+                          child: _isLoadingMode
+                              ? LoadingIndicator(
+                                  alignment: Alignment.centerRight,
+                                  type: LoadingIndicatorType
+                                      .circularProgressIndicator(
+                                          isSmallSize: true),
+                                )
+                              : Container(),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+
+  factory ButtonType.withBorderLongButton({
+    required Function() onTap,
+    required String label,
+    Color? textColor,
+    BorderRadius? borderRadius,
+    bool? isLoadingMode,
+    Color? borderColor,
+    bool? svgImageChecker =false,
+    String? svgImage,
+    double? width,
+    double? itemSpacingWidth,
+  }) {
+    return ButtonType._(
+      child: Builder(
+        builder: (context) {
+          final _isLoadingMode = isLoadingMode ?? false;
+
+          final _backgroundColor = _isLoadingMode
+              ? CustomTypography.kGreyColor
+              : CustomTypography.kTransparentColor;
+          final _textColor = textColor ?? CustomTypography.kWhiteColor;
+
+          final _borderRadius =
+              borderRadius ?? BorderRadius.circular(Sizing.kBorderRadius);
+
+          return SizedBox(
+            height: Sizing.kHSpacing35,
+            width:width,
+            child: Row(
+              children: [
+                Expanded(
+                  child: Stack(
+                    children: [
+                      Material(
+                        color: _backgroundColor,
+                        borderRadius: _borderRadius,
+                        child: InkWell(
+                          onTap: onTap,
+                          borderRadius: _borderRadius,
+                          child: Container(
+                            height: Sizing.kButtonHeight,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              color: CustomTypography.kTransparentColor,
+                              borderRadius: _borderRadius,
+                              border: Border.all(
+                                width: Sizing.kButtonBorderWidth,
+                                color: borderColor ??
+                                    CustomTypography.kGreyColor10,
+                              ),
+                            ),
+                            child: Text(
+                              label,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .labelLarge!
+                                  .copyWith(color: _textColor),
+                            ),
+                          ),
+                        ),
+                      ),
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                              right: Sizing.kSizingMultiple * 2),
+                          child: _isLoadingMode
+                              ? LoadingIndicator(
+                                  alignment: Alignment.centerRight,
+                                  type: LoadingIndicatorType
+                                      .circularProgressIndicator(
+                                          isSmallSize: true),
+                                )
+                              : Container(),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
+      ),
+    );
+  }
   factory ButtonType.withArrowIndicatorButton({
     required Function() onTap,
     required String label,

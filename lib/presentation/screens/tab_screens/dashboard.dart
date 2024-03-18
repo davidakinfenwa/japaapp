@@ -1,20 +1,13 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_image_stack/flutter_image_stack.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:japaapp/core/constants.dart';
 import 'package:japaapp/core/route/app_router.dart';
 import 'package:japaapp/core/theme/custom_typography.dart';
 import 'package:japaapp/core/util/width_constraints.dart';
-import 'package:japaapp/presentation/shared/profile_avatar.dart';
-import 'package:japaapp/presentation/shared/progress_bar.dart';
-import 'package:japaapp/presentation/widget/stagger_tile.dart';
-
-
+import 'package:japaapp/presentation/shared/custom_button.dart';
 
 class DashboardTab extends StatefulWidget {
   const DashboardTab({super.key});
@@ -24,40 +17,29 @@ class DashboardTab extends StatefulWidget {
 }
 
 class _DashboardTabState extends State<DashboardTab> {
-  final PageController _pageController =
-      PageController(viewportFraction: 0.89, initialPage: 0);
-  final _currentPageNotifier = ValueNotifier<int>(0);
-
   @override
   void dispose() {
-    _pageController.dispose();
     super.dispose();
   }
+
+  ScrollPhysics _physics = const BouncingScrollPhysics();
 
   Widget _buildSalutationSection() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Column(
+        Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Adebowale',
-              style: Theme.of(context).textTheme.displayLarge?.copyWith(
-                  fontWeight: FontWeight.w600,
-                  color: CustomTypography.kGreyColor100,
-                  fontFamily: "inter",
-                  fontStyle: FontStyle.normal,
-                  fontSize: 20.0.sp),
+              'Hello Debbie',
+              style: Theme.of(context).textTheme.headlineLarge?.copyWith(),
             ),
-            SizedBox(height: (Sizing.kHSpacing4 * 0.1).h),
-            Text(
-              'Welcome back',
-              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.w500,
-                  color: CustomTypography.kGreyColor60,
-                  fontFamily: "inter",
-                  fontSize: 14.0.sp),
+            SizedBox(width: (Sizing.kWSpacing4).h),
+            SizedBox(height: (Sizing.kHSpacing10).h),
+            Image.asset(
+              'assets/images/hello.png',
+              width: (Sizing.kSizingMultiple * 4).w,
             ),
           ],
         ),
@@ -74,388 +56,817 @@ class _DashboardTabState extends State<DashboardTab> {
   }
 
   Widget _buildSalutationAndProfileAvatarRowSection() {
-    return WidthConstraint(context).withHorizontalSymmetricalPadding(
-      child: Row(
-        children: [
-          Hero(
-            tag: 'profile_avatar',
-            child: ProfileAvatar(
-              onTap: () {
-                HapticFeedback.vibrate();
+    return Row(
+      children: [
+        // Hero(
+        //   tag: 'profile_avatar',
+        //   child: ProfileAvatar(
+        //     onTap: () {
+        //       HapticFeedback.vibrate();
 
-                //context.router.push(const UserAccountScreenRoute());
-              },
-              imageUrl: 'assets/images/whiteman.jpg',
-            ),
-          ),
-          SizedBox(width: (Sizing.kWSpacing12).w),
-          Expanded(child: _buildSalutationSection()),
-        ],
-      ),
+        //       //context.router.push(const UserAccountScreenRoute());
+        //     },
+        //     imageUrl: 'assets/images/whiteman.jpg',
+        //   ),
+        // ),
+
+        Expanded(child: _buildSalutationSection()),
+      ],
     );
   }
 
-  Widget _buildTaskTextSection() {
-    return WidthConstraint(context).withHorizontalSymmetricalPadding(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            "Recent Task",
-            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                fontWeight: FontWeight.w600,
-                color: CustomTypography.kGreyColor100,
-                fontFamily: "inter",
-                fontSize: 18.0.sp),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildTaskSection() {
-    return SizedBox(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(left: 24),
-            child: Container(
-              height: 220.h,
-              width: MediaQuery.sizeOf(context).width,
-              child: PageView.builder(
-                padEnds: false,
-                dragStartBehavior: DragStartBehavior.start,
-                scrollDirection: Axis.horizontal,
-                physics: const BouncingScrollPhysics(),
-                itemCount: 4,
-                controller: _pageController,
-                itemBuilder: (context, index) {
-                  return const TaskListItem();
-                },
-                onPageChanged: (int index) {
-                  setState(() {
-                    _currentPageNotifier.value = index;
-                  });
-                },
+  Widget _buildIntroSection() {
+    return Row(
+      children: [
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(
+              width: MediaQuery.sizeOf(context).width * 0.6.w,
+              child: Text(
+                "Every step is a story, and each new place is a chapter of growth.",
+                style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                      fontWeight: FontWeight.w500,
+                      //color: CustomTypography.kGreyColor100,
+                    ),
               ),
             ),
-          ),
-          SizedBox(height: (Sizing.kSizingMultiple * 2.5).h),
-          Center(
-              child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              for (int i = 0; i < 4; i++)
-                Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: Container(
-                    width: i == _currentPageNotifier.value
-                        ? 20.0
-                        : 10.0, // Adjust the width of the selected dot
-                    height: 10.0,
-                    decoration: BoxDecoration(
-                        color: i == _currentPageNotifier.value
-                            ? CustomTypography.kSecondaryColor
-                            : Colors.grey,
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(16))),
-                  ),
-                ),
-            ],
-          )),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildStaggarSection() {
-    return WidthConstraint(context).withHorizontalSymmetricalPadding(
-      child: MasonryGridView.builder(
-          gridDelegate: const SliverSimpleGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2),
-          padding: EdgeInsets.zero,
-          crossAxisSpacing: 20,
-          mainAxisSpacing: 16,
-          scrollDirection: Axis.vertical,
-          shrinkWrap: true,
-          physics: const BouncingScrollPhysics(),
-          itemCount: 4,
-          itemBuilder: (context, index) {
-            return StaggerTile(
-                image: index == 1
-                    ? "assets/svg/loading.svg"
-                    : index == 2
-                        ? "assets/svg/ticksquare.svg"
-                        : index == 3
-                            ? "assets/svg/user.svg"
-                            : index == 4
-                                ? "assets/svg/xsign.svg"
-                                : "assets/svg/xsign.svg",
-                name: index == 1
-                    ? "In Progress"
-                    : index == 2
-                        ? "Completed"
-                        : index == 3
-                            ? "Team"
-                            : index == 4
-                                ? "Completed"
-                                : "Pending",
-                height: index == 1
-                    ? 140.h
-                    : index == 2
-                        ? 140.h
-                        : index == 3
-                            ? 160.h
-                            : index == 4
-                                ? 160.h
-                                : 160.h);
-          }),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(height: (Sizing.kSizingMultiple * 2).h),
-              _buildSalutationAndProfileAvatarRowSection(),
-              SizedBox(height: (Sizing.kSizingMultiple * 2).h),
-              _buildTaskTextSection(),
-              SizedBox(height: (Sizing.kSizingMultiple * 2).h),
-              _buildTaskSection(),
-              SizedBox(height: (Sizing.kSizingMultiple).h),
-              _buildStaggarSection()
-              // _buildFeaturesSection(),
-            ],
-          ),
+            SizedBox(
+              height: Sizing.kSizingMultiple * 2.h,
+            ),
+            SizedBox(
+              width: MediaQuery.sizeOf(context).width * 0.5.w,
+              child: Text(
+                'Your dreams begins here!',
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      color: const Color(0xFF0D0D0D),
+                      height: 0.9,
+                    ),
+              ),
+            )
+          ],
         ),
-      ),
-    );
-  }
-}
-
-class TaskListItem extends StatefulWidget {
-  const TaskListItem({
-    super.key,
-  });
-
-  @override
-  State<TaskListItem> createState() => _TaskListItemState();
-}
-
-class _TaskListItemState extends State<TaskListItem> {
-  final List<Widget> _imagesh = [
-    const ProfileAvatar(
-      imageUrl: "assets/images/whiteman.jpg",
-      radius: 20,
-    ),
-    const ProfileAvatar(
-      imageUrl: "assets/images/whiteman.jpg",
-      radius: 20,
-    ),
-    const ProfileAvatar(
-      imageUrl: "assets/images/whiteman.jpg",
-      radius: 20,
-    ),
-    const ProfileAvatar(
-      imageUrl: "assets/images/whiteman.jpg",
-      radius: 20,
-    ),
-  ];
-  Widget _buildImageListSection() {
-    return FlutterImageStack.widgets(
-      showTotalCount: true,
-      totalCount: 2,
-      itemRadius: 30, // Radius of each images
-      itemCount: 2, // Maximum number of images to be shown in stack
-      itemBorderWidth: 0,
-      backgroundColor: Colors.black,
-      extraCountTextStyle: const TextStyle(color: Colors.white),
-      children: _imagesh, // Border width around the images
+        Image.asset(
+          'assets/images/map1.png',
+          width: (Sizing.kWSpacing56 * 1.5).w,
+          height: (Sizing.kHSpacing56 * 1.5).h,
+        ),
+        // Container(
+        //   padding: EdgeInsets.all(10),
+        //  // color: Colors.red,
+        //   height: 100,
+        //   width: 100,
+        //   child: SvgPicture.asset("assets/svg/map.svg")),
+      ],
     );
   }
 
-  Widget _buildLeftItemBottomSection() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+  Widget _buildActionButton() {
+    return Column(
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            SvgPicture.asset("assets/svg/chat.svg"),
-            SizedBox(width: (Sizing.kWSpacing4).w),
-            Text(
-              "2",
-              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.w500,
-                  color: CustomTypography.kGreyColor100,
-                  fontFamily: "inter",
-                  fontSize: 14.0.sp),
-            )
-          ],
-        ),
-        SizedBox(width: (Sizing.kWSpacing10).w),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            SvgPicture.asset("assets/svg/paperplus.svg"),
-            SizedBox(width: (Sizing.kWSpacing4).w),
-            Text(
-              "5",
-              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.w500,
-                  color: CustomTypography.kGreyColor100,
-                  fontFamily: "inter",
-                  fontSize: 14.0.sp),
-            )
-          ],
-        ),
-        SizedBox(width: (Sizing.kWSpacing10).w),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            SvgPicture.asset("assets/svg/timecircle.svg"),
-            SizedBox(width: (Sizing.kWSpacing4).w),
-            Text(
-              "7 days",
-              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.w500,
-                  color: CustomTypography.kGreyColor100,
-                  fontFamily: "inter",
-                  fontSize: 14.0.sp),
-            )
-          ],
+        CustomButton(
+          type: ButtonType.regularButton(
+              onTap: () {
+                context.router.replace(const JourneyLandingRoute());
+              },
+              label: 'Get Started',
+              isLoadingMode: false,
+              backgroundColor: CustomTypography.kPrimaryColorJapa200,
+              textColor: CustomTypography.kWhiteColor,
+              borderRadius: BorderRadius.all(
+                  Radius.circular(Sizing.kBorderRadius * 7.r))),
         ),
       ],
     );
   }
 
-  Widget _buildBottomSection() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [_buildImageListSection(), _buildLeftItemBottomSection()],
+  Widget _buildBackground() {
+    return Opacity(
+      opacity: 0.4, // Set opacity value (0.0 to 1.0)
+      child:
+          //  SvgPicture.asset("assets/svg/chat.svg"),
+          Image.asset(
+        'assets/images/neew.jpg',
+        fit: BoxFit.cover,
+      ),
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        setState(() {
-          context.router.push(const TaskRoute());
-        });
+  Widget _buildCommunitySection() {
+    final List<Map<String, dynamic>> items = [
+      {
+        "image": "assets/images/com12.png",
+        "count": "45 People",
+        "title": 'Nigerians Living in the UK'
       },
-      child: Container(
-  
-        margin: const EdgeInsets.fromLTRB(0, 0, 10, 0),
-        decoration: BoxDecoration(
-            color: CustomTypography.kPrimaryColor,
-            borderRadius: BorderRadius.all(Radius.circular(16.r)),
-            boxShadow: [
-              BoxShadow(
-                color: const Color(0xFF5D6976).withOpacity(0.1),
-                spreadRadius: 0,
-                blurRadius: 60.r,
-                offset: const Offset(0, 12),
-              )
-            ]),
-        child: Padding(
-          padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 8.w),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+      {
+        "image": "assets/images/com13.png",
+        "count": "20 People",
+        "title": 'Global Africa Community'
+      },
+      {
+        "image": "assets/images/com14.png",
+        "count": "10 People",
+        "title": 'Personal Savings'
+      },
+      {
+        "image": "assets/images/com12.png",
+        "count": "45 People",
+        "title": 'Nigerians Living in the UK'
+      },
+      {
+        "image": "assets/images/com14.png",
+        "count": "20 People",
+        "title": 'Global Africa Community'
+      },
+      {
+        "image": "assets/images/com13.png",
+        "count": "10 People",
+        "title": 'Personal Savings'
+      },
+    ];
+    return SizedBox(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Container(
-                    padding: EdgeInsets.fromLTRB(12.w, 4.h, 12.w, 4.h),
-                    width: 60.w,
-                    decoration: BoxDecoration(
-                      color: const Color(0xff5ccecf),
-                      borderRadius: BorderRadius.all(Radius.circular(12.r)),
-                    ),
-                    child: Text(
-                      'High',
-                      style: Theme.of(context)
-                          .textTheme
-                          .headlineSmall
-                          ?.copyWith(
-                              fontWeight: FontWeight.w500,
-                              color: CustomTypography.kGreyColor100,
-                              fontFamily: "inter",
-                              fontSize: 12.0.sp),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                  const IconButton(
-                    icon: Icon(Icons.more_vert),
-                    onPressed: null,
-                  ),
-                ],
+              InkWell(
+                splashColor: Colors.transparent,
+                highlightColor: Colors.transparent,
+                onTap: () {},
+                child: Text(
+                  "Communities",
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        color: const Color(0xFF0D0D0D),
+                        height: 0.9,
+                      ),
+                ),
               ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              Row(
                 children: [
-                  SizedBox(
-                    width: MediaQuery.sizeOf(context).width * 0.60.w,
-                    child: Text(
-                      "Navigation issue in the Milestone",
-                      style: Theme.of(context)
-                          .textTheme
-                          .headlineSmall
-                          ?.copyWith(
-                              fontWeight: FontWeight.w600,
-                              color: CustomTypography.kGreyColor100,
-                              fontFamily: "inter",
-                              fontSize: 18.0.sp),
-                    ),
+                  InkWell(
+                      splashColor: Colors.transparent,
+                      highlightColor: Colors.transparent,
+                      onTap: () {},
+                      child: Text(
+                        "Find More",
+                        style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                              color: const Color(0xFF595959),
+                              height: 0.9,
+                            ),
+                      )),
+                  Image.asset(
+                    'assets/images/forward_arrow.png',
+                    width: (Sizing.kSizingMultiple * 2).w,
+                    height: (Sizing.kSizingMultiple * 2).h,
                   ),
-                  SizedBox(
-                    height: 8.h,
-                  ),
-                  Text(
-                    "Progess",
-                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                        fontWeight: FontWeight.w500,
-                        color: CustomTypography.kWhiteColor,
-                        fontFamily: "inter",
-                        fontSize: 12.0.sp),
-                  ),
-                  SizedBox(
-                    height: 8.h,
-                  ),
-                  SizedBox(
-                    height: 10.h,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const ContainerWithProgressBar(),
-                      Text(
-                        "60%",
-                        style: Theme.of(context)
-                            .textTheme
-                            .headlineSmall
-                            ?.copyWith(
-                                fontWeight: FontWeight.w600,
-                                color: CustomTypography.kGreyColor100,
-                                fontFamily: "inter",
-                                fontSize: 13.0.sp),
-                      )
-                    ],
-                  ),
-                  SizedBox(height: (Sizing.kSizingMultiple * 2.5).h),
-                  _buildBottomSection()
                 ],
               ),
             ],
           ),
+          SizedBox(
+            height: Sizing.kHSpacing10,
+          ),
+          Container(
+            // color: Colors.red,
+            height: 180.h,
+            width: MediaQuery.sizeOf(context).width,
+            child: ListView.builder(
+              // padEnds: false,
+              padding: EdgeInsets.fromLTRB(0, 0, 30.w, 0),
+              shrinkWrap: true,
+              dragStartBehavior: DragStartBehavior.start,
+              scrollDirection: Axis.horizontal,
+              physics: const BouncingScrollPhysics(),
+              itemCount: items.length,
+              itemBuilder: (context, index) {
+                final data = items[index];
+                return _buildCommunityList(
+                    data['title'], data['image'], data['count']);
+              },
+            ),
+          ),
+          SizedBox(height: (Sizing.kSizingMultiple * 2.5).h),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCommunityList(String title, String img, String count) {
+    return Container(
+      padding: EdgeInsets.only(left: 0.w),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: 90,
+            height: 90,
+            decoration: ShapeDecoration(
+              image: DecorationImage(
+                image: AssetImage(img),
+                fit: BoxFit.fill,
+              ),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8)),
+            ),
+          ),
+          SizedBox(
+            width: 100,
+            child: Text(
+              title,
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    color: const Color(0xFF344054),
+                    fontWeight: FontWeight.w500,
+                    height: 1.2.h,
+                  ),
+            ),
+          ),
+          SizedBox(
+            height: Sizing.kSizingMultiple.h,
+          ),
+          Text(
+            count,
+            style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                  color: const Color(0xFF344054),
+                  height: 0.9,
+                ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildConsultantSection() {
+    final List<Map<String, dynamic>> items = [
+      {
+        "image": "assets/images/cons/cons1.png",
+        "count": "45 People",
+        "title": 'Samantha Payne'
+      },
+      {
+        "image": "assets/images/com13.png",
+        "count": "20 People",
+        "title": 'Samantha Payne'
+      },
+      {
+        "image": "assets/images/com13.png",
+        "count": "10 People",
+        "title": 'Samantha Payne'
+      },
+      {
+        "image": "assets/images/com13.png",
+        "count": "45 People",
+        "title": 'Samantha Payne'
+      },
+      {
+        "image": "assets/images/com14.png",
+        "count": "20 People",
+        "title": 'Samantha Payne'
+      },
+      {
+        "image": "assets/images/com13.png",
+        "count": "10 People",
+        "title": 'Samantha Payne'
+      },
+    ];
+    return SizedBox(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                "Request Consultation",
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      color: const Color(0xFF0D0D0D),
+                      height: 0.9,
+                    ),
+              ),
+              Row(
+                children: [
+                  InkWell(
+                      splashColor: Colors.transparent,
+                      highlightColor: Colors.transparent,
+                      onTap: () {},
+                      child: Text(
+                        "Find More",
+                        style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                              color: const Color(0xFF595959),
+                              height: 0.9,
+                            ),
+                      )),
+                  Image.asset(
+                    'assets/images/forward_arrow.png',
+                    width: (Sizing.kSizingMultiple * 2).w,
+                    height: (Sizing.kSizingMultiple * 2).h,
+                  ),
+                ],
+              ),
+            ],
+          ),
+          SizedBox(
+            height: Sizing.kHSpacing10,
+          ),
+          Container(
+            // color: Colors.red,
+            height: 180.h,
+            width: MediaQuery.sizeOf(context).width,
+            child: ListView.builder(
+              // padEnds: false,
+              padding: EdgeInsets.fromLTRB(0, 0, 30.w, 0),
+              shrinkWrap: true,
+              dragStartBehavior: DragStartBehavior.start,
+              scrollDirection: Axis.horizontal,
+              physics: const BouncingScrollPhysics(),
+              itemCount: items.length,
+              itemBuilder: (context, index) {
+                final data = items[index];
+                return _buildConsultantList(
+                    data['title'], data['image'], data['count']);
+              },
+            ),
+          ),
+          SizedBox(height: (Sizing.kSizingMultiple * 2.5).h),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildConsultantList(String title, String img, String count) {
+    return Container(
+      padding: EdgeInsets.only(left: 10.w),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: 120,
+            height: 100,
+            decoration: ShapeDecoration(
+              image: DecorationImage(
+                image: AssetImage(img),
+                fit: BoxFit.fill,
+              ),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8)),
+            ),
+          ),
+          SizedBox(
+            width: 120,
+            child: Text(
+              title,
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    color: const Color(0xFF344054),
+                    fontWeight: FontWeight.w700,
+                    fontSize: 14.sp,
+                    height: 1.2.h,
+                  ),
+            ),
+          ),
+          SizedBox(
+            height: Sizing.kSizingMultiple.h,
+          ),
+          Row(
+            children: List.generate(
+              4,
+              (index) => SvgPicture.asset("assets/svg/star.svg"),
+            ),
+          ),
+          SizedBox(
+            height: Sizing.kSizingMultiple.h,
+          ),
+          Text.rich(
+            TextSpan(
+              text: 'Hourly Price:',
+              children: [
+                TextSpan(
+                  text: ' \$100',
+                  style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                      fontWeight: FontWeight.w700,
+                      color: CustomTypography.kBlackColor,
+                      fontSize: 12.0.sp),
+                  //recognizer: _tapRecognizer,
+                ),
+              ],
+              style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                  fontWeight: FontWeight.w500,
+                  color: CustomTypography.kGreyColorlabel,
+                  height: 0.15.h,
+                  fontSize: 10.0.sp),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget _buildNewsSection() {
+    final List<Map<String, dynamic>> items = [
+      {
+        "image": "assets/images/com12.png",
+        "count": "45 People",
+        "title": 'UK net migration in 2022 revised upwards to 745,000'
+      },
+      // {"image": "assets/svgs/squarepassword.svg", "title": 'Locked Savings'},
+      {
+        "image": "assets/images/com13.png",
+        "count": "20 People",
+        "title": 'Immigration is rocketing. Thats brilliant news for Britain.'
+      },
+      {
+        "image": "assets/images/com14.png",
+        "count": "10 People",
+        "title":
+            'Immigration Series: All about how to get naturalised in Germany'
+      },
+      {
+        "image": "assets/images/com12.png",
+        "count": "45 People",
+        "title":
+            'Immigration Series: All about how to get naturalised in Germany'
+      },
+      // {"image": "assets/svgs/squarepassword.svg", "title": 'Locked Savings'},
+      {
+        "image": "assets/images/com14.png",
+        "count": "20 People",
+        "title":
+            'Immigration Series: All about how to get naturalised in Germany'
+      },
+      {
+        "image": "assets/images/com13.png",
+        "count": "10 People",
+        "title":
+            'Immigration Series: All about how to get naturalised in Germany'
+      },
+    ];
+    return SizedBox(
+      child: Container(
+        padding: const EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          color: const Color(0xFFF8F8F8),
+          borderRadius: BorderRadius.circular(16),
         ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                InkWell(
+                  splashColor: Colors.transparent,
+                  highlightColor: Colors.transparent,
+                  onTap: () {},
+                  child: Text(
+                    "News Updates",
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                          color: const Color(0xFF0D0D0D),
+                          height: 0.9,
+                        ),
+                  ),
+                ),
+                Row(
+                  children: [
+                    InkWell(
+                        splashColor: Colors.transparent,
+                        highlightColor: Colors.transparent,
+                        onTap: () {},
+                        child: Text(
+                          "Read More",
+                          style:
+                              Theme.of(context).textTheme.titleSmall?.copyWith(
+                                    color: const Color(0xFF595959),
+                                    height: 0.9,
+                                  ),
+                        )),
+                    Image.asset(
+                      'assets/images/forward_arrow.png',
+                      width: (Sizing.kSizingMultiple * 2).w,
+                      height: (Sizing.kSizingMultiple * 2).h,
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            SizedBox(
+              height: Sizing.kHSpacing10,
+            ),
+            SizedBox(
+              height: 220.h,
+              width: MediaQuery.sizeOf(context).width,
+              child: ListView.builder(
+                // padEnds: false,
+                padding: EdgeInsets.fromLTRB(0, 0, 0.w, 0),
+                shrinkWrap: true,
+                dragStartBehavior: DragStartBehavior.start,
+                scrollDirection: Axis.vertical,
+                physics: _physics,
+                itemCount: items.length,
+
+                itemBuilder: (context, index) {
+                  final data = items[index];
+                  return _buildNewsList(
+                      data['title'], data['image'], data['count']);
+                },
+              ),
+            ),
+            SizedBox(height: (Sizing.kSizingMultiple * 2.5).h),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildNewsList(String title, String img, String count) {
+    return Container(
+      width: MediaQuery.sizeOf(context).width.w,
+      //color: Colors.red,
+      padding: EdgeInsets.only(left: 0.w, bottom: 10.h),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: 90,
+            height: 90,
+            decoration: ShapeDecoration(
+              image: DecorationImage(
+                image: AssetImage(img),
+                fit: BoxFit.fill,
+              ),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8)),
+            ),
+          ),
+          SizedBox(
+            width: Sizing.kSizingMultiple * 2.h,
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(
+                width: MediaQuery.sizeOf(context).width * 0.52,
+                child: Text(
+                  title,
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        color: const Color(0xFF344054),
+                        fontWeight: FontWeight.w500,
+                        height: 1.2.h,
+                      ),
+                ),
+              ),
+              SizedBox(
+                height: Sizing.kSizingMultiple.h,
+              ),
+              Text(
+                count,
+                style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                      color: const Color(0xFF344054),
+                      height: 0.9,
+                    ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildToolsSection() {
+    final List<Map<String, dynamic>> items = [
+      {
+        "image": "assets/images/com12.png",
+        "count": "45 People",
+        "title": 'UK net migration in 2022 revised upwards to 745,000'
+      },
+      // {"image": "assets/svgs/squarepassword.svg", "title": 'Locked Savings'},
+      {
+        "image": "assets/images/com13.png",
+        "count": "20 People",
+        "title": 'Immigration is rocketing. Thats brilliant news for Britain.'
+      },
+      {
+        "image": "assets/images/com14.png",
+        "count": "10 People",
+        "title":
+            'Immigration Series: All about how to get naturalised in Germany'
+      },
+      {
+        "image": "assets/images/com12.png",
+        "count": "45 People",
+        "title":
+            'Immigration Series: All about how to get naturalised in Germany'
+      },
+      // {"image": "assets/svgs/squarepassword.svg", "title": 'Locked Savings'},
+      {
+        "image": "assets/images/com14.png",
+        "count": "20 People",
+        "title":
+            'Immigration Series: All about how to get naturalised in Germany'
+      },
+      {
+        "image": "assets/images/com13.png",
+        "count": "10 People",
+        "title":
+            'Immigration Series: All about how to get naturalised in Germany'
+      },
+    ];
+    return SizedBox(
+      child: Container(
+        //height: 200,
+        padding: const EdgeInsets.all(0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                InkWell(
+                  splashColor: Colors.transparent,
+                  highlightColor: Colors.transparent,
+                  onTap: () {},
+                  child: Text(
+                    "Tools",
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                          color: const Color(0xFF0D0D0D),
+                          height: 0.9,
+                        ),
+                  ),
+                ),
+                // Row(
+                //   children: [
+                //     InkWell(
+                //         splashColor: Colors.transparent,
+                //         highlightColor: Colors.transparent,
+                //         onTap: () {},
+                //         child: Text(
+                //           "Read More",
+                //           style:
+                //               Theme.of(context).textTheme.titleSmall?.copyWith(
+                //                     color: Color(0xFF595959),
+                //                     height: 0.9,
+                //                   ),
+                //         )),
+                //     Image.asset(
+                //       'assets/images/forward_arrow.png',
+                //       width: (Sizing.kSizingMultiple * 2).w,
+                //       height: (Sizing.kSizingMultiple * 2).h,
+                //     ),
+                //   ],
+                // ),
+              ],
+            ),
+            SizedBox(
+              height: Sizing.kHSpacing10,
+            ),
+            SizedBox(
+              height: MediaQuery.sizeOf(context).height * 0.13.h,
+              width: MediaQuery.sizeOf(context).width.w,
+              child: ListView.builder(
+                // padEnds: false,
+                itemCount: items.length,
+              padding: EdgeInsets.fromLTRB(0, 0, 30.w, 0),
+              shrinkWrap: true,
+              dragStartBehavior: DragStartBehavior.start,
+              scrollDirection: Axis.horizontal,
+              physics: const BouncingScrollPhysics(),
+
+                itemBuilder: (context, index) {
+                  
+                  return Container(
+                    width: MediaQuery.sizeOf(context).width * 0.6,
+                    margin: EdgeInsets.all(10),
+                    padding: EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFF8F8F8),
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        Text(
+                          'CRS Calculator',
+                          style:
+                              Theme.of(context).textTheme.titleMedium?.copyWith(
+                                    color: Color(0xFF344054),
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                        ),
+// ---
+                        Text(
+                          'Calculate your score with our CRS tool',
+                          style:
+                              Theme.of(context).textTheme.titleSmall?.copyWith(
+                                    color: Color(0xFF607683),
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                        )
+                      ],
+                    ),
+                  );
+                },
+              ),
+            ),
+            SizedBox(height: (Sizing.kSizingMultiple * 2.5).h),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // Widget _buildNewsList(String title, String img, String count) {
+  //   return Container(
+  //     width: MediaQuery.sizeOf(context).width.w,
+  //     //color: Colors.red,
+  //     padding: EdgeInsets.only(left: 0.w,bottom: 10.h),
+  //     child: Row(
+  //       crossAxisAlignment: CrossAxisAlignment.start,
+  //       children: [
+  //         Container(
+  //           width: 90,
+  //           height: 90,
+  //           decoration: ShapeDecoration(
+  //             image: DecorationImage(
+  //               image: AssetImage(img),
+  //               fit: BoxFit.fill,
+  //             ),
+  //             shape: RoundedRectangleBorder(
+  //                 borderRadius: BorderRadius.circular(8)),
+  //           ),
+  //         ),
+  //          SizedBox(
+  //           width: Sizing.kSizingMultiple*2.h,
+  //         ),
+  //         Column(
+  //           crossAxisAlignment: CrossAxisAlignment.start,
+  //           children: [
+  //              SizedBox(
+  //           width: MediaQuery.sizeOf(context).width*0.52,
+  //           child: Text(
+  //             title,
+  //             style: Theme.of(context).textTheme.titleMedium?.copyWith(
+  //                   color: const Color(0xFF344054),
+  //                   fontWeight: FontWeight.w500,
+  //                   height: 1.2.h,
+  //                 ),
+  //           ),
+  //         ),
+  //         SizedBox(
+  //           height: Sizing.kSizingMultiple.h,
+  //         ),
+  //         Text(
+  //           count,
+  //           style: Theme.of(context).textTheme.titleSmall?.copyWith(
+  //                 color: const Color(0xFF344054),
+  //                 height: 0.9,
+  //               ),
+  //         ),
+  //           ],
+  //         ),
+
+  //       ],
+  //     ),
+  //   );
+  // }
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      // backgroundColor: Colors.white,
+      body: Stack(
+        children: [
+          _buildBackground(),
+          SingleChildScrollView(
+            physics: _physics,
+            child: SafeArea(
+              child: WidthConstraint(context).withHorizontalSymmetricalPadding(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(height: (Sizing.kSizingMultiple * 1).h),
+                    _buildSalutationAndProfileAvatarRowSection(),
+                    SizedBox(height: (Sizing.kSizingMultiple).h),
+                    _buildIntroSection(),
+                    SizedBox(height: (Sizing.kSizingMultiple * 2).h),
+                    _buildActionButton(),
+                    SizedBox(height: (Sizing.kSizingMultiple * 4).h),
+                    _buildCommunitySection(),
+                    //SizedBox(height: (Sizing.kSizingMultiple).h),
+                    _buildNewsSection(),
+                    SizedBox(height: (Sizing.kSizingMultiple * 4).h),
+
+                    _buildToolsSection(),
+                    SizedBox(height: (Sizing.kSizingMultiple).h),
+                    _buildConsultantSection(),
+                    // // _buildFeaturesSection(),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

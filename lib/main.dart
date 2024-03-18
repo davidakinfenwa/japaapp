@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:japaapp/business/snapshot/tabscreen_provider.dart';
 import 'package:japaapp/core/route/app_router.dart';
 import 'package:japaapp/core/theme/custom_typography.dart';
+import 'package:japaapp/presentation/screens/account/provider/account_provider.dart';
 
 import 'package:provider/provider.dart';
 
@@ -13,6 +15,8 @@ import 'business/snapshot_cache/snapshot_cache.dart';
 import 'core/dependence/dependence.dart';
 import 'core/interceptors/interceptors.dart';
 import 'core/network/network.dart';
+import 'package:country_picker/country_picker.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 void _setupDioInterceptors() {
   dioClient.interceptors.add(getIt<LoggingInterceptors>());
@@ -23,16 +27,27 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initGetIt();
   _setupDioInterceptors();
-  runApp(MultiProvider(
+  // SystemChrome.setEnabledSystemUIOverlays([]);
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]).then(
+    (_) =>  runApp(
+    MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => TabScreenNotifier()),
         ChangeNotifierProvider(create: (context) => AuthSnapshotCache()),
+        ChangeNotifierProvider(create: (context) => AccountPageProvider()),
+        
       ],
       child: MultiBlocProvider(providers: [
         BlocProvider<SigninFormCubit>(
           create: (context) => getIt<SigninFormCubit>(),
         ),
-      ], child: const MyApp())));
+      ], child: const MyApp()))));
+
+ 
+
+//  runApp(const MyApp()),
+  
+  
 }
 
 class MyApp extends StatefulWidget {
@@ -51,6 +66,48 @@ class _MyAppState extends State<MyApp> {
       builder: (context, child) {
         return KeyboardVisibilityProvider(
           child: MaterialApp.router(
+            supportedLocales: const [
+        Locale('en'),
+        Locale('ar'),
+        Locale('es'),
+        Locale('de'),
+        Locale('fr'),
+        Locale('el'),
+        Locale('et'),
+        Locale('nb'),
+        Locale('nn'),
+        Locale('pl'),
+        Locale('pt'),
+        Locale('ru'),
+        Locale('hi'),
+        Locale('ne'),
+        Locale('uk'),
+        Locale('hr'),
+        Locale('tr'),
+        Locale('lv'),
+        Locale('lt'),
+        Locale('ku'),
+        Locale('nl'),
+        Locale('it'),
+        Locale('ko'),
+        Locale('ja'),
+        Locale('id'),
+        Locale('cs'),
+        Locale('ht'),
+        Locale('sk'),
+        Locale('ro'),
+        Locale('bg'),
+        Locale('ca'),
+        Locale('he'),
+        Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hans'), // Generic Simplified Chinese 'zh_Hans'
+        Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hant'), // Generic traditional Chinese 'zh_Hant'
+      ],
+      localizationsDelegates: const [
+        CountryLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+      ],
             title: 'JapaApp',
             debugShowCheckedModeBanner: false,
             theme: CustomTypography.themeDataModifications,

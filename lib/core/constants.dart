@@ -27,7 +27,7 @@ class Sizing {
   static final kStepperLineWidth = 3.0.h;
   static const kTopBarMargin = kSizingMultiple * 4.0;
   static const kLogoDiameter = 150.0;
-  static const kBorderRadius = 4.0;
+  static const kBorderRadius = 6.0;
   static const kAvatarRadius = kSizingMultiple * 3.5;
   static const kAvatarRadiusBig = kSizingMultiple * 6.25;
   static const kLocalPhoneNumberMaxLength = 10;
@@ -39,7 +39,7 @@ class Sizing {
   static const kProgressIndicatorSizeMini = 10.0;
 
   // buttons & cards
-  static final kButtonHeight = 48.0.h;
+  static final kButtonHeight = 44.0.h;
   static const kButtonBorderWidth = 1.0;
   static const kButtonElevation = 2.0;
   static const kCardElevation = 1.0;

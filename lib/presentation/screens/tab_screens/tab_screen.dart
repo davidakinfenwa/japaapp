@@ -1,8 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:japaapp/business/snapshot/tabscreen_provider.dart';
-import 'package:japaapp/presentation/screens/tab_screens/add_task.dart';
-import 'package:japaapp/presentation/screens/tab_screens/calender.dart';
+import 'package:japaapp/presentation/screens/tab_screens/account_page.dart';
 import 'package:japaapp/presentation/screens/tab_screens/dashboard.dart';
 import 'package:japaapp/presentation/screens/tab_screens/listing.dart';
 import 'package:japaapp/presentation/screens/tab_screens/message.dart';
@@ -13,7 +12,7 @@ import 'package:provider/provider.dart';
 
 @RoutePage()
 class TabScreen extends StatefulWidget  {
-  const TabScreen({Key? key}) : super(key: key);
+  const TabScreen({super.key});
 
   @override
   State<TabScreen> createState() => _TabScreenState();
@@ -24,9 +23,9 @@ class _TabScreenState extends State<TabScreen> {
   List<Widget> pageList = [
     const DashboardTab(),
     const MessageScreen(),
-    const AddTaskScreen(),
+    // const AddTaskScreen(),
     const ListingScreen(),
-    const CalenderScreen()
+    const AccountTab()
   ];
 
   @override

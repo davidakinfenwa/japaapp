@@ -19,6 +19,7 @@ class ExceptionMapper {
     }
 
     if (e.response?.statusCode == 500) {
+    
       return const ExceptionType<ExceptionMessage>.serverException(
         code: ExceptionCode.UNDEFINED,
         message: ExceptionMessage.UNDEFINED,
