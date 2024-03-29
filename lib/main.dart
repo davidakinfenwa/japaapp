@@ -4,15 +4,16 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:japaapp/business/snapshot/tabscreen_provider.dart';
+import 'package:japaapp/core/dependence/dependence.dart';
 import 'package:japaapp/core/route/app_router.dart';
 import 'package:japaapp/core/theme/custom_typography.dart';
-import 'package:japaapp/presentation/screens/account/provider/account_provider.dart';
+import 'package:japaapp/presentation/screens/profile/provider/account_provider.dart';
 
 import 'package:provider/provider.dart';
 
 import 'business/blocs/auth_blocs/signin_form_cubit/signin_form_cubit.dart';
 import 'business/snapshot_cache/snapshot_cache.dart';
-import 'core/dependence/dependence.dart';
+
 import 'core/interceptors/interceptors.dart';
 import 'core/network/network.dart';
 import 'package:country_picker/country_picker.dart';
@@ -28,6 +29,10 @@ void main() async {
   await initGetIt();
   _setupDioInterceptors();
   // SystemChrome.setEnabledSystemUIOverlays([]);
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+        statusBarColor: CustomTypography.kTransparentColor,
+        statusBarIconBrightness: Brightness.dark // Change this color as needed
+        ));
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]).then(
     (_) =>  runApp(
     MultiProvider(

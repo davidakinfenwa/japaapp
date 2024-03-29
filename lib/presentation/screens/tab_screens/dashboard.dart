@@ -3,11 +3,13 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:japaapp/business/snapshot/tabscreen_provider.dart';
 import 'package:japaapp/core/constants.dart';
 import 'package:japaapp/core/route/app_router.dart';
 import 'package:japaapp/core/theme/custom_typography.dart';
 import 'package:japaapp/core/util/width_constraints.dart';
 import 'package:japaapp/presentation/shared/custom_button.dart';
+import 'package:provider/provider.dart';
 
 class DashboardTab extends StatefulWidget {
   const DashboardTab({super.key});
@@ -131,7 +133,7 @@ class _DashboardTabState extends State<DashboardTab> {
               },
               label: 'Get Started',
               isLoadingMode: false,
-              backgroundColor: CustomTypography.kPrimaryColorJapa200,
+              backgroundColor: CustomTypography.kPrimaryColor200,
               textColor: CustomTypography.kWhiteColor,
               borderRadius: BorderRadius.all(
                   Radius.circular(Sizing.kBorderRadius * 7.r))),
@@ -153,6 +155,7 @@ class _DashboardTabState extends State<DashboardTab> {
   }
 
   Widget _buildCommunitySection() {
+    var bottomNavCProvider = Provider.of<TabScreenNotifier>(context);
     final List<Map<String, dynamic>> items = [
       {
         "image": "assets/images/com12.png",
@@ -209,7 +212,11 @@ class _DashboardTabState extends State<DashboardTab> {
                   InkWell(
                       splashColor: Colors.transparent,
                       highlightColor: Colors.transparent,
-                      onTap: () {},
+                      onTap: () {
+                           bottomNavCProvider.pageIndex = 2;
+                         // context.router.push( MyProcessTabRoute(nav: "newMigrant"));
+                        // context.router.push(route)
+                      },
                       child: Text(
                         "Find More",
                         style: Theme.of(context).textTheme.titleSmall?.copyWith(

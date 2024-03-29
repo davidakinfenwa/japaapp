@@ -7,7 +7,7 @@ import 'package:japaapp/core/route/app_router.dart';
 import 'package:japaapp/core/theme/custom_typography.dart';
 import 'package:japaapp/core/util/width_constraints.dart';
 
-import 'package:japaapp/presentation/screens/account/provider/account_provider.dart';
+import 'package:japaapp/presentation/screens/profile/provider/account_provider.dart';
 import 'package:japaapp/presentation/shared/custom_button.dart';
 import 'package:provider/provider.dart';
 
@@ -424,7 +424,7 @@ class _MyBottomAwardSheetState extends State<MyBottomAwardSheet> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 Text(
-                  'Please select your marital status',
+                 widget.nav=="visa"?'Please select visa type': 'Please select your marital status',
                   //style: AppTheme.inputText
                   style: Theme.of(context).textTheme.headlineLarge?.copyWith(
                       color: CustomTypography.kBlackColor, fontSize: 18.sp),
@@ -622,7 +622,7 @@ class _MyBottomCountryCompareSheetState
               },
               label: 'Continue',
               isLoadingMode: false,
-              backgroundColor: CustomTypography.kPrimaryColorJapa200,
+              backgroundColor: CustomTypography.kPrimaryColor200,
               textColor: CustomTypography.kWhiteColor,
               borderRadius: BorderRadius.all(
                   Radius.circular(Sizing.kBorderRadius * 7.r))),

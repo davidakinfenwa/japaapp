@@ -7,6 +7,7 @@ export 'authentication/otp_verifiy_email_page.dart';
 export 'authentication/create_account_page.dart';
 export 'tab_screens/dashboard.dart';
 export 'tab_screens/tab_screen.dart';
+export 'tab_screens/process_tab.dart';
 
 
 

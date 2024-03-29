@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:japaapp/business/snapshot/tabscreen_provider.dart';
 import 'package:japaapp/presentation/screens/tab_screens/account_page.dart';
 import 'package:japaapp/presentation/screens/tab_screens/dashboard.dart';
-import 'package:japaapp/presentation/screens/tab_screens/listing.dart';
-import 'package:japaapp/presentation/screens/tab_screens/message.dart';
+import 'package:japaapp/presentation/screens/tab_screens/thrive.dart';
+import 'package:japaapp/presentation/screens/tab_screens/process_tab.dart';
 import 'package:japaapp/presentation/shared/bottommainnav.dart';
 import 'package:provider/provider.dart';
 
@@ -22,9 +22,8 @@ class TabScreen extends StatefulWidget  {
 class _TabScreenState extends State<TabScreen> {
   List<Widget> pageList = [
     const DashboardTab(),
-    const MessageScreen(),
-    // const AddTaskScreen(),
-    const ListingScreen(),
+    const MyProcessTabScreen(nav: "home",),
+    const ThriveScreen(),
     const AccountTab()
   ];
 

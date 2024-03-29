@@ -154,8 +154,8 @@ class _JourneyVisaTypeSelectionPageState extends State<JourneyVisaTypeSelectionP
           svgImageChecker: false,
           lotties: "magicwand.json",
           itemSpacingWidth: Sizing.kWSpacing10.w,
-          textColor: CustomTypography.kPrimaryColorJapa200,
-          borderColor: CustomTypography.kPrimaryColorJapa200,
+          textColor: CustomTypography.kPrimaryColor300,
+          borderColor: CustomTypography.kPrimaryColor300,
           borderRadius:
               BorderRadius.all(Radius.circular(Sizing.kBorderRadius * 7.r))),
     );

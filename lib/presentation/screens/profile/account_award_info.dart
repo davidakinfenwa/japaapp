@@ -376,7 +376,7 @@ class _AccountAwardPagesState extends State<AccountAwardPages> {
               },
               label: 'Next',
               isLoadingMode: false,
-              backgroundColor: CustomTypography.kPrimaryColorJapa200,
+              backgroundColor: CustomTypography.kPrimaryColor200,
               textColor: CustomTypography.kWhiteColor,
               borderRadius: BorderRadius.all(
                   Radius.circular(Sizing.kBorderRadius * 7.r))),

@@ -109,7 +109,7 @@ class _FormFieldInputState extends State<FormFieldInput> {
       ),
       child: TextFormField(
         readOnly: widget.readOnly,
-        cursorColor: CustomTypography.kPrimaryColorJapa500,
+        cursorColor: CustomTypography.kPrimaryColor500,
         style: Theme.of(context)
             .textTheme
             .titleSmall!
@@ -320,7 +320,7 @@ class _FormFieldInputHalfState extends State<FormFieldInputHalf> {
         // color: CustomTypography.kGreyColor40,
       ),
       child: TextFormField(
-        cursorColor: CustomTypography.kPrimaryColorJapa500,
+        cursorColor: CustomTypography.kPrimaryColor500,
         style: Theme.of(context)
             .textTheme
             .titleSmall!
@@ -492,7 +492,7 @@ class _OtpFieldInputState extends State<OtpFieldInput> {
       child: TextFormField(
         obscureText: true,
         //obscuringCharacter: AutofillHints.password.l,
-        cursorColor: CustomTypography.kPrimaryColorJapa500,
+        cursorColor: CustomTypography.kPrimaryColor500,
         style: const TextStyle(
             color: Color(0xff344054), wordSpacing: 100, letterSpacing: 10),
         controller: widget.controller,
@@ -629,7 +629,7 @@ class _PhoneNumberInputFieldState extends State<PhoneNumberInputField> {
                       dialogBackgroundColor: Colors.white),
                   child: IntlPhoneField(
                     initialCountryCode: "",
-                    cursorColor: CustomTypography.kPrimaryColorJapa500,
+                    cursorColor: CustomTypography.kPrimaryColor500,
                     focusNode: widget.fieldFocusNode,
                     textInputAction: widget.textInputAction,
                     autovalidateMode: AutovalidateMode.disabled,
@@ -781,26 +781,25 @@ class _FormFieldInputPreffixState extends State<FormFieldInputPreffix> {
       ),
       child: TextFormField(
         readOnly: widget.readOnly,
-        cursorColor: CustomTypography.kPrimaryColorJapa500,
-        style: Theme.of(context)
-            .textTheme
-            .titleSmall!
-            .copyWith(color: const Color(0xff344054),),
+        cursorColor: CustomTypography.kPrimaryColor500,
+        style: Theme.of(context).textTheme.titleSmall!.copyWith(
+              color: const Color(0xff344054),
+            ),
 
         controller: widget.controller,
         keyboardType: widget.textInputType,
         textAlignVertical: TextAlignVertical.center,
         enabled: widget.enable,
-          
+
         decoration: InputDecoration(
-        
           prefix: Padding(
-            padding: const  EdgeInsets.fromLTRB(10, 0, 10, 0),
+            padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
             child: SvgPicture.asset("assets/svg/downarrow.svg"),
           ),
-          prefixIconConstraints:  const BoxConstraints(minHeight: 24, minWidth: 24),
+          prefixIconConstraints:
+              const BoxConstraints(minHeight: 24, minWidth: 24),
           prefixIcon: Padding(
-            padding:  EdgeInsetsDirectional.only(start: 5),
+            padding: EdgeInsetsDirectional.only(start: 5),
             child: widget.prefixIcon,
           ),
           hintText: widget.hint,
@@ -824,7 +823,7 @@ class _FormFieldInputPreffixState extends State<FormFieldInputPreffix> {
             borderSide:
                 BorderSide(color: CustomTypography.kGreyColor70, width: 1.5),
           ),
-           contentPadding:const EdgeInsets.fromLTRB(90, 0, 0, 30),
+          contentPadding: const EdgeInsets.fromLTRB(90, 0, 0, 30),
         ),
         onTap: () {
           widget.onTap != null ? widget.onTap!() : () {};
@@ -845,6 +844,134 @@ class _FormFieldInputPreffixState extends State<FormFieldInputPreffix> {
       ),
     );
   }
+}
 
- 
+class FormFieldSearch extends StatefulWidget {
+  FormFieldSearch(
+      {super.key,
+      this.controller,
+      this.padding,
+      this.height = 54,
+      this.isFocused = false,
+      this.onSaved,
+      this.onTap,
+      this.cursorHeight,
+      this.enable = true,
+      this.validate,
+      this.onTapData,
+      // this.validateString,
+      this.fillColor = Colors.transparent,
+      this.width = double.maxFinite,
+      this.obSecure = false,
+      this.borderRadius = 10,
+      this.scale = 0.7,
+      this.hint,
+      this.textInputType = TextInputType.text,
+      this.prefixIcon,
+      this.suffixIcon,
+      this.onChanged,
+      this.contentPadding,
+      this.maxLength,
+      this.maxLines,
+      this.align,
+      this.disableBorderColor,
+      this.borderSideColor,
+      this.hintStyle,
+      this.autovalidateMode,
+      this.inputFormatters,
+      this.fontSize,
+      this.readOnly = false});
+  final TextEditingController? controller;
+  final Widget? prefixIcon, suffixIcon;
+  final String? hint;
+  final Function(String)? onSaved;
+  final double height, width, borderRadius;
+  final TextInputType textInputType;
+  final Function(String?)? onChanged;
+  final Color fillColor;
+  final bool obSecure, enable;
+  final Function()? onTap;
+  final EdgeInsetsGeometry? contentPadding;
+  final TextAlign? align;
+  final Color? borderSideColor;
+  final Color? disableBorderColor;
+  final EdgeInsets? padding;
+  final int? maxLength;
+  final int? maxLines;
+  final double? scale, cursorHeight, fontSize;
+  final String? Function(String?)? validate;
+  final Function? onTapData;
+  final AutovalidateMode? autovalidateMode;
+  bool isFocused;
+  final TextStyle? hintStyle;
+  final List<TextInputFormatter>? inputFormatters;
+  bool readOnly;
+
+  @override
+  State<FormFieldSearch> createState() => _FormFieldSearchState();
+}
+
+class _FormFieldSearchState extends State<FormFieldSearch> {
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 44.h,
+      decoration: BoxDecoration(
+        color:const Color(0xfff4f4f4),
+        borderRadius: BorderRadius.circular(Sizing.kBorderRadius),
+      ),
+      child: TextFormField(
+        readOnly: widget.readOnly,
+        cursorColor: CustomTypography.kPrimaryColor500,
+        style: Theme.of(context).textTheme.titleSmall!.copyWith(
+              color: const Color(0xff344054),
+            ),
+
+        controller: widget.controller,
+        keyboardType: widget.textInputType,
+        textAlignVertical: TextAlignVertical.center,
+        enabled: widget.enable,
+
+        decoration: InputDecoration(
+          prefixIconConstraints: const BoxConstraints(minHeight: 24, minWidth: 24),
+          prefixIcon: Padding( padding: EdgeInsetsDirectional.only(start: Sizing.kSizingMultiple * 1.3.h,end: 10),
+            child: widget.prefixIcon,
+          ),
+          hintText: widget.hint,
+          hintStyle: Theme.of(context).textTheme.titleSmall?.copyWith(
+              fontWeight: FontWeight.w500,
+              color: CustomTypography.kTitleMedium,
+              fontSize: 13.0.sp),
+          enabledBorder: InputBorder.none,
+          focusedBorder: OutlineInputBorder(
+            gapPadding: 0.0,
+            borderSide:
+                BorderSide(color: CustomTypography.kGreyColor50, width: 1),
+          ),
+          contentPadding: const EdgeInsets.fromLTRB(0, 0, 0, 15),
+        ),
+        onTap: () {
+          widget.onTap != null ? widget.onTap!() : () {};
+        },
+        onChanged: (value) {
+          setState(() {
+            widget.isFocused = value.isNotEmpty;
+          });
+          print(widget.isFocused);
+          widget.onChanged?.call(value);
+        },
+        validator: widget.validate,
+        // validator: (value) {
+        //   return _emailOneTextFieldController.text.isEmpty
+        //       ? 'Email one is required!'
+        //       : null;
+        // },
+      ),
+    );
+  }
 }

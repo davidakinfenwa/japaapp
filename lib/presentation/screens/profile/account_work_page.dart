@@ -7,7 +7,7 @@ import 'package:japaapp/core/constants.dart';
 import 'package:japaapp/core/route/app_router.dart';
 import 'package:japaapp/core/theme/custom_typography.dart';
 import 'package:japaapp/core/util/width_constraints.dart';
-import 'package:japaapp/presentation/screens/account/provider/account_provider.dart';
+import 'package:japaapp/presentation/screens/profile/provider/account_provider.dart';
 import 'package:japaapp/presentation/shared/custom_button.dart';
 
 import 'package:japaapp/presentation/widget/custom_app_bar.dart';
@@ -428,7 +428,7 @@ class _AccountWorkPagesState extends State<AccountWorkPages> {
               },
               label: 'Next',
               isLoadingMode: false,
-              backgroundColor: CustomTypography.kPrimaryColorJapa200,
+              backgroundColor: CustomTypography.kPrimaryColor200,
               textColor: CustomTypography.kWhiteColor,
               borderRadius: BorderRadius.all(
                   Radius.circular(Sizing.kBorderRadius * 7.r))),

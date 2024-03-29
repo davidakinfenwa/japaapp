@@ -23,7 +23,7 @@ class _FirstScreenOndoardState extends State<FirstScreenOndoard> {
             children: [
              Positioned.fill(
                 child: Container(
-                  color:CustomTypography.kPrimaryColorJapa500,
+                  color:CustomTypography.kPrimaryColor500,
                 )
               ),
              
@@ -60,7 +60,7 @@ class _SecondScreenOnboardState extends State<SecondScreenOnboard> with SingleTi
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: CustomTypography.kSecondaryColorJapa200,
+      backgroundColor: CustomTypography.kSecondaryColor200,
 
       body: Stack(
             children: [
@@ -118,7 +118,7 @@ class _ThirdScreenOnboardState extends State<ThirdScreenOnboard> with SingleTick
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: CustomTypography.kSecondaryColorJapa200,
+      backgroundColor: CustomTypography.kSecondaryColor200,
 
       body: Stack(
             children: [
@@ -174,7 +174,7 @@ class _FourthScreenOncoardState extends State<FourthScreenOncoard> with SingleTi
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: CustomTypography.kSecondaryColorJapa200,
+      backgroundColor: CustomTypography.kSecondaryColor200,
 
       body:Stack(
             children: [

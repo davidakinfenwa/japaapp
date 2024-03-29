@@ -155,8 +155,8 @@ class _JourneySelectionPageState extends State<JourneySelectionPage> {
           svgImageChecker: false,
           lotties: "magicwand.json",
           itemSpacingWidth: Sizing.kWSpacing10.w,
-          textColor: CustomTypography.kPrimaryColorJapa200,
-          borderColor: CustomTypography.kPrimaryColorJapa200,
+          textColor: CustomTypography.kPrimaryColor300,
+          borderColor: CustomTypography.kPrimaryColor300,
           borderRadius:
               BorderRadius.all(Radius.circular(Sizing.kBorderRadius * 7.r))),
     );
@@ -207,7 +207,7 @@ class _JourneySelectionPageState extends State<JourneySelectionPage> {
     return ItemWithPreffixDropDown(
       title:"Choose Destination Manually",
       preffix: SvgPicture.asset(countrySvg.isEmpty?"assets/svg/nija.svg":countrySvg),
-      hintText: "Select Award Type",
+      hintText: "Select destination country",
       bottomSheet: MyBottomCountrySheet(onItemSelected: (String icon, String value) {
         // Assign the value to the desired controller
         setState(() {

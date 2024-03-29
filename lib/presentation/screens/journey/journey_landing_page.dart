@@ -3,12 +3,14 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:japaapp/business/snapshot/tabscreen_provider.dart';
 import 'package:japaapp/core/constants.dart';
 import 'package:japaapp/core/route/app_router.dart';
 
 import 'package:japaapp/core/util/width_constraints.dart';
 
 import 'package:japaapp/presentation/widget/back_button.dart';
+import 'package:provider/provider.dart';
 
 @RoutePage()
 class JourneyLandingPage extends StatefulWidget {
@@ -19,18 +21,16 @@ class JourneyLandingPage extends StatefulWidget {
 }
 
 class _JourneyLandingPageState extends State<JourneyLandingPage> {
- 
   int selectedMeansOfPayment = -2;
 
   @override
   void initState() {
     super.initState();
-   
   }
-
 
   @override
   Widget build(BuildContext context) {
+    var bottomNavCProvider = Provider.of<TabScreenNotifier>(context);
     return Scaffold(
       body: Stack(
         children: [
@@ -69,6 +69,9 @@ class _JourneyLandingPageState extends State<JourneyLandingPage> {
                               callback: () {
                                 setState(() {
                                   selectedMeansOfPayment = 1;
+                                  Future.delayed(Durations.short3).then(
+                                      (value) => context.router
+                                          .push(const JourneySelectionRoute()));
                                 });
                               }),
                           SizedBox(height: (Sizing.kSizingMultiple).h),
@@ -80,9 +83,8 @@ class _JourneyLandingPageState extends State<JourneyLandingPage> {
                               callback: () {
                                 setState(() {
                                   selectedMeansOfPayment = 2;
-                                  Future.delayed(Durations.short3).then(
-                                      (value) => context.router
-                                          .push(const JourneySelectionRoute()));
+                                  bottomNavCProvider.pageIndex = 1;
+                                  context.router.push( MyProcessTabRoute(nav: "newMigrant"));
                                 });
                               }),
                           SizedBox(
@@ -94,7 +96,6 @@ class _JourneyLandingPageState extends State<JourneyLandingPage> {
                   ),
                 ],
               ),
-           
             ],
           ),
         ],
@@ -171,12 +172,12 @@ class _JourneyLandingPageState extends State<JourneyLandingPage> {
                   SizedBox(
                     width: 180.w,
                     child: Text(title,
-                        style:
-                            Theme.of(context).textTheme.titleMedium?.copyWith(
-                                // color: Colors.black,
+                        style: Theme.of(context)
+                            .textTheme
+                            .titleMedium
+                            ?.copyWith(
                                 color: Color(0xFF344054),
                                 fontSize: 16.sp,
-                                //fontStyle: FontStyle.normal,
                                 fontWeight: FontWeight.w700),
                         overflow: TextOverflow.ellipsis),
                   ),

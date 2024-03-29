@@ -115,7 +115,7 @@ class _AccountBasicInfoPageState extends State<AccountBasicInfoPage> {
       otherWidget: Container(
         padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
         decoration: BoxDecoration(
-          color: CustomTypography.kPrimaryColorJapa200,
+          color: CustomTypography.kPrimaryColor200,
           borderRadius:
               BorderRadius.all(Radius.circular(Sizing.kBorderRadius * 2.r)),
         ),
@@ -479,7 +479,7 @@ class _AccountBasicInfoPageState extends State<AccountBasicInfoPage> {
               },
               label: 'Next',
               isLoadingMode: false,
-              backgroundColor: CustomTypography.kPrimaryColorJapa200,
+              backgroundColor: CustomTypography.kPrimaryColor200,
               textColor: CustomTypography.kWhiteColor,
               borderRadius: BorderRadius.all(
                   Radius.circular(Sizing.kBorderRadius * 7.r))),

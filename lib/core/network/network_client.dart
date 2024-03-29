@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
-import 'package:japaapp/core/constants.dart';
 
+import 'package:japaapp/core/constants.dart';
 
 
 //TODO: Change the base API HERE

@@ -1,7 +1,7 @@
-import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:flutter/foundation.dart';
-import 'package:japaapp/core/exceptions/exceptions.dart';
 
+import 'package:flutter/foundation.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:japaapp/core/exceptions/exceptions.dart';
 
 
 part 'exception_type.freezed.dart';

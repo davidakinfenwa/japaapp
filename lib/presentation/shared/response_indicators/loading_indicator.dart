@@ -40,7 +40,7 @@ class LoadingIndicatorType {
                 : null,
         child: CircularProgressIndicator(
           strokeWidth: Sizing.kProgressIndicatorStrokeWidth,
-          color: CustomTypography.kSecondaryColor,
+          color: CustomTypography.kSecondaryColor300,
         ),
       ),
     );
@@ -49,7 +49,7 @@ class LoadingIndicatorType {
   factory LoadingIndicatorType.linearProgressIndicator() {
     return LoadingIndicatorType._(
       child: LinearProgressIndicator(
-        color: CustomTypography.kSecondaryColor,
+        color: CustomTypography.kSecondaryColor300,
         backgroundColor: CustomTypography.kTransparentColor,
       ),
     );

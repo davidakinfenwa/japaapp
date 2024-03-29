@@ -36,7 +36,7 @@ class SnackBarUtil {
           children: <Widget>[
             Icon(
               Icons.error_outline,
-              color: CustomTypography.kSecondaryColor,
+              color: CustomTypography.kSecondaryColor300,
             ),
             SizedBox(width: Sizing.kSizingMultiple.h),
             Expanded(

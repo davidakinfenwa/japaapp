@@ -394,7 +394,7 @@ class _AccountEducationPagesState extends State<AccountEducationPages> {
                             label: 'Upload',
                             isLoadingMode: false,
                             backgroundColor:
-                                CustomTypography.kPrimaryColorJapa200,
+                                CustomTypography.kPrimaryColor200,
                             textColor: CustomTypography.kWhiteColor,
                             borderRadius: BorderRadius.all(
                                 Radius.circular(Sizing.kBorderRadius * 7.r))),
@@ -708,7 +708,7 @@ class _AccountEducationPagesState extends State<AccountEducationPages> {
               },
               label: 'Next',
               isLoadingMode: false,
-              backgroundColor: CustomTypography.kPrimaryColorJapa200,
+              backgroundColor: CustomTypography.kPrimaryColor200,
               textColor: CustomTypography.kWhiteColor,
               borderRadius: BorderRadius.all(
                   Radius.circular(Sizing.kBorderRadius * 7.r))),

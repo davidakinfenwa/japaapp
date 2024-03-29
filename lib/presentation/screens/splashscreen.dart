@@ -42,7 +42,7 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: CustomTypography.kPrimaryColornew,
+        backgroundColor: CustomTypography.kPrimaryColor200,
         body: Column(
           children: [
             Expanded(

@@ -183,7 +183,7 @@ class _EmailVerificationPageState extends State<EmailVerificationPage> {
               onTap: () {context.router.push(const OTPVerificationRoute());},
               label: 'Get Started',
               isLoadingMode: false,
-              backgroundColor: CustomTypography.kPrimaryColorJapa200,
+              backgroundColor: CustomTypography.kPrimaryColor300,
               textColor: CustomTypography.kWhiteColor,
               borderRadius: BorderRadius.all(
                   Radius.circular(Sizing.kBorderRadius * 7.r))),

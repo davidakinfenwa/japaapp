@@ -8,8 +8,7 @@ import 'package:japaapp/domain/model/models.dart';
 import 'package:japaapp/domain/repositories/repositories.dart';
 
 
-class SigninFormCubit
-    extends Cubit<BlocState<Failure<ExceptionMessage>, UserInfoModel>> {
+class SigninFormCubit extends Cubit<BlocState<Failure<ExceptionMessage>, UserInfoModel>> {
   final AuthRepository _repository;
   final AuthSnapshotCache _snapshotCache;
 

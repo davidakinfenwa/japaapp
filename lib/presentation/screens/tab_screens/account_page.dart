@@ -115,7 +115,7 @@ class _AccountTabState extends State<AccountTab> {
                 //   return Colors.green;
                 // }),
                 splashRadius: 0.2,
-                activeColor: CustomTypography.kPrimaryColorJapa500,
+                activeColor: CustomTypography.kPrimaryColor200,
                 inactiveThumbColor: Color(0xffA7A9A7),
                 inactiveTrackColor: Color.fromARGB(255, 222, 225, 222),
                 

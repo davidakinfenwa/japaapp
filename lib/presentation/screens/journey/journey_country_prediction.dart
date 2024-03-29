@@ -161,7 +161,7 @@ class _JourneyCountryPredictedPageState
               },
               label: 'Continue',
               isLoadingMode: false,
-              backgroundColor: CustomTypography.kPrimaryColorJapa200,
+              backgroundColor: CustomTypography.kPrimaryColor300,
               textColor: CustomTypography.kWhiteColor,
               borderRadius: BorderRadius.all(
                   Radius.circular(Sizing.kBorderRadius * 7.r))),
@@ -183,8 +183,8 @@ class _JourneyCountryPredictedPageState
               },
               label: label,
               isLoadingMode: false,
-               textColor: CustomTypography.kPrimaryColorJapa200,
-              borderColor: CustomTypography.kPrimaryColorJapa200,
+               textColor: CustomTypography.kPrimaryColor300,
+              borderColor: CustomTypography.kPrimaryColor300,
               borderRadius: BorderRadius.all(
                   Radius.circular(Sizing.kBorderRadius * 7.r))),
         ),

@@ -111,10 +111,30 @@ abstract class _$AppRouter extends RootStackRouter {
         child: const LandingPage(),
       );
     },
+    MyProcessTabRoute.name: (routeData) {
+      final args = routeData.argsAs<MyProcessTabRouteArgs>();
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: MyProcessTabScreen(
+          key: args.key,
+          nav: args.nav,
+        ),
+      );
+    },
     OTPVerificationRoute.name: (routeData) {
       return AutoRoutePage<dynamic>(
         routeData: routeData,
         child: const OTPVerificationPage(),
+      );
+    },
+    SelectedServicesRoute.name: (routeData) {
+      final args = routeData.argsAs<SelectedServicesRouteArgs>();
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: SelectedServicesScreen(
+          key: args.key,
+          selectedServices: args.selectedServices,
+        ),
       );
     },
     SignInRoute.name: (routeData) {
@@ -369,6 +389,44 @@ class LandingRoute extends PageRouteInfo<void> {
 }
 
 /// generated route for
+/// [MyProcessTabScreen]
+class MyProcessTabRoute extends PageRouteInfo<MyProcessTabRouteArgs> {
+  MyProcessTabRoute({
+    Key? key,
+    required String nav,
+    List<PageRouteInfo>? children,
+  }) : super(
+          MyProcessTabRoute.name,
+          args: MyProcessTabRouteArgs(
+            key: key,
+            nav: nav,
+          ),
+          initialChildren: children,
+        );
+
+  static const String name = 'MyProcessTabRoute';
+
+  static const PageInfo<MyProcessTabRouteArgs> page =
+      PageInfo<MyProcessTabRouteArgs>(name);
+}
+
+class MyProcessTabRouteArgs {
+  const MyProcessTabRouteArgs({
+    this.key,
+    required this.nav,
+  });
+
+  final Key? key;
+
+  final String nav;
+
+  @override
+  String toString() {
+    return 'MyProcessTabRouteArgs{key: $key, nav: $nav}';
+  }
+}
+
+/// generated route for
 /// [OTPVerificationPage]
 class OTPVerificationRoute extends PageRouteInfo<void> {
   const OTPVerificationRoute({List<PageRouteInfo>? children})
@@ -380,6 +438,44 @@ class OTPVerificationRoute extends PageRouteInfo<void> {
   static const String name = 'OTPVerificationRoute';
 
   static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
+/// [SelectedServicesScreen]
+class SelectedServicesRoute extends PageRouteInfo<SelectedServicesRouteArgs> {
+  SelectedServicesRoute({
+    Key? key,
+    required List<dynamic> selectedServices,
+    List<PageRouteInfo>? children,
+  }) : super(
+          SelectedServicesRoute.name,
+          args: SelectedServicesRouteArgs(
+            key: key,
+            selectedServices: selectedServices,
+          ),
+          initialChildren: children,
+        );
+
+  static const String name = 'SelectedServicesRoute';
+
+  static const PageInfo<SelectedServicesRouteArgs> page =
+      PageInfo<SelectedServicesRouteArgs>(name);
+}
+
+class SelectedServicesRouteArgs {
+  const SelectedServicesRouteArgs({
+    this.key,
+    required this.selectedServices,
+  });
+
+  final Key? key;
+
+  final List<dynamic> selectedServices;
+
+  @override
+  String toString() {
+    return 'SelectedServicesRouteArgs{key: $key, selectedServices: $selectedServices}';
+  }
 }
 
 /// generated route for

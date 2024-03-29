@@ -7,32 +7,76 @@ import 'package:japaapp/core/util/color_util.dart';
 // ignore: avoid_classes_with_only_static_members
 class CustomTypography {
   // static final kPrimaryColor = ColorUtil.colorFromHex('563b96');
-  static final kPrimaryColor = ColorUtil.colorFromHex('#29BFC0');
-  static final kPrimaryColorJapa500 = ColorUtil.colorFromHex('#0F2B37');
-  static final kPrimaryColorJapa200 = ColorUtil.colorFromHex('#3F6576');
-  static final kPrimaryColornew = ColorUtil.colorFromHex('#29BFC0');
-  static final kPrimaryColor10 = kPrimaryColor.withOpacity(.10);
-  static final kPrimaryColor50 = kPrimaryColor.withOpacity(.50);
+  static final kPrimaryColor50 = ColorUtil.colorFromHex('#e8edef');
+  static final kPrimaryColor75 = ColorUtil.colorFromHex('#a0b3bb');
+  static final kPrimaryColor100= ColorUtil.colorFromHex('#79949f');
+  static final kPrimaryColor200 = ColorUtil.colorFromHex('#3f6576');
+  static final kPrimaryColor300 = ColorUtil.colorFromHex('#18465a');
+  static final kPrimaryColor400 = ColorUtil.colorFromHex('#11313f');
+  static final kPrimaryColor500 = ColorUtil.colorFromHex('#0f2b37');
+ 
+  // static final kPrimaryColor10 = kPrimaryColor.withOpacity(.10);
+  // static final kPrimaryColor50 = kPrimaryColor.withOpacity(.50);
 
-  static final kSecondaryColor = ColorUtil.colorFromHex('#F1B33A');
-  static final kSecondaryColorJapa200 = ColorUtil.colorFromHex('#aeccde');
-  static final kSecondaryColorJapa500 = ColorUtil.colorFromHex('#9ec1d7');
-  static final kSecondaryColornew = ColorUtil.colorFromHex('#F1B33A');
+  static final kSecondaryColor50 = ColorUtil.colorFromHex('#f5f9fb');
+  static final kSecondaryColor75 = ColorUtil.colorFromHex('#d7e6ef');
+  static final kSecondaryColor100 = ColorUtil.colorFromHex('#c7dbe8');
+  static final kSecondaryColor200 = ColorUtil.colorFromHex('#aeccde');
+  static final kSecondaryColor300 = ColorUtil.colorFromHex('#9ec1d7');
+  static final kSecondaryColor400 = ColorUtil.colorFromHex('#6f8797');
+  static final kSecondaryColor500 = ColorUtil.colorFromHex('#607683');
   // static final kSecondaryColor10 = kSecondaryColor.withOpacity(.10);
   // static final kSecondaryColor50 = kSecondaryColor.withOpacity(.50);
+
+  //TETIARY COLOR
+  static final kTetiaryColor50 = ColorUtil.colorFromHex('#fdfefe');
+  static final kTetiaryColor75 = ColorUtil.colorFromHex('#f8f9f9');
+  static final kTetiaryColor100 = ColorUtil.colorFromHex('#f5f6f7');
+  static final kTetiaryColor200 = ColorUtil.colorFromHex('#f1f3f3');
+  static final kTetiaryColor300 = ColorUtil.colorFromHex('#eef0f1');
+  static final kTetiaryColor400 = ColorUtil.colorFromHex('#a7a8a9');
+  static final kTetiaryColor500 = ColorUtil.colorFromHex('#919293');
+
+
+    //INFO COLOR
+  static final kInfoColor50 = ColorUtil.colorFromHex('#f4faff');
+  static final kInfoColor75 = ColorUtil.colorFromHex('#d2ecff');
+  static final kInfoColor100 = ColorUtil.colorFromHex('#bfe4ff');
+  static final kInfoColor200 = ColorUtil.colorFromHex('#a4d8ff');
+  static final kInfoColor300 = ColorUtil.colorFromHex('#91d0ff');
+  static final kInfoColor400 = ColorUtil.colorFromHex('#6692b3');
+  static final kInfoColor500 = ColorUtil.colorFromHex('#587f9c');
 
   //ALERT COLOR
   static final kWarningColor = ColorUtil.colorFromHex('#FACC15');
   static final kWarningColor10 = kWarningColor.withOpacity(.10);
-  static final kWarningColor50 = kWarningColor.withOpacity(.50);
+  //static final kWarningColor50 = kWarningColor.withOpacity(.50);
 
-  static final kSuccessColor = ColorUtil.colorFromHex('#00C566');
-  static final kSuccessColor10 = kSuccessColor.withOpacity(.10);
-  static final kSuccessColor50 = kSuccessColor.withOpacity(.50);
+//SUCCESS COLOR
+  static final kSuccessColor50 = ColorUtil.colorFromHex('#eaf3ef');
+  static final kSuccessColor75 = ColorUtil.colorFromHex('#a7cdbb');
+  static final kSuccessColor100 = ColorUtil.colorFromHex('#83b89f');
+  static final kSuccessColor200 = ColorUtil.colorFromHex('#4d9976');
+  static final kSuccessColor300 = ColorUtil.colorFromHex('#29845a');
+  static final kSuccessColor400 = ColorUtil.colorFromHex('#1d5c3f');
+  static final kSuccessColor500 = ColorUtil.colorFromHex('#195137');
 
-  static final kErrorColor = ColorUtil.colorFromHex('#0A113C');
-  static final kErrorColor10 = kErrorColor.withOpacity(.10);
-  static final kErrorColor50 = kErrorColor.withOpacity(.50);
+  static final kErrorColor50 = ColorUtil.colorFromHex('#fce8e6');
+  static final kErrorColor75 = ColorUtil.colorFromHex('#f4a296');
+  static final kErrorColor100 = ColorUtil.colorFromHex('#f07b6b');
+  static final kErrorColor200 = ColorUtil.colorFromHex('#e9432b');
+  static final kErrorColor300 = ColorUtil.colorFromHex('#e51c00');
+  static final kErrorColor400 = ColorUtil.colorFromHex('#a01400');
+  static final kErrorColor500 = ColorUtil.colorFromHex('#8c1100');
+
+
+  static final kWarningColor50 = ColorUtil.colorFromHex('#fff8e6');
+  static final kWarningColor75 = ColorUtil.colorFromHex('#ffe296');
+  static final kWarningColor100 = ColorUtil.colorFromHex('#ffd66b');
+  static final kWarningColor200 = ColorUtil.colorFromHex('#ffc42b');
+  static final kWarningColor300 = ColorUtil.colorFromHex('#ffb800');
+  static final kWarningColor400 = ColorUtil.colorFromHex('#b38100');
+  static final kWarningColor500 = ColorUtil.colorFromHex('#9c7000');
 
   static const kGreyColor = Colors.grey;
   
@@ -79,10 +123,10 @@ class CustomTypography {
 
   static final ThemeData _defaultTheme = ThemeData(
     fontFamily: fontName2,
-    primaryColor: kPrimaryColor,
+    primaryColor: kPrimaryColor300,
     colorScheme:
-        ColorScheme.fromSwatch().copyWith(secondary: kSecondaryColornew),
-    textSelectionTheme: TextSelectionThemeData(cursorColor: kPrimaryColornew),
+        ColorScheme.fromSwatch().copyWith(secondary: kSecondaryColor300),
+    textSelectionTheme: TextSelectionThemeData(cursorColor: kPrimaryColor300),
     visualDensity: VisualDensity.adaptivePlatformDensity,
     iconTheme: IconThemeData(size: 24.0.sp), 
     

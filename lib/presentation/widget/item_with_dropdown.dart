@@ -116,7 +116,7 @@ class _ItemWithPreffixDropDownState extends State<ItemWithPreffixDropDown> {
           height: Sizing.kHSpacing8 / 2,
         ),
         FormFieldInputPreffix(
-         contentPadding: EdgeInsets.symmetric(vertical: 14.0, horizontal: 12.0),
+         contentPadding: EdgeInsets.symmetric(vertical: 14.0.h, horizontal: 12.0.w),
           prefixIcon:widget.preffix ,
           readOnly: true,
           hint: widget.hintText,

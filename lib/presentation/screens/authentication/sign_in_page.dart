@@ -91,6 +91,7 @@ class _SignInPageState extends State<SignInPage> {
               ],
             ),
             Column(
+              
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 Padding(
@@ -185,7 +186,7 @@ class _SignInPageState extends State<SignInPage> {
           textInputType: TextInputType.visiblePassword,
           validate: (value) {
             return _passwordTextFieldController.text.isEmpty
-                ? 'Confirm email is required!'
+                ? 'Password is required!'
                 : null;
           },
         )
@@ -203,7 +204,7 @@ class _SignInPageState extends State<SignInPage> {
                 },
               label: 'Login',
               isLoadingMode: false,
-              backgroundColor: CustomTypography.kPrimaryColorJapa200,
+              backgroundColor: CustomTypography.kPrimaryColor300,
               textColor: CustomTypography.kWhiteColor,
               borderRadius: BorderRadius.all(
                   Radius.circular(Sizing.kBorderRadius * 7.r))),

@@ -113,19 +113,36 @@ class _JourneyVisaPredictedPageState extends State<JourneyVisaPredictedPage> {
   }
 
   Widget _buildTopSection() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        SizedBox(
-          //width: MediaQuery.sizeOf(context).width * 0.75.w,
-          child: Image.asset(
-            'assets/images/countrycan.png',
-            fit: BoxFit.cover,
-            width: 100,
-            height: 100,
+    return SizedBox(
+      width: MediaQuery.sizeOf(context).width,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          SizedBox(
+            width: MediaQuery.sizeOf(context).width,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset(
+                  'assets/images/countrycan.png',
+                  fit: BoxFit.cover,
+                  width: 100,
+                  height: 100,
+                ),
+                SizedBox(width: Sizing.kWSpacing50,),
+      
+                Image.asset(
+                  'assets/images/visatype.png',
+                  fit: BoxFit.cover,
+                  width: 100,
+                  height: 100,
+                ),
+              ],
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -171,7 +188,7 @@ class _JourneyVisaPredictedPageState extends State<JourneyVisaPredictedPage> {
               },
               label: 'Begin my process',
               isLoadingMode: false,
-              backgroundColor: CustomTypography.kPrimaryColorJapa200,
+              backgroundColor: CustomTypography.kPrimaryColor300,
               textColor: CustomTypography.kWhiteColor,
               borderRadius: BorderRadius.all(
                   Radius.circular(Sizing.kBorderRadius * 7.r))),
@@ -194,8 +211,8 @@ class _JourneyVisaPredictedPageState extends State<JourneyVisaPredictedPage> {
               },
               label: label,
               isLoadingMode: false,
-              textColor: CustomTypography.kPrimaryColorJapa200,
-              borderColor: CustomTypography.kPrimaryColorJapa200,
+              textColor: CustomTypography.kPrimaryColor300,
+              borderColor: CustomTypography.kPrimaryColor300,
               borderRadius: BorderRadius.all(
                   Radius.circular(Sizing.kBorderRadius * 7.r))),
         ),

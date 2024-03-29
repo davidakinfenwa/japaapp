@@ -27,7 +27,7 @@ class Sizing {
   static final kStepperLineWidth = 3.0.h;
   static const kTopBarMargin = kSizingMultiple * 4.0;
   static const kLogoDiameter = 150.0;
-  static const kBorderRadius = 6.0;
+  static const kBorderRadius = 8.0;
   static const kAvatarRadius = kSizingMultiple * 3.5;
   static const kAvatarRadiusBig = kSizingMultiple * 6.25;
   static const kLocalPhoneNumberMaxLength = 10;

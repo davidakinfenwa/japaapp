@@ -29,7 +29,7 @@ class _StartScreenState extends State<StartScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: CustomTypography.kSecondaryColorJapa200,
+      backgroundColor: CustomTypography.kSecondaryColor200,
       body: Stack(
         children: [
           PageView.builder(
@@ -61,7 +61,7 @@ class _StartScreenState extends State<StartScreen> {
         borderRadius: const BorderRadius.all(
           Radius.circular(Sizing.kBorderRadius),
         ),
-        color: CustomTypography.kSecondaryColorJapa200,
+        color: CustomTypography.kSecondaryColor200,
       ),
       margin: const EdgeInsets.only(right: 5),
       height: 10,
@@ -97,7 +97,7 @@ class _StartScreenState extends State<StartScreen> {
                         );
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: CustomTypography.kPrimaryColorJapa200,
+                        backgroundColor: CustomTypography.kPrimaryColor200,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(50),
                         ),
@@ -130,7 +130,7 @@ class _StartScreenState extends State<StartScreen> {
                         );
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: CustomTypography.kPrimaryColorJapa200,
+                        backgroundColor: CustomTypography.kPrimaryColor200,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(50),
                         ),
@@ -156,7 +156,7 @@ class _StartScreenState extends State<StartScreen> {
                         context.router.replace(const LandingRoute());
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: CustomTypography.kPrimaryColorJapa200,
+                        backgroundColor: CustomTypography.kPrimaryColor200,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(50),
                         ),

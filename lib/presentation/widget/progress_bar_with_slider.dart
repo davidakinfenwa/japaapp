@@ -76,7 +76,7 @@ class _RangeSlideState extends State<RangeSlide> {
       //     ),
           Expanded(
             child: RangeSlider(
-              activeColor: CustomTypography.kPrimaryColorJapa200,
+              activeColor: CustomTypography.kPrimaryColor200,
               inactiveColor: Color(0xFFD5D5D5),
               divisions: 9,
               min: 10,

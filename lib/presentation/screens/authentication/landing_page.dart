@@ -111,8 +111,8 @@ class _LandingPageState extends State<LandingPage> {
           itemSpacingWidth: Sizing.kWSpacing10.w,
           width: MediaQuery.sizeOf(context).width / 2.w,
           // backgroundColor: CustomTypography.kSecondaryColornew,
-          textColor: CustomTypography.kPrimaryColorJapa200,
-          borderColor: CustomTypography.kPrimaryColorJapa200,
+          textColor: CustomTypography.kPrimaryColor300,
+          borderColor: CustomTypography.kPrimaryColor300,
           borderRadius:
               BorderRadius.all(Radius.circular(Sizing.kBorderRadius * 7.r))),
     );
@@ -126,7 +126,7 @@ class _LandingPageState extends State<LandingPage> {
               onTap: () {context.router.push(const EmailVerificationRoute());},
               label: 'Sign Up',
               isLoadingMode: false,
-              backgroundColor: CustomTypography.kPrimaryColorJapa200,
+              backgroundColor: CustomTypography.kPrimaryColor300,
               
               // backgroundColor: CustomTypography.kSecondaryColornew,
               textColor: CustomTypography.kWhiteColor,
@@ -145,8 +145,8 @@ class _LandingPageState extends State<LandingPage> {
               svgImage: "Play.svg",
               // itemSpacingWidth: Sizing.kWSpacing10.w,
 
-              textColor: CustomTypography.kPrimaryColorJapa200,
-              borderColor: CustomTypography.kPrimaryColorJapa200,
+              textColor: CustomTypography.kPrimaryColor300,
+              borderColor: CustomTypography.kPrimaryColor300,
               borderRadius: BorderRadius.all(
                   Radius.circular(Sizing.kBorderRadius * 7.r))),
         ),

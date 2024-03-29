@@ -305,7 +305,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
               onTap: () {context.router.replace(const TabRoute());},
               label: 'Create Account',
               isLoadingMode: false,
-              backgroundColor: CustomTypography.kPrimaryColorJapa200,
+              backgroundColor: CustomTypography.kPrimaryColor300,
               textColor: CustomTypography.kWhiteColor,
               borderRadius: BorderRadius.all(
                   Radius.circular(Sizing.kBorderRadius * 7.r))),

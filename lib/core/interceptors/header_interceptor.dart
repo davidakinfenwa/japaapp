@@ -1,6 +1,8 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:japaapp/data/local_data/local_storage.dart';
+
 
 class HeaderInterceptors extends Interceptor {
   @override
@@ -11,6 +13,7 @@ class HeaderInterceptors extends Interceptor {
       HttpHeaders.contentTypeHeader: 'application/json',
       HttpHeaders.userAgentHeader: 'PostmanRuntime/7.34.0',
       HttpHeaders.acceptHeader:'application/json',
+      HttpHeaders.authorizationHeader:'Bearer Bearer ${await TokenService().retrieveToken()}',
       
       
     } );

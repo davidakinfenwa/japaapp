@@ -622,7 +622,7 @@ class ButtonType<T> {
           final _elevation =
               elevated ?? false ? Sizing.kButtonElevation : Sizing.kZeroValue;
 
-          final _activeColor = CustomTypography.kSecondaryColor;
+          final _activeColor = CustomTypography.kSecondaryColor300;
 
           final _borderRadius = BorderRadius.circular(Sizing.kBorderRadius);
 
