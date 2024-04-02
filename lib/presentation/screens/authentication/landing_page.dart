@@ -43,13 +43,7 @@ class _LandingPageState extends State<LandingPage> {
                       _buildTopSection(),
                       SizedBox(height: (Sizing.kSizingMultiple).h),
                       _buildSeeHowItWorksButton(),
-                      //SizedBox(height: (MediaQuery.sizeOf(context).height*0.1).h),
-                  
-                      // SizedBox(height: (Sizing.kSizingMultiple * 2).h),
-                      // _buildSignInButton(),
-                      // SizedBox(height: (Sizing.kSizingMultiple * 2).h),
-                      // _buildAuthModeSwitcherSection(),
-                      // SizedBox(height: (Sizing.kSizingMultiple * 3).h),
+                    
                     ],
                   ),
                 ),

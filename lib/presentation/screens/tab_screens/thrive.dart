@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -21,7 +22,7 @@ class _ThriveScreenState extends State<ThriveScreen>
   @override
   void initState() {
     setState(() {
-      _tabController = TabController(length: 3, vsync: this);
+      _tabController = TabController(length: 4, vsync: this);
       _tabController.addListener(_handleTabChange);
       _searchTextFieldController = TextEditingController();
     });
@@ -29,14 +30,13 @@ class _ThriveScreenState extends State<ThriveScreen>
     super.initState();
   }
 
-  
   void _handleTabChange() {
     setState(() {
       // This will rebuild the UI when the tab index changes
     });
   }
 
-    @override
+  @override
   void dispose() {
     _tabController.removeListener(_handleTabChange);
     _tabController.dispose();
@@ -47,18 +47,22 @@ class _ThriveScreenState extends State<ThriveScreen>
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 3,
+      length: 4,
       child: Scaffold(
           body: SafeArea(
               child: WidthConstraint(context).withHorizontalSymmetricalPadding(
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(height: (Sizing.kSizingMultiple * 2).h),
           _buildTabHeaderSection(),
           SizedBox(height: (Sizing.kSizingMultiple * 2).h),
-          _tabController.index==2? _buildExploreSection():const SizedBox.shrink(),
-          SizedBox(height: _tabController.index==2? (Sizing.kSizingMultiple).h :0),
+          _tabController.index == 2
+              ? _buildExploreSection()
+              : const SizedBox.shrink(),
+          SizedBox(
+              height:
+                  _tabController.index == 2 ? (Sizing.kSizingMultiple).h : 0),
 
           _buildSearchField(),
           // SizedBox(height: _tabController.index==2? (Sizing.kSizingMultiple).h :0),
@@ -130,7 +134,7 @@ class _ThriveScreenState extends State<ThriveScreen>
             indicator: BoxDecoration(
                 color: CustomTypography.kPrimaryColor300,
                 borderRadius: BorderRadius.circular(Sizing.kBorderRadius.r)),
-            tabs: ['Communities', 'Job feed', 'House']
+            tabs: ['Communities', 'Job feed', 'Housing','Mentorship']
                 .map((e) => Container(
                       //color: Colors.red,
                       width: MediaQuery.sizeOf(context).width,
@@ -209,7 +213,8 @@ class _ThriveScreenState extends State<ThriveScreen>
                     data['title'], data['image'], data['count']);
               }),
           _buildJobListSection(),
-        _buildHouseSection()
+          _buildHouseSection(),
+          _buildHouseSection(),
           // GridView.builder(
           //     shrinkWrap: true,
           //     physics: const BouncingScrollPhysics(),
@@ -234,7 +239,8 @@ class _ThriveScreenState extends State<ThriveScreen>
   Widget _buildCommunityList(String title, String img, String count) {
     return Container(
       width: MediaQuery.sizeOf(context).width.w,
-      padding: EdgeInsets.only(left: 0.w),
+      //padding: EdgeInsets.only(left: 0.w,bottom: 10),
+      //color: Colors.red,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -321,7 +327,7 @@ class _ThriveScreenState extends State<ThriveScreen>
         'location': "Portland, Illinois",
         'dateCreated': "1 wek ago"
       },
-       {
+      {
         "image": "assets/images/dell.png",
         "job_title": "Senior IT Support Engineer",
         "company": 'Dell',
@@ -335,7 +341,7 @@ class _ThriveScreenState extends State<ThriveScreen>
         'location': "Portland, Illinois",
         'dateCreated': "1 wek ago"
       },
-       {
+      {
         "image": "assets/images/dell.png",
         "job_title": "Senior IT Support Engineer",
         "company": 'Dell',
@@ -349,7 +355,7 @@ class _ThriveScreenState extends State<ThriveScreen>
         'location': "Portland, Illinois",
         'dateCreated': "1 wek ago"
       },
-       {
+      {
         "image": "assets/images/dell.png",
         "job_title": "Senior IT Support Engineer",
         "company": 'Dell',
@@ -455,7 +461,7 @@ class _ThriveScreenState extends State<ThriveScreen>
                 borderRadius: BorderRadius.circular(8),
                 child: Image.asset(
                   img,
-                  width:50,
+                  width: 50,
                   fit: BoxFit.cover,
                 )),
             SizedBox(
@@ -507,38 +513,331 @@ class _ThriveScreenState extends State<ThriveScreen>
     );
   }
 
-
-  Widget _buildExploreSection(){
+  Widget _buildExploreSection() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        Text("Explore",style: Theme.of(context).textTheme.titleMedium!.copyWith(),),
+        Text(
+          "Explore",
+          style: Theme.of(context).textTheme.titleMedium!.copyWith(),
+        ),
       ],
     );
   }
 
-  Widget _buildHouseSection(){
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-      _buildPopularPlaceSection()
-    ],);
+  Widget _buildHouseSection() {
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          _buildPopularPlaceListSection(),
+          _buildListingNearYouSection()
+        ],
+      ),
+    );
   }
 
-    Widget _buildPopularPlaceSection(){
+  Widget _buildPopularPlaceSection() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        Text("Popular Places",style: Theme.of(context).textTheme.titleMedium!.copyWith(),),
+        Text(
+          "Popular Places",
+          style: Theme.of(context).textTheme.titleMedium!.copyWith(),
+        ),
       ],
     );
   }
 
-  
+  Widget _buildPopularPlaceListSection() {
+    final List<Map<String, dynamic>> items = [
+      {
+        "image": "assets/images/com12.png",
+        "count": "45 People",
+        "title": 'UK net migration in 2022 revised upwards to 745,000'
+      },
+      // {"image": "assets/svgs/squarepassword.svg", "title": 'Locked Savings'},
+      {
+        "image": "assets/images/com13.png",
+        "count": "20 People",
+        "title": 'Immigration is rocketing. Thats brilliant news for Britain.'
+      },
+      {
+        "image": "assets/images/com14.png",
+        "count": "10 People",
+        "title":
+            'Immigration Series: All about how to get naturalised in Germany'
+      },
+      {
+        "image": "assets/images/com12.png",
+        "count": "45 People",
+        "title":
+            'Immigration Series: All about how to get naturalised in Germany'
+      },
+      // {"image": "assets/svgs/squarepassword.svg", "title": 'Locked Savings'},
+      {
+        "image": "assets/images/com14.png",
+        "count": "20 People",
+        "title":
+            'Immigration Series: All about how to get naturalised in Germany'
+      },
+      {
+        "image": "assets/images/com13.png",
+        "count": "10 People",
+        "title":
+            'Immigration Series: All about how to get naturalised in Germany'
+      },
+    ];
+    return SizedBox(
+      child: Container(
+        //height: 200,
+        padding: const EdgeInsets.all(0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                _buildPopularPlaceSection(),
+                // Row(
+                //   children: [
+                //     InkWell(
+                //         splashColor: Colors.transparent,
+                //         highlightColor: Colors.transparent,
+                //         onTap: () {},
+                //         child: Text(
+                //           "Read More",
+                //           style:
+                //               Theme.of(context).textTheme.titleSmall?.copyWith(
+                //                     color: Color(0xFF595959),
+                //                     height: 0.9,
+                //                   ),
+                //         )),
+                //     Image.asset(
+                //       'assets/images/forward_arrow.png',
+                //       width: (Sizing.kSizingMultiple * 2).w,
+                //       height: (Sizing.kSizingMultiple * 2).h,
+                //     ),
+                //   ],
+                // ),
+              ],
+            ),
+            SizedBox(
+              height: Sizing.kHSpacing10,
+            ),
+            SizedBox(
+              height: MediaQuery.sizeOf(context).height * 0.08.h,
+              width: MediaQuery.sizeOf(context).width.w,
+              child: ListView.builder(
+                // padEnds: false,
+                itemCount: items.length,
+                padding: EdgeInsets.fromLTRB(0, 0, 30.w, 0),
+                shrinkWrap: true,
+                dragStartBehavior: DragStartBehavior.start,
+                scrollDirection: Axis.horizontal,
+                physics: const BouncingScrollPhysics(),
 
+                itemBuilder: (context, index) {
+                  return Container(
+                    // width: MediaQuery.sizeOf(context).width * 0.6,
+                    margin: EdgeInsets.only(right: Sizing.kSizingMultiple.w),
+                    padding: EdgeInsets.fromLTRB(
+                        Sizing.kSizingMultiple.w,
+                        Sizing.kSizingMultiple.h,
+                        Sizing.kWSpacing35.w,
+                        Sizing.kSizingMultiple.h),
+                    clipBehavior: Clip.antiAlias,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFF8F8F8),
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(10),
+                          child: Container(
+                            width: 60.w,
+                            height: 42.h,
+                            decoration: const BoxDecoration(
+                              image: DecorationImage(
+                                image: AssetImage('assets/images/house1.png'),
+                                fit: BoxFit.fill,
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          width: Sizing.kSizingMultiple.w,
+                        ),
+// ---
+                        Padding(
+                          padding: EdgeInsets.only(
+                              top: Sizing.kSizingMultiple / 2.h),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Ikeja, Lagos',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .titleMedium
+                                    ?.copyWith(
+                                      //color: Color(0xFF607683),
+                                      color: CustomTypography.kBlackColor,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                              ),
+                              Text(
+                                '43 properties',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .titleSmall
+                                    ?.copyWith(
+                                      //color: Color(0xFF607683),
+                                      //color: CustomTypography.kBlackColor,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                              ),
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
+                  );
+                },
+              ),
+            ),
+            SizedBox(height: (Sizing.kSizingMultiple * 2.5).h),
+          ],
+        ),
+      ),
+    );
+  }
 
+  Widget _buildListingNearYouTitleSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        Text(
+          "Listing near you",
+          style: Theme.of(context).textTheme.titleMedium!.copyWith(),
+        ),
+      ],
+    );
+  }
 
+  Widget _buildListingNearYouSection() {
+    final List<Map<String, dynamic>> items = [
+      {
+        "image": "assets/images/com12.png",
+        "count": "45 People",
+        "title": 'UK net migration in 2022 revised upwards to 745,000'
+      },
+      // {"image": "assets/svgs/squarepassword.svg", "title": 'Locked Savings'},
+      {
+        "image": "assets/images/com13.png",
+        "count": "20 People",
+        "title": 'Immigration is rocketing. Thats brilliant news for Britain.'
+      },
+      {
+        "image": "assets/images/com14.png",
+        "count": "10 People",
+        "title":
+            'Immigration Series: All about how to get naturalised in Germany'
+      },
+      {
+        "image": "assets/images/com12.png",
+        "count": "45 People",
+        "title":
+            'Immigration Series: All about how to get naturalised in Germany'
+      },
+      // {"image": "assets/svgs/squarepassword.svg", "title": 'Locked Savings'},
+      {
+        "image": "assets/images/com14.png",
+        "count": "20 People",
+        "title":
+            'Immigration Series: All about how to get naturalised in Germany'
+      },
+      {
+        "image": "assets/images/com13.png",
+        "count": "10 People",
+        "title":
+            'Immigration Series: All about how to get naturalised in Germany'
+      },
+    ];
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            _buildListingNearYouTitleSection(),
+            // Row(
+            //   children: [
+            //     InkWell(
+            //         splashColor: Colors.transparent,
+            //         highlightColor: Colors.transparent,
+            //         onTap: () {},
+            //         child: Text(
+            //           "Read More",
+            //           style:
+            //               Theme.of(context).textTheme.titleSmall?.copyWith(
+            //                     color: Color(0xFF595959),
+            //                     height: 0.9,
+            //                   ),
+            //         )),
+            //     Image.asset(
+            //       'assets/images/forward_arrow.png',
+            //       width: (Sizing.kSizingMultiple * 2).w,
+            //       height: (Sizing.kSizingMultiple * 2).h,
+            //     ),
+            //   ],
+            // ),
+          ],
+        ),
+        SizedBox(
+          height: Sizing.kHSpacing10,
+        ),
+        ListView.builder(
+          // padEnds: false,
+          itemCount: items.length,
+          padding: EdgeInsets.fromLTRB(0, 0, 0.w, 10.h),
+          shrinkWrap: true,
+          dragStartBehavior: DragStartBehavior.start,
+          physics: const BouncingScrollPhysics(),
+
+          itemBuilder: (context, index) {
+            return Padding(
+              padding: const EdgeInsets.only(bottom: Sizing.kSizingMultiple),
+              child: Stack(
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: Container(
+                      width: MediaQuery.sizeOf(context).width.w,
+                      height: MediaQuery.sizeOf(context).height * 0.3.h,
+                      decoration: const BoxDecoration(
+                        image: DecorationImage(
+                          image: AssetImage('assets/images/housebig.png'),
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        ),
+        
+      ],
+    );
+  }
 }

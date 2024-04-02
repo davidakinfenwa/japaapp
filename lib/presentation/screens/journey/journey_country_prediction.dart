@@ -71,15 +71,14 @@ class _JourneyCountryPredictedPageState
                           Padding(
                             padding:
                                 EdgeInsets.only(bottom: Sizing.kHSpacing10.h),
-                            child: WidthConstraint(context)
-                                .withHorizontalSymmetricalPadding(
+                            
                                     child: Column(
                               children: [
                                 _buildActionButton(),
                                 _buildOtherActionButton("Rerun Assessment"),
                                 _buildOtherActionButton("Pick a country"),
                               ],
-                            )),
+                            ),
                           )
                         ],
                       ),

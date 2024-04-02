@@ -22,13 +22,15 @@ class CreateAccountPage extends StatefulWidget {
 }
 
 class _CreateAccountPageState extends State<CreateAccountPage> {
-  TextEditingController _comfirmPasswordTextFieldController = TextEditingController();
+  TextEditingController _comfirmPasswordTextFieldController =
+      TextEditingController();
   TextEditingController _firstNameTextFieldController = TextEditingController();
   TextEditingController _otherNameTextFieldController = TextEditingController();
   TextEditingController _lastNameTextFieldController = TextEditingController();
   TextEditingController _passwordTextFieldController = TextEditingController();
-  TextEditingController _phoneNumerTextFieldController = TextEditingController();
-   late StreamController<String> phoneNumberStreamController;
+  TextEditingController _phoneNumerTextFieldController =
+      TextEditingController();
+  late StreamController<String> phoneNumberStreamController;
   dynamic completePhoneNumber;
   String countryDialCode = '';
   String phonenumber = '';
@@ -39,37 +41,39 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
   @override
   void initState() {
     super.initState();
-   _comfirmPasswordTextFieldController = TextEditingController();
-   _firstNameTextFieldController = TextEditingController();
-   _otherNameTextFieldController = TextEditingController();
-   _lastNameTextFieldController = TextEditingController();
-   _passwordTextFieldController = TextEditingController();
-   _phoneNumerTextFieldController = TextEditingController();
+    _comfirmPasswordTextFieldController = TextEditingController();
+    _firstNameTextFieldController = TextEditingController();
+    _otherNameTextFieldController = TextEditingController();
+    _lastNameTextFieldController = TextEditingController();
+    _passwordTextFieldController = TextEditingController();
+    _phoneNumerTextFieldController = TextEditingController();
     _tapRecognizer = TapGestureRecognizer()..onTap = _handlePress;
-     validateStreams();
+    validateStreams();
   }
 
   void _handlePress() {
     HapticFeedback.vibrate();
     context.router.replace(const SignInRoute());
   }
-    void validateStreams() {
+
+  void validateStreams() {
     phoneNumberStreamController = StreamController<String>.broadcast();
 
     _passwordTextFieldController.addListener(() {
-      phoneNumberStreamController.sink.add(_passwordTextFieldController.text.trim());
+      phoneNumberStreamController.sink
+          .add(_passwordTextFieldController.text.trim());
       // validateInputs();
     });
   }
 
   @override
   void dispose() {
-   _comfirmPasswordTextFieldController.dispose();
-   _firstNameTextFieldController.dispose();
-   _otherNameTextFieldController.dispose();
-   _lastNameTextFieldController.dispose();
-   _passwordTextFieldController.dispose();
-   _phoneNumerTextFieldController.dispose();
+    _comfirmPasswordTextFieldController.dispose();
+    _firstNameTextFieldController.dispose();
+    _otherNameTextFieldController.dispose();
+    _lastNameTextFieldController.dispose();
+    _passwordTextFieldController.dispose();
+    _phoneNumerTextFieldController.dispose();
     super.dispose();
   }
 
@@ -77,46 +81,43 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-               WidthConstraint(context).withHorizontalSymmetricalPadding(
-                   child: const CustomBackButton()),
-            Expanded(
-              child: 
-                  SingleChildScrollView(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        WidthConstraint(context).withHorizontalSymmetricalPadding(
-                                                  child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          SizedBox(height: (Sizing.kSizingMultiple * 4).h),
-                          _buildTopSection(),
-                                      
-                          SizedBox(height: (Sizing.kSizingMultiple).h),
-                          _buildFormSection(),
-                          SizedBox(height:(MediaQuery.sizeOf(context).height * 0.05).h),
-                                      
-                         _buildActionButton(),
-                          SizedBox(height: (MediaQuery.sizeOf(context).height*0.1).h),
-                         
-                        ],
-                                                  ),
-                                                ),
-                      ],
-                    ),
+        child:  WidthConstraint(context).withHorizontalSymmetricalPadding(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const CustomBackButton(),
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                     Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SizedBox(height: (Sizing.kSizingMultiple * 4).h),
+                            _buildTopSection(),
+                            SizedBox(height: (Sizing.kSizingMultiple).h),
+                            _buildFormSection(),
+                            SizedBox(
+                                height:
+                                    (MediaQuery.sizeOf(context).height * 0.05).h),
+                            _buildActionButton(),
+                            SizedBox(
+                                height:
+                                    (MediaQuery.sizeOf(context).height * 0.1).h),
+                          ],
+                        
+                      ),
+                    ],
                   ),
-                
-              
-            ),
-          ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
-
 
   Widget _buildTopSection() {
     return Column(
@@ -129,7 +130,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                 fontSize: 25.sp,
                 fontWeight: FontWeight.w700,
                 height: 0.75.h,
-                color: Color(0xff344054)),
+                ),
           ),
         ),
       ],
@@ -147,11 +148,11 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
             _buildSecondNameTextField(),
             SizedBox(height: (Sizing.kSizingMultiple * 1.5).h),
             _buildLastNameTextField(),
-             SizedBox(height: (Sizing.kSizingMultiple * 1.5).h),
+            SizedBox(height: (Sizing.kSizingMultiple * 1.5).h),
             _buildPhoneNumerTextField(),
-             SizedBox(height: (Sizing.kSizingMultiple * 1.5).h),
+            SizedBox(height: (Sizing.kSizingMultiple * 1.5).h),
             _buildPasswordTextField(),
-             SizedBox(height: (Sizing.kSizingMultiple * 1.5).h),
+            SizedBox(height: (Sizing.kSizingMultiple * 1.5).h),
             _buildConfirmPasswordextField(),
           ],
         ),
@@ -166,7 +167,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
         const SizedBox(
           height: Sizing.kSizingMultiple,
         ),
-        FormFieldInput(
+        FormFieldInputWithLabel(
           controller: _firstNameTextFieldController,
           textInputType: TextInputType.name,
           hint: 'Enter first name',
@@ -187,7 +188,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
         const SizedBox(
           height: Sizing.kSizingMultiple,
         ),
-        FormFieldInput(
+        FormFieldInputWithLabel(
           controller: _otherNameTextFieldController,
           hint: 'Enter other name',
           textInputType: TextInputType.name,
@@ -201,14 +202,14 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
     );
   }
 
-    Widget _buildLastNameTextField() {
+  Widget _buildLastNameTextField() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const SizedBox(
           height: Sizing.kSizingMultiple,
         ),
-        FormFieldInput(
+        FormFieldInputWithLabel(
           controller: _lastNameTextFieldController,
           hint: 'Enter Last name',
           textInputType: TextInputType.name,
@@ -222,48 +223,45 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
     );
   }
 
-    Widget _buildPhoneNumerTextField() {
+  Widget _buildPhoneNumerTextField() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const SizedBox(
           height: Sizing.kSizingMultiple,
         ),
-
-           StreamBuilder(
-                stream: phoneNumberStreamController.stream,
-                builder: (context, snapshot) {
-                  return PhoneNumberInputField(
-                    hintText: 'Phone Number',
-                    controller: _phoneNumerTextFieldController,
-                    placeholder: 'Enter phone',
-                    onChanged: (val) {
-                      completePhoneNumber = val.completeNumber;
-                      phonenumber = val.number;
-                      print(phonenumber);
-                    },
-                    onCountryChanged: (val) {
-                      countryDialCode = val.fullCountryCode;
-                      completePhoneNumber =
-                          sign + countryDialCode + phonenumber;
-                          print(val.name);
-                    },
-                  );
-                },
-              ),
-      
+        StreamBuilder(
+          stream: phoneNumberStreamController.stream,
+          builder: (context, snapshot) {
+            return PhoneNumberInputField(
+              hintText: 'Phone Number',
+              controller: _phoneNumerTextFieldController,
+              placeholder: 'Enter phone',
+              onChanged: (val) {
+                completePhoneNumber = val.completeNumber;
+                phonenumber = val.number;
+                print(phonenumber);
+              },
+              onCountryChanged: (val) {
+                countryDialCode = val.fullCountryCode;
+                completePhoneNumber = sign + countryDialCode + phonenumber;
+                print(val.name);
+              },
+            );
+          },
+        ),
       ],
     );
   }
 
-    Widget _buildPasswordTextField() {
+  Widget _buildPasswordTextField() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const SizedBox(
           height: Sizing.kSizingMultiple,
         ),
-        FormFieldInput(
+        FormFieldInputWithLabel(
           controller: _passwordTextFieldController,
           hint: 'Enter Password',
           textInputType: TextInputType.emailAddress,
@@ -276,14 +274,15 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
       ],
     );
   }
-    Widget _buildConfirmPasswordextField() {
+
+  Widget _buildConfirmPasswordextField() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const SizedBox(
           height: Sizing.kSizingMultiple,
         ),
-        FormFieldInput(
+        FormFieldInputWithLabel(
           controller: _comfirmPasswordTextFieldController,
           hint: 'Enter confirm password',
           textInputType: TextInputType.emailAddress,
@@ -302,7 +301,9 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
       children: [
         CustomButton(
           type: ButtonType.regularButton(
-              onTap: () {context.router.replace(const TabRoute());},
+              onTap: () {
+                context.router.replace(const TabRoute());
+              },
               label: 'Create Account',
               isLoadingMode: false,
               backgroundColor: CustomTypography.kPrimaryColor300,

@@ -49,54 +49,52 @@ class _EmailVerificationPageState extends State<EmailVerificationPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Stack(
-          children: [
-            Column(
-              // mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                WidthConstraint(context).withHorizontalSymmetricalPadding(
-                    child: const CustomBackButton())
-              ],
-            ),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                SingleChildScrollView(
-                  child:
-                      WidthConstraint(context).withHorizontalSymmetricalPadding(
+        child:  WidthConstraint(context).withHorizontalSymmetricalPadding(
+          child: Stack(
+            children: [
+              const Column(
+                 mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                   CustomBackButton()
+                ],
+              ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SingleChildScrollView(
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(height: (Sizing.kSizingMultiple * 4).h),
-                        _buildTopSection(),
-
-                        SizedBox(height: (Sizing.kSizingMultiple).h),
-                        _buildFormSection(),
-                        SizedBox(
-                            height:
-                                (MediaQuery.sizeOf(context).height * 0.1).h),
-                      ],
-                    ),
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(height: (Sizing.kSizingMultiple * 4).h),
+                          _buildTopSection(),
+          
+                          SizedBox(height: (Sizing.kSizingMultiple).h),
+                          _buildFormSection(),
+                          SizedBox(
+                              height:
+                                  (MediaQuery.sizeOf(context).height * 0.1).h),
+                        ],
+                      ),
+                    
                   ),
-                ),
-              ],
-            ),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Padding(
-                  padding: EdgeInsets.only(bottom: Sizing.kHSpacing50.h),
-                  child:
-                      WidthConstraint(context).withHorizontalSymmetricalPadding(
-                          child: Column(
-                    children: [
-                      _buildActionButton(),
-                    ],
-                  )),
-                )
-              ],
-            ),
-          ],
+                ],
+              ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(bottom: Sizing.kHSpacing50.h),
+                    
+                            child: Column(
+                      children: [
+                        _buildActionButton(),
+                      ],
+                    )),
+                  
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -113,7 +111,8 @@ class _EmailVerificationPageState extends State<EmailVerificationPage> {
                 fontSize: 25.sp,
                 fontWeight: FontWeight.w700,
                 height: 0.75.h,
-                color: Color(0xff344054)),
+                
+                ),
           ),
         ),
       ],
@@ -140,7 +139,7 @@ class _EmailVerificationPageState extends State<EmailVerificationPage> {
         const SizedBox(
           height: Sizing.kSizingMultiple,
         ),
-        FormFieldInput(
+        FormFieldInputWithLabel(
           controller: _emailOneTextFieldController,
           textInputType: TextInputType.emailAddress,
           hint: 'Enter email address',
@@ -161,7 +160,7 @@ class _EmailVerificationPageState extends State<EmailVerificationPage> {
         const SizedBox(
           height: Sizing.kSizingMultiple,
         ),
-        FormFieldInput(
+        FormFieldInputWithLabel(
           controller: _emailTwoTextFieldController,
           hint: 'Confirm email address',
           textInputType: TextInputType.emailAddress,

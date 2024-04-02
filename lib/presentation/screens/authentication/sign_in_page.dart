@@ -35,7 +35,7 @@ class _SignInPageState extends State<SignInPage> {
 
   void _handlePress() {
     HapticFeedback.vibrate();
-   context.router.replace(const CreateAccountRoute());
+    context.router.replace(const CreateAccountRoute());
   }
 
   @override
@@ -49,64 +49,44 @@ class _SignInPageState extends State<SignInPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Stack(
-          children: [
-            Column(
-              // mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                WidthConstraint(context).withHorizontalSymmetricalPadding(
-                    child: const CustomBackButton())
-              ],
-            ),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                SingleChildScrollView(
-                  child:
-                      WidthConstraint(context).withHorizontalSymmetricalPadding(
+        child: WidthConstraint(context).withHorizontalSymmetricalPadding(
+          child: Stack(
+            children: [
+              const Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [CustomBackButton()],
+              ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SingleChildScrollView(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         SizedBox(height: (Sizing.kSizingMultiple * 4).h),
                         _buildTopSection(),
-
                         SizedBox(height: (Sizing.kSizingMultiple).h),
                         _buildFormSection(),
-                        SizedBox(
-                            height:
-                                (MediaQuery.sizeOf(context).height * 0.1).h),
-
-                        // _buildSeeHowItWorksButton(),
-                        //SizedBox(height: (MediaQuery.sizeOf(context).height*0.1).h),
-
-                        // SizedBox(height: (Sizing.kSizingMultiple * 2).h),
-                        // _buildSignInButton(),
-                        // SizedBox(height: (Sizing.kSizingMultiple * 2).h),
-                        // _buildAuthModeSwitcherSection(),
-                        // SizedBox(height: (Sizing.kSizingMultiple * 3).h),
+                        SizedBox( height:(MediaQuery.sizeOf(context).height * 0.1).h),
                       ],
                     ),
                   ),
-                ),
-              ],
-            ),
-            Column(
-              
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Padding(
-                  padding: EdgeInsets.only(bottom: Sizing.kHSpacing50.h),
-                  child:
-                      WidthConstraint(context).withHorizontalSymmetricalPadding(
-                          child: Column(
-                    children: [
-                      _buildActionButton(),
-                    ],
-                  )),
-                )
-              ],
-            ),
-          ],
+                ],
+              ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Padding(
+                      padding: EdgeInsets.only(bottom: Sizing.kHSpacing50.h),
+                      child: Column(
+                        children: [
+                          _buildActionButton(),
+                        ],
+                      )),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -116,7 +96,7 @@ class _SignInPageState extends State<SignInPage> {
     return Column(
       children: [
         SizedBox(
-          width: MediaQuery.sizeOf(context).width * 0.75.w,
+          //width: MediaQuery.sizeOf(context).width * 0.75.w,
           child: Row(
             children: [
               Text(
@@ -125,12 +105,13 @@ class _SignInPageState extends State<SignInPage> {
                     fontSize: 25.sp,
                     fontWeight: FontWeight.w700,
                     height: 0.75.h,
-                    color: Color(0xff344054)),
+                    
+                    ),
               ),
               Image.asset(
-                  'assets/images/emoji.png',
-                  width: (Sizing.kSizingMultiple *3).w,
-                ),
+                'assets/images/emoji.png',
+                width: (Sizing.kSizingMultiple * 3).w,
+              ),
             ],
           ),
         ),
@@ -158,7 +139,7 @@ class _SignInPageState extends State<SignInPage> {
         const SizedBox(
           height: Sizing.kSizingMultiple,
         ),
-        FormFieldInput(
+        FormFieldInputWithLabel(
           controller: _emailTextFieldController,
           textInputType: TextInputType.emailAddress,
           hint: 'Enter email address',
@@ -179,7 +160,7 @@ class _SignInPageState extends State<SignInPage> {
         const SizedBox(
           height: Sizing.kSizingMultiple,
         ),
-        FormFieldInput(
+        FormFieldInputWithLabel(
           obSecure: true,
           controller: _passwordTextFieldController,
           hint: 'Enter Password',
@@ -201,7 +182,7 @@ class _SignInPageState extends State<SignInPage> {
           type: ButtonType.regularButton(
               onTap: () {
                 context.router.replace(const TabRoute());
-                },
+              },
               label: 'Login',
               isLoadingMode: false,
               backgroundColor: CustomTypography.kPrimaryColor300,

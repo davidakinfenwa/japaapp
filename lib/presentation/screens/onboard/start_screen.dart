@@ -104,9 +104,9 @@ class _StartScreenState extends State<StartScreen> {
                         elevation: 0,
                         padding: (MediaQuery.sizeOf(context).width <= 550)
                             ? const EdgeInsets.symmetric(
-                                horizontal: 30, vertical: 20)
+                                horizontal: 20, vertical: 10)
                             : const EdgeInsets.symmetric(
-                                horizontal: 30, vertical: 25),
+                                horizontal: 20, vertical: 15),
                         textStyle: TextStyle(
                             fontSize: (MediaQuery.sizeOf(context).width <= 550)
                                 ? 13
@@ -137,9 +137,9 @@ class _StartScreenState extends State<StartScreen> {
                         elevation: 0,
                         padding: (MediaQuery.sizeOf(context).width <= 550)
                             ? const EdgeInsets.symmetric(
-                                horizontal: 30, vertical: 20)
+                                horizontal: 20, vertical: 10)
                             : const EdgeInsets.symmetric(
-                                horizontal: 30, vertical: 25),
+                                horizontal: 20, vertical: 15),
                         textStyle: TextStyle(
                             fontSize: (MediaQuery.sizeOf(context).width <= 550)
                                 ? 13
@@ -163,9 +163,9 @@ class _StartScreenState extends State<StartScreen> {
                         elevation: 0,
                         padding: (MediaQuery.sizeOf(context).width <= 550)
                             ? const EdgeInsets.symmetric(
-                                horizontal: 30, vertical: 20)
+                                horizontal: 20, vertical: 10)
                             : const EdgeInsets.symmetric(
-                                horizontal: 30, vertical: 25),
+                                horizontal: 20, vertical: 15),
                         textStyle: TextStyle(
                             fontSize: (MediaQuery.sizeOf(context).width <= 550)
                                 ? 13

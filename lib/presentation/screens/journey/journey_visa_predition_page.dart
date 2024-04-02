@@ -68,8 +68,7 @@ class _JourneyVisaPredictedPageState extends State<JourneyVisaPredictedPage> {
                           Padding(
                             padding:
                                 EdgeInsets.only(bottom: Sizing.kHSpacing10.h),
-                            child: WidthConstraint(context)
-                                .withHorizontalSymmetricalPadding(
+                            
                                     child: Column(
                               children: [
                                 _buildActionButton(),
@@ -82,10 +81,9 @@ class _JourneyVisaPredictedPageState extends State<JourneyVisaPredictedPage> {
                                     },
                                   );
                                 }),
-                                _buildOtherActionButton(
-                                    "Rerun assessment", () {}),
+                                _buildOtherActionButton("Rerun assessment", () {}),
                               ],
-                            )),
+                            ),
                           )
                         ],
                       ),

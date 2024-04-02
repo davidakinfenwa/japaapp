@@ -108,10 +108,12 @@ class _DashboardTabState extends State<DashboardTab> {
             )
           ],
         ),
-        Image.asset(
-          'assets/images/map1.png',
-          width: (Sizing.kWSpacing56 * 1.5).w,
-          height: (Sizing.kHSpacing56 * 1.5).h,
+        Expanded(
+          child: Image.asset(
+            'assets/images/newmaap.png',
+            width: (Sizing.kWSpacing56 * 1.8).w,
+            height: (Sizing.kHSpacing56 * 1.5).h,
+          ),
         ),
         // Container(
         //   padding: EdgeInsets.all(10),
@@ -238,11 +240,11 @@ class _DashboardTabState extends State<DashboardTab> {
           ),
           Container(
             // color: Colors.red,
-            height: 180.h,
+            height: 155.h,
             width: MediaQuery.sizeOf(context).width,
             child: ListView.builder(
               // padEnds: false,
-              padding: EdgeInsets.fromLTRB(0, 0, 30.w, 0),
+              padding: EdgeInsets.fromLTRB(0, 0, 0.w, 0),
               shrinkWrap: true,
               dragStartBehavior: DragStartBehavior.start,
               scrollDirection: Axis.horizontal,
@@ -263,7 +265,10 @@ class _DashboardTabState extends State<DashboardTab> {
 
   Widget _buildCommunityList(String title, String img, String count) {
     return Container(
+      //width: 120,
       padding: EdgeInsets.only(left: 0.w),
+      //color: Colors.red,
+      margin: EdgeInsets.only(right: Sizing.kSizingMultiple.h),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -279,17 +284,23 @@ class _DashboardTabState extends State<DashboardTab> {
                   borderRadius: BorderRadius.circular(8)),
             ),
           ),
-          SizedBox(
-            width: 100,
-            child: Text(
-              title,
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    color: const Color(0xFF344054),
-                    fontWeight: FontWeight.w500,
-                    height: 1.2.h,
-                  ),
-            ),
-          ),
+        LayoutBuilder(
+  builder: (BuildContext context, BoxConstraints constraints) {
+    return SizedBox(
+      width: 100,
+      height: 50,
+      child: Text(
+       constraints.maxHeight > 50? "$title...":title,
+        style: Theme.of(context).textTheme.titleMedium?.copyWith(
+          color: const Color(0xFF344054),
+          fontWeight: FontWeight.w500,
+        ),
+        maxLines: constraints.maxHeight > 50 ? null : 1,
+              //overflow: TextOverflow.ellipsis,
+      ),
+    );
+  },
+),
           SizedBox(
             height: Sizing.kSizingMultiple.h,
           ),
@@ -410,11 +421,11 @@ class _DashboardTabState extends State<DashboardTab> {
         children: [
           Container(
             width: 120,
-            height: 100,
+            height: 120,
             decoration: ShapeDecoration(
               image: DecorationImage(
                 image: AssetImage(img),
-                fit: BoxFit.fill,
+                fit: BoxFit.cover,
               ),
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8)),
@@ -495,18 +506,18 @@ class _DashboardTabState extends State<DashboardTab> {
             'Immigration Series: All about how to get naturalised in Germany'
       },
       // {"image": "assets/svgs/squarepassword.svg", "title": 'Locked Savings'},
-      {
-        "image": "assets/images/com14.png",
-        "count": "20 People",
-        "title":
-            'Immigration Series: All about how to get naturalised in Germany'
-      },
-      {
-        "image": "assets/images/com13.png",
-        "count": "10 People",
-        "title":
-            'Immigration Series: All about how to get naturalised in Germany'
-      },
+      // {
+      //   "image": "assets/images/com14.png",
+      //   "count": "20 People",
+      //   "title":
+      //       'Immigration Series: All about how to get naturalised in Germany'
+      // },
+      // {
+      //   "image": "assets/images/com13.png",
+      //   "count": "10 People",
+      //   "title":
+      //       'Immigration Series: All about how to get naturalised in Germany'
+      // },
     ];
     return SizedBox(
       child: Container(

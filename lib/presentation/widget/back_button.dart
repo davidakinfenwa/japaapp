@@ -19,7 +19,8 @@ class CustomBackButton extends StatelessWidget {
       child: SizedBox(
         height: 24.h,
         width: 24.w,
-        child: SvgPicture.asset(
+        child: 
+        SvgPicture.asset(
           'assets/svg/Back.svg',
         ),
       ),

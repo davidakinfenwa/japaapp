@@ -508,43 +508,46 @@ class _MyBottomCountrySheetState extends State<MyBottomCountrySheet> {
       {"title": 'United Kingdom', 'svg': 'assets/svg/nija.svg'},
     ];
     return Container(
-      height: 393.h,
+      height: 273.h,
       decoration: BoxDecoration(
+        color: CustomTypography.kWhiteColor,
+        borderRadius: BorderRadius.only(topLeft: Radius.circular(Sizing.kBorderRadius*3.r),topRight: Radius.circular(Sizing.kBorderRadius*3.r)),
         border: Border(
             bottom: BorderSide(
           width: 1.16.w, // Width of the border
-          color: const Color(0xFFB7C6CC),
+          color: CustomTypography.kWhiteColor,
         )),
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Padding(
-            padding: EdgeInsets.only(top: 10, left: 15.w),
+            padding: EdgeInsets.only(top: Sizing.kSizingMultiple*2.h),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Text(
-                  'select your destination',
+                  'Select Country',
                   //style: AppTheme.inputText
-                  style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-                      color: CustomTypography.kBlackColor, fontSize: 18.sp),
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      color: CustomTypography.kBlackColor, fontSize: 20.sp, fontWeight: FontWeight.w700),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(right: 0, top: 10),
-                  child: IconButton(
-                    icon: Icon(Icons.close),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                ),
+                // Padding(
+                //   padding: const EdgeInsets.only(right: 0, top: 10),
+                //   child: IconButton(
+                //     icon: Icon(Icons.close),
+                //     onPressed: () {
+                //       Navigator.of(context).pop();
+                //     },
+                //   ),
+                // ),
               ],
             ),
           ),
           Expanded(
             child: ListView.builder(
               itemCount: items.length,
+              padding: EdgeInsets.zero,
               itemBuilder: (BuildContext context, int index) {
                 final content = items[index];
                 return InkWell(
@@ -555,7 +558,7 @@ class _MyBottomCountrySheetState extends State<MyBottomCountrySheet> {
                     Navigator.of(context).pop();
                   },
                   child: Padding(
-                    padding: EdgeInsets.fromLTRB(15.w, 16.h, 24.w, 0.h),
+                    padding: EdgeInsets.fromLTRB(15.w, 5.h, 24.w, 10.h),
                     child: Container(
                       decoration: BoxDecoration(
                         border: Border(

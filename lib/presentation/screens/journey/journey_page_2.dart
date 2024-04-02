@@ -80,7 +80,7 @@ class _JourneySelectionPageState extends State<JourneySelectionPage> {
                           _buildSupriseMeSection(),
                           SizedBox(height: (Sizing.kSizingMultiple).h),
                           _buildNotice(),
-                          SizedBox(height: (Sizing.kSizingMultiple).h),
+                          SizedBox(height: (Sizing.kSizingMultiple*3).h),
                           _buildManuelSelectCountrySection(),
                           SizedBox(
                               height:

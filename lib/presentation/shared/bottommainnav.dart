@@ -24,8 +24,8 @@ class BottomMainNav extends StatelessWidget {
           padding: EdgeInsets.symmetric(
               horizontal: Sizing.kSizingMultiple.w,
               vertical: Sizing.kSizingMultiple.w),
-          decoration: const BoxDecoration(
-            color: CustomTypography.kWhiteColor,
+          decoration:  BoxDecoration(
+            color: CustomTypography.kBottomNavColor,
             // borderRadius: BorderRadius.all(
             //     Radius.circular(Sizing.kSizingMultiple * 2.w))
           ),
@@ -37,7 +37,7 @@ class BottomMainNav extends StatelessWidget {
               },
               title: "Home",
               svg: value.pageIndex == 0
-                  ? "assets/svg/homefill.svg"
+                  ? "assets/svg/homeactivenew.svg"
                   : "assets/svg/homenotfill.svg",
               color: value.pageIndex == 0
                   ? CustomTypography.kPrimaryColor200

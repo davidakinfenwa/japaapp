@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:intl_phone_field/country_picker_dialog.dart';
 import 'package:japaapp/core/constants.dart';
 import 'package:japaapp/core/theme/custom_typography.dart';
 import 'package:intl_phone_field/countries.dart';
@@ -88,24 +89,13 @@ class _FormFieldInputState extends State<FormFieldInput> {
     }
   }
 
-  Widget icon() {
-    return switch (widget.obSecure) {
-      true => SvgPicture.asset(
-          'assets/svg/view_off.svg',
-        ),
-      _ => SvgPicture.asset(
-          'assets/svgs/eye1.svg',
-        )
-    };
-  }
-
   @override
   Widget build(BuildContext context) {
     return Container(
       height: 44.h,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(Sizing.kBorderRadius),
-        // color: CustomTypography.kGreyColor40,
+        color: CustomTypography.kBottomNavColor,
       ),
       child: TextFormField(
         readOnly: widget.readOnly,
@@ -123,16 +113,6 @@ class _FormFieldInputState extends State<FormFieldInput> {
         decoration: InputDecoration(
           prefixIcon: widget.prefixIcon,
           hintText: widget.hint,
-          //  labelStyle: TextStyle(color: Colors.red),
-          // label: Text(
-          //   "Email Address",
-          //   style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-          //       fontWeight: FontWeight.w500,
-          //       color: CustomTypography.kBlackColor,
-          //       fontSize: 14.0.sp),
-          // ),
-          // suffixStyle: TextStyle(fontSize: 10),
-
           suffixIconConstraints:
               const BoxConstraints(minHeight: 24, minWidth: 24),
           suffixIcon: Padding(
@@ -153,27 +133,6 @@ class _FormFieldInputState extends State<FormFieldInput> {
                           )
                       })
                   : widget.suffixIcon),
-          //  suffixIcon: Container(
-          //   color: Colors.red,
-          //    child: Padding(
-          //           padding: const EdgeInsets.only(right: 3,top: 3),
-          //           child: widget.obSecure == true
-          //               ? InkWell(
-          //                   onTap: () {
-          //                     setSecure();
-          //                   },
-          //                   child: switch (secure) {
-          //                     true => SvgPicture.asset(
-          //                         'assets/svg/view_off.svg',
-          //                         color: Colors.black,
-          //                       ),
-          //                     _ => SvgPicture.asset(
-          //                         'assets/svg/eye1.svg',
-          //                         color: Colors.black,
-          //                       )
-          //                   })
-          //               : widget.suffixIcon),
-          //  ),
           hintStyle: Theme.of(context).textTheme.labelSmall?.copyWith(
               fontWeight: FontWeight.w500,
               color: CustomTypography.kGreyColorlabel,
@@ -190,7 +149,7 @@ class _FormFieldInputState extends State<FormFieldInput> {
           ),
           focusedBorder: OutlineInputBorder(
             gapPadding: 0.0,
-            //borderRadius: BorderRadius.circular(30),
+            borderRadius: BorderRadius.circular(Sizing.kBorderRadius),
             borderSide:
                 BorderSide(color: CustomTypography.kGreyColor70, width: 1.5),
           ),
@@ -624,10 +583,12 @@ class _PhoneNumberInputFieldState extends State<PhoneNumberInputField> {
                       // Specify dropdownColor
                       // dropdownMenuTheme: DropdownMenuThemeData(inputDecorationTheme: InputDecorationTheme(fillColor: Colors.white)), // Yo
                       //ur desired color
-                      dialogTheme:
-                          const DialogTheme(backgroundColor: Colors.white),
-                      dialogBackgroundColor: Colors.white),
+                      dropdownMenuTheme: const DropdownMenuThemeData(menuStyle: MenuStyle(backgroundColor: MaterialStatePropertyAll(Colors.red)),inputDecorationTheme: InputDecorationTheme())
+                      //dialogTheme:DialogTheme(backgroundColor: CustomTypography.kWhiteColor),
+                      ),
+                      //dialogBackgroundColor: Colors.white),
                   child: IntlPhoneField(
+                    pickerDialogStyle: PickerDialogStyle(backgroundColor:  Colors.white,width: MediaQuery.sizeOf(context).width,),
                     initialCountryCode: "",
                     cursorColor: CustomTypography.kPrimaryColor500,
                     focusNode: widget.fieldFocusNode,
@@ -641,8 +602,17 @@ class _PhoneNumberInputFieldState extends State<PhoneNumberInputField> {
 
                     //dropdownDecoration: BoxDecoration(color: Colors.red),
                     decoration: InputDecoration(
-                      fillColor: Colors.black,
-                      hintText: widget.hintText,
+                      filled: true,
+                      fillColor: CustomTypography.kBottomNavColor,
+                     // hintText: widget.hintText,
+                      //labelStyle: TextStyle(color: Colors.red),
+                      label: Text(
+                        widget.hintText.toString(),
+                        style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                            fontWeight: FontWeight.w500,
+                            color: CustomTypography.kGreyColorlabel,
+                            fontSize: 13.0.sp),
+                      ),
                       contentPadding: EdgeInsets.all(15.w),
                       hintStyle: Theme.of(context)
                           .textTheme
@@ -667,7 +637,8 @@ class _PhoneNumberInputFieldState extends State<PhoneNumberInputField> {
                       ),
                       focusedBorder: OutlineInputBorder(
                         gapPadding: 0.0,
-                        //borderRadius: BorderRadius.circular(30),
+                        borderRadius:
+                            BorderRadius.circular(Sizing.kBorderRadius),
                         borderSide: BorderSide(
                             color: CustomTypography.kGreyColor70, width: 1.5),
                       ),
@@ -922,7 +893,7 @@ class _FormFieldSearchState extends State<FormFieldSearch> {
     return Container(
       height: 44.h,
       decoration: BoxDecoration(
-        color:const Color(0xfff4f4f4),
+        color: const Color(0xfff4f4f4),
         borderRadius: BorderRadius.circular(Sizing.kBorderRadius),
       ),
       child: TextFormField(
@@ -938,8 +909,11 @@ class _FormFieldSearchState extends State<FormFieldSearch> {
         enabled: widget.enable,
 
         decoration: InputDecoration(
-          prefixIconConstraints: const BoxConstraints(minHeight: 24, minWidth: 24),
-          prefixIcon: Padding( padding: EdgeInsetsDirectional.only(start: Sizing.kSizingMultiple * 1.3.h,end: 10),
+          prefixIconConstraints:
+              const BoxConstraints(minHeight: 24, minWidth: 24),
+          prefixIcon: Padding(
+            padding: EdgeInsetsDirectional.only(
+                start: Sizing.kSizingMultiple * 1.3.h, end: 10),
             child: widget.prefixIcon,
           ),
           hintText: widget.hint,
@@ -973,5 +947,181 @@ class _FormFieldSearchState extends State<FormFieldSearch> {
         // },
       ),
     );
+  }
+}
+
+class FormFieldInputWithLabel extends StatefulWidget {
+  FormFieldInputWithLabel(
+      {super.key,
+      this.controller,
+      this.padding,
+      this.height = 54,
+      this.isFocused = false,
+      this.onSaved,
+      this.onTap,
+      this.cursorHeight,
+      this.enable = true,
+      this.validate,
+      this.onTapData,
+      // this.validateString,
+      this.fillColor = Colors.transparent,
+      this.width = double.maxFinite,
+      this.obSecure = false,
+      this.borderRadius = 10,
+      this.scale = 0.7,
+      this.hint,
+      this.textInputType = TextInputType.text,
+      this.prefixIcon,
+      this.suffixIcon,
+      this.onChanged,
+      this.contentPadding,
+      this.maxLength,
+      this.maxLines,
+      this.align,
+      this.disableBorderColor,
+      this.borderSideColor,
+      this.hintStyle,
+      this.autovalidateMode,
+      this.inputFormatters,
+      this.fontSize,
+      this.readOnly = false});
+  final TextEditingController? controller;
+  final Widget? prefixIcon, suffixIcon;
+  final String? hint;
+  final Function(String)? onSaved;
+  final double height, width, borderRadius;
+  final TextInputType textInputType;
+  final Function(String?)? onChanged;
+  final Color fillColor;
+  final bool obSecure, enable;
+  final Function()? onTap;
+  final EdgeInsetsGeometry? contentPadding;
+  final TextAlign? align;
+  final Color? borderSideColor;
+  final Color? disableBorderColor;
+  final EdgeInsets? padding;
+  final int? maxLength;
+  final int? maxLines;
+  final double? scale, cursorHeight, fontSize;
+  final String? Function(String?)? validate;
+  final Function? onTapData;
+  final AutovalidateMode? autovalidateMode;
+  bool isFocused;
+  final TextStyle? hintStyle;
+  final List<TextInputFormatter>? inputFormatters;
+  bool readOnly;
+
+  @override
+  State<FormFieldInputWithLabel> createState() =>
+      _FormFieldInputWithLabelState();
+}
+
+class _FormFieldInputWithLabelState extends State<FormFieldInputWithLabel> {
+  bool secure = false;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.obSecure) {
+      setState(() {
+        secure = true;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 44.h,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(Sizing.kBorderRadius),
+        color: CustomTypography.kBottomNavColor,
+      ),
+      child: TextFormField(
+        readOnly: widget.readOnly,
+        cursorColor: CustomTypography.kPrimaryColor500,
+        style: Theme.of(context)
+            .textTheme
+            .titleSmall!
+            .copyWith(color: const Color(0xff344054)),
+        controller: widget.controller,
+        keyboardType: widget.textInputType,
+        textAlignVertical: TextAlignVertical.center,
+        enabled: widget.enable,
+        decoration: InputDecoration(
+          prefixIcon: widget.prefixIcon,
+          //hintText: widget.hint,
+          //labelStyle: TextStyle(color: Colors.red),
+          label: Text(
+            widget.hint.toString(),
+            style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                fontWeight: FontWeight.w500,
+                color: CustomTypography.kGreyColorlabel,
+                fontSize: 13.0.sp),
+          ),
+          suffixStyle: TextStyle(fontSize: 10.sp),
+          suffixIconConstraints:
+              const BoxConstraints(minHeight: 24, minWidth: 24),
+          suffixIcon: Padding(
+              padding: const EdgeInsets.only(right: 10, top: 0, bottom: 0),
+              child: widget.obSecure == true
+                  ? InkWell(
+                      onTap: () {
+                        setState(() {
+                          setSecure();
+                        });
+                      },
+                      child: switch (secure) {
+                        true => SvgPicture.asset(
+                            'assets/svg/view_off.svg',
+                            color: Colors.black,
+                          ),
+                        _ => SvgPicture.asset(
+                            'assets/svg/eye1.svg',
+                            color: Colors.black,
+                          )
+                      })
+                  : widget.suffixIcon),
+
+          hintStyle: Theme.of(context).textTheme.labelSmall?.copyWith(
+              fontWeight: FontWeight.w500,
+              color: CustomTypography.kGreyColorlabel,
+              fontSize: 13.0.sp),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(Sizing.kBorderRadius),
+            borderSide: BorderSide(
+                color: CustomTypography.kGreyColorBorderSide, width: 1),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(Sizing.kBorderRadius),
+            borderSide: BorderSide(
+                color: CustomTypography.kGreyColorBorderSide, width: 1),
+          ),
+          focusedBorder: OutlineInputBorder(
+            gapPadding: 0.0,
+            borderRadius: BorderRadius.circular(Sizing.kBorderRadius),
+            borderSide:
+                BorderSide(color: CustomTypography.kGreyColor70, width: 1.5),
+          ),
+        ),
+        onTap: () {
+          widget.onTap != null ? widget.onTap!() : () {};
+        },
+        onChanged: (value) {
+          setState(() {
+            widget.isFocused = value.isNotEmpty;
+          });
+          print(widget.isFocused);
+          widget.onChanged?.call(value);
+        },
+        validator: widget.validate,
+      ),
+    );
+  }
+
+  setSecure() {
+    setState(() {
+      secure = !secure;
+    });
   }
 }

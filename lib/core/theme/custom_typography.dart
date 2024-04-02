@@ -100,6 +100,7 @@ class CustomTypography {
   static const kWhiteColor = Colors.white;
   static const kWhiteColor54 = Colors.white54;
   static final kLineColor = ColorUtil.colorFromHex('#E3E7EC');
+  static final kBottomNavColor = ColorUtil.colorFromHex('#F4F4F4');
   static final kSoftBlueColor = ColorUtil.colorFromHex('#4A4A65');
 
   static const kBlackColor = Colors.black;
