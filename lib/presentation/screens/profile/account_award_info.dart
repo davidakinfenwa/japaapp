@@ -61,7 +61,7 @@ class _AccountAwardPagesState extends State<AccountAwardPages> {
 
     if (nav == "fromD") {
       if (picked != null && picked != DateTime.now()) {
-        String formattedDate = DateFormat('dd MMM yyyy').format(picked);
+        String formattedDate = DateFormat('MMM yyyy').format(picked);
         setState(() {
           userDOB = picked;
           fromDate = formattedDate;
@@ -69,7 +69,7 @@ class _AccountAwardPagesState extends State<AccountAwardPages> {
       }
     } else {
       if (picked != null && picked != DateTime.now()) {
-        String formattedDate = DateFormat('dd MMM yyyy').format(picked);
+        String formattedDate = DateFormat('MMM yyyy').format(picked);
         setState(() {
           userDOB = picked;
           toDate = formattedDate;
@@ -327,6 +327,7 @@ class _AccountAwardPagesState extends State<AccountAwardPages> {
             //width: MediaQuery.sizeOf(context).width * 0.45.w,
             padding: EdgeInsets.all(10.dm),
             decoration: BoxDecoration(
+               color: CustomTypography.kBottomNavColor,
               //color: const Color(0xFFF4F4F4),
               borderRadius: BorderRadius.circular(4.r),
               border: Border.all(

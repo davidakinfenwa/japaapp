@@ -53,9 +53,7 @@ class ContainerWithProgressBarUpload extends StatefulWidget {
 class _ContainerWithProgressBarUploadState extends State<ContainerWithProgressBarUpload> {
   @override
   Widget build(BuildContext context) {
-    //   final value =
-    //     Provider.of<SimpleStateChangesProvider>(context, listen: false);
-     print(widget.value);
+    
     return Container(
       width: 150.w,
       height: 10.0.h,

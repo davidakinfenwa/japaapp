@@ -111,7 +111,7 @@ int selectedMeansOfPayment = -2;
         ),
         SizedBox(height: (Sizing.kSizingMultiple * 1.5).h),
         Container(
-          color: Colors.red,
+          //color: Colors.red,
           width: MediaQuery.sizeOf(context).width.w,
           height: 70,
           child: RangeSlide())

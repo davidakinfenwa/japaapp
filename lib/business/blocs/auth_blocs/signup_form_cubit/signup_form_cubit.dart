@@ -35,10 +35,9 @@ class SignupFormCubit
           failure: failure),
       (userInfoModel) {
         // cache snapshot
-       
-        if (userInfoModel.hasUserInfo) {
-          _snapshotCache.userInfo = userInfoModel.user;
-        }
+    
+         _snapshotCache.userInfo = userInfoModel.data;
+        
 
         return BlocState<Failure<ExceptionMessage>, UserInfoModel>.success(
             data: userInfoModel);

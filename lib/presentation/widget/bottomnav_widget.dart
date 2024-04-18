@@ -23,7 +23,7 @@ class BottomNavWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: CustomTypography.kWhiteColor,
+      color:  CustomTypography.kBottomNavColor,
       // elevation: Sizing.kButtonElevation,
       borderRadius: BorderRadius.all(Radius.circular(16)),
 
@@ -51,7 +51,6 @@ class BottomNavWidget extends StatelessWidget {
                   style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                       fontWeight: FontWeight.w500,
                       color: color,
-                      fontFamily: "inter",
                       fontSize: 12.0.sp),
                 ),
               ],

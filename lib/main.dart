@@ -40,13 +40,17 @@ void main() async {
         ChangeNotifierProvider(create: (context) => TabScreenNotifier()),
         ChangeNotifierProvider(create: (context) => AuthSnapshotCache()),
         ChangeNotifierProvider(create: (context) => AccountPageProvider()),
+        ChangeNotifierProvider(create: (context) => AccountSnapshotCache()),
         
       ],
       child: MultiBlocProvider(providers: [
         BlocProvider<SigninFormCubit>(
           create: (context) => getIt<SigninFormCubit>(),
         ),
-      ], child: const MyApp()))));
+      ], child: const MyApp())
+      )
+      )
+      );
 
  
 

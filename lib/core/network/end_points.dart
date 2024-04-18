@@ -1,16 +1,17 @@
 class Endpoints {
-  static const String signUp = 'account/create-account';
-  static const String verifyOtp = 'account/verify-otp';
-  static const String resendOtp = 'account/resend-otp';
-  static const String profileSetup = 'account/profile-setup';
-  static const String bio = 'account/bio';
-  static const String lifestyle = 'account/lifestyle';
-  static const String addLifestyle = 'account/lifestyle';
-  static const String getInterests = 'account/interests';
-  static const String addInterests = 'account/interests';
-  static const String login = 'login';
-  static const String loginOtp = 'confirm-login';
-  static const String resendLoginOtp = 'resend-otp';
-  static const String getDojaUrl = 'account/verification';
-  static const String userInfo = 'profile/display';
+  //Authentication Section
+  static const String emailRegistration = 'account/create-account';
+  static const String emailValidationOtp = 'account/confirm-account';
+  static const String resendOtp = 'account/resend-verification-code';
+  static const String signUp = 'account/complete-signup';
+  static const String signIn = 'auth/login';
+
+  //Account Section
+  static const String userInfo = 'profile/user';
+  static const String userDropdownInfo = 'profile/form-data';
+  static const String createBasicInfo = 'profile/personal-bio';
+  static const String createEducationInfo = 'profile/education';
+  static const String createWorkInfo = 'profile/work';
+
+ 
 }

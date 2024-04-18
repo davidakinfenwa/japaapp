@@ -1,36 +1,27 @@
 import 'package:equatable/equatable.dart';
 
-// @freezed
-// class OtpVerificationFromParams with _$OtpVerificationFromParams {
-//   const factory OtpVerificationFromParams.signupForm({
-//     required SignupOtpVerificationFormParams signupOtpVerificationFormParams,
-//   }) = _SignupForm;
-//   const factory OtpVerificationFromParams.forgotPasswordForm({
-//     required ForgotPasswordOtpVerificationFormParams
-//         forgotPasswordOtpVerificationFormParams,
-//   }) = _ForgotPasswordForm;
-// }
 
-class SignupOtpVerificationFormParams extends Equatable {
-  final String email;
+
+class EmailOtpVerificationFormParams extends Equatable {
+  final String id;
   final String otp;
 
-  const SignupOtpVerificationFormParams(
-      {required this.email, required this.otp});
+  const EmailOtpVerificationFormParams(
+      {required this.id, required this.otp});
 
   Map<String, dynamic> toJson() {
     return {
       'otp': otp,
-      'email': email,
+      'id': id,
     };
   }
 
   @override
-  List<Object> get props => [otp, email];
+  List<Object> get props => [otp, id];
 
   @override
   String toString() =>
-      'SignupOtpVerificationFormParams(email: $email, otp: $otp)';
+      'EmailOtpVerificationFormParams(email: $id, otp: $otp)';
 }
 
 

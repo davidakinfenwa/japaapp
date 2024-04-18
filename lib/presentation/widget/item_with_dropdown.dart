@@ -54,6 +54,7 @@ class _ItemWithDropDownState extends State<ItemWithDropDown> {
           readOnly: true,
           hint: widget.hintText,
           controller: widget.controller,
+          
           onTap: () {
             showModalBottomSheet(
               context: context,

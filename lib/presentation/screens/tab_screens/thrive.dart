@@ -1,5 +1,7 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:japaapp/core/constants.dart';
@@ -104,57 +106,54 @@ class _ThriveScreenState extends State<ThriveScreen>
 
   Widget _buildTabHeaderSection() {
     return Container(
-//margin: EdgeInsets.all(10.h),
-      padding: const EdgeInsets.all(5),
+      padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
       decoration: BoxDecoration(
-          color: CustomTypography.kGreyColor20,
-          borderRadius: BorderRadius.circular(Sizing.kBorderRadius.r)),
+        color: CustomTypography.kGreyColor20,
+        borderRadius: BorderRadius.circular(Sizing.kBorderRadius.r),
+      ),
       child: SizedBox(
         height: Sizing.kHSpacing35.h,
         width: MediaQuery.sizeOf(context).width,
         child: TabBar(
-            controller: _tabController,
-            tabAlignment: TabAlignment.fill,
-            dividerHeight: 0,
-            labelColor: Colors.white,
-            indicatorColor: CustomTypography.kPrimaryColor300,
-            indicatorSize: TabBarIndicatorSize.tab,
-            labelPadding: EdgeInsets.zero,
-            padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 5),
-            labelStyle: Theme.of(context)
-                .textTheme
-                .headlineSmall
-                ?.copyWith(fontSize: 13.sp, fontWeight: FontWeight.w400),
-            unselectedLabelColor: CustomTypography.kTitleMedium,
-            unselectedLabelStyle: Theme.of(context)
-                .textTheme
-                .headlineSmall
-                ?.copyWith(fontSize: 13.sp, fontWeight: FontWeight.w400),
-            indicatorPadding: EdgeInsets.zero,
-            indicator: BoxDecoration(
-                color: CustomTypography.kPrimaryColor300,
-                borderRadius: BorderRadius.circular(Sizing.kBorderRadius.r)),
-            tabs: ['Communities', 'Job feed', 'Housing','Mentorship']
-                .map((e) => Container(
-                      //color: Colors.red,
-                      width: MediaQuery.sizeOf(context).width,
-                      child: Tab(
-                        //height: 30.h,
-                        child: Container(
-                          width: MediaQuery.sizeOf(context).width,
-                          //color: Colors.red,
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 0, vertical: 5),
-
-                          child: Center(
-                              child: Text(
-                            e,
-                            // style: TextStyle(fontSize: 12.sp),
-                          )),
-                        ),
+          isScrollable: true,
+          controller: _tabController,
+          tabAlignment: TabAlignment.start,
+          dividerHeight: 0,
+          labelColor: Colors.white,
+          indicatorColor: CustomTypography.kPrimaryColor300,
+          indicatorSize: TabBarIndicatorSize.tab,
+          labelPadding: EdgeInsets.zero,
+          padding: const EdgeInsets.symmetric(
+              vertical: 3, horizontal: 4), // Adjust horizontal padding
+          labelStyle: Theme.of(context)
+              .textTheme
+              .headlineSmall
+              ?.copyWith(fontSize: 14.sp, fontWeight: FontWeight.w400),
+          unselectedLabelColor: CustomTypography.kTitleMedium,
+          unselectedLabelStyle: Theme.of(context)
+              .textTheme
+              .headlineSmall
+              ?.copyWith(fontSize: 14.sp, fontWeight: FontWeight.w400),
+          indicatorPadding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+          indicator: BoxDecoration(
+            color: CustomTypography.kPrimaryColor300,
+            borderRadius: BorderRadius.circular(Sizing.kBorderRadius.r),
+          ),
+          tabs: ['Communities', 'Job feed', 'Housing', 'Mentorship']
+              .map((e) => Container(
+                    width: MediaQuery.sizeOf(context).width / 3 -
+                        6, // Adjust width of the tab
+                    child: Tab(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(e),
+                        ],
                       ),
-                    ))
-                .toList()),
+                    ),
+                  ))
+              .toList(),
+        ),
       ),
     );
   }
@@ -204,7 +203,7 @@ class _ThriveScreenState extends State<ThriveScreen>
                 crossAxisCount: 2,
                 crossAxisSpacing: 10,
                 mainAxisSpacing: 10,
-                childAspectRatio: 1,
+                childAspectRatio: 0.6,
               ),
               itemCount: items.length,
               itemBuilder: (context, index) {
@@ -214,7 +213,7 @@ class _ThriveScreenState extends State<ThriveScreen>
               }),
           _buildJobListSection(),
           _buildHouseSection(),
-          _buildHouseSection(),
+          _buildMentorshipBox(),
           // GridView.builder(
           //     shrinkWrap: true,
           //     physics: const BouncingScrollPhysics(),
@@ -239,44 +238,89 @@ class _ThriveScreenState extends State<ThriveScreen>
   Widget _buildCommunityList(String title, String img, String count) {
     return Container(
       width: MediaQuery.sizeOf(context).width.w,
-      //padding: EdgeInsets.only(left: 0.w,bottom: 10),
-      //color: Colors.red,
+      padding: EdgeInsets.only(left: 0.w, bottom: 10),
+      decoration: BoxDecoration(
+          border: Border.all(color: CustomTypography.kGreyColor40),
+          borderRadius: BorderRadius.circular(Sizing.kSizingMultiple)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            //width: 90,
-            height: 100,
-            decoration: ShapeDecoration(
-              image: DecorationImage(
-                image: AssetImage(img),
-                fit: BoxFit.cover,
-              ),
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8)),
-            ),
-          ),
-          SizedBox(
-            width: 100,
-            child: Text(
-              title,
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    color: const Color(0xFF344054),
-                    fontWeight: FontWeight.w500,
-                    height: 1.2.h,
-                  ),
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-          SizedBox(
-            height: Sizing.kSizingMultiple.h,
-          ),
-          Text(
-            count,
-            style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                  color: const Color(0xFF344054),
-                  height: 0.9,
+          Expanded(
+              child: ClipRRect(
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(Sizing.kSizingMultiple.r),
+                      topRight: Radius.circular(Sizing.kSizingMultiple.r)),
+                  child: Image.asset(
+                    img,
+                    height: MediaQuery.sizeOf(context).height,
+                    width: MediaQuery.sizeOf(context).width,
+                    fit: BoxFit.cover,
+                  ))),
+          Padding(
+            padding: const EdgeInsets.only(left: 10),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Expanded(
+                //   child: Container(
+                //     width: 150,
+                //     height: 250,
+                //     decoration: ShapeDecoration(
+                //       image: DecorationImage(
+                //         image: AssetImage(img),
+                //         fit: BoxFit.cover,
+                //       ),
+                //       shape: RoundedRectangleBorder(
+                //           borderRadius: BorderRadius.circular(8)),
+                //     ),
+                //   ),
+                // ),
+
+                // SizedBox(
+                //   //width: 100,
+                //   child: Text(
+                //     title,
+                //     style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                //           color: const Color(0xFF344054),
+                //           fontWeight: FontWeight.w500,
+                //          // height: 1.2.h,
+                //         ),
+                //     overflow: TextOverflow.ellipsis,
+                //   ),
+                // ),
+
+                LayoutBuilder(
+                  builder: (BuildContext context, BoxConstraints constraints) {
+                    return SizedBox(
+                      width: MediaQuery.sizeOf(context).width,
+                      height: 50,
+                      child: Text(
+                        constraints.maxHeight > 50 ? "$title..." : title,
+                        style:
+                            Theme.of(context).textTheme.titleMedium?.copyWith(
+                                  color: const Color(0xFF344054),
+                                  fontWeight: FontWeight.w700,
+                                  //fontSize: 13
+                                ),
+                        maxLines: constraints.maxHeight > 50 ? null : 1,
+                        //overflow: TextOverflow.ellipsis,
+                      ),
+                    );
+                  },
                 ),
+                // SizedBox(
+                //   height: Sizing.kSizingMultiple.h,
+                // ),
+                Text(
+                  count,
+                  style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                        color: const Color(0xFF344054),
+                        fontWeight: FontWeight.w400,
+                        //height: 0.9,
+                      ),
+                ),
+              ],
+            ),
           ),
         ],
       ),
@@ -831,13 +875,326 @@ class _ThriveScreenState extends State<ThriveScreen>
                       ),
                     ),
                   ),
+                  Positioned(
+                      bottom: Sizing.kSizingMultiple,
+                      right: Sizing.kSizingMultiple,
+                      left: Sizing.kSizingMultiple,
+                      child: Opacity(
+                        opacity: 0.80,
+                        child: Container(
+                          padding: EdgeInsets.all(Sizing.kSizingMultiple.h),
+                          decoration: ShapeDecoration(
+                            color: CustomTypography.kBottomNavColor,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(5)),
+                          ),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Paul Pastur 86.',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleMedium
+                                        ?.copyWith(
+                                          fontWeight: FontWeight.w700,
+                                        )
+                                  ),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          SvgPicture.asset(
+                                              "assets/svg/bed.svg"),
+                                               SizedBox(
+                                        width: Sizing.kSizingMultiple.h,
+                                      ),
+                                          Text(
+                                            '3',
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .titleSmall
+                                                ?.copyWith(
+                                                  color: CustomTypography
+                                                      .kTitleMedium,
+                                                  fontWeight: FontWeight.w700,
+                                                ),
+                                          ),
+                                        ],
+                                      ),
+                                      SizedBox(
+                                        width: Sizing.kSizingMultiple*2.h,
+                                      ),
+                                      Row(
+                                        children: [
+                                          SvgPicture.asset(
+                                              "assets/svg/bath.svg"),
+                                               SizedBox(
+                                        width: Sizing.kSizingMultiple.h,
+                                      ),
+                                          Text(
+                                            '3',
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .titleSmall
+                                                ?.copyWith(
+                                                  color: CustomTypography
+                                                      .kTitleMedium,
+                                                  fontWeight: FontWeight.w700,
+                                                ),
+                                          ),
+                                        ],
+                                      ),
+                                      SizedBox(
+                                        width: Sizing.kSizingMultiple*2.h,
+                                      ),
+                                      Row(
+                                        children: [
+                                          SvgPicture.asset(
+                                              "assets/svg/size.svg"),
+                                               SizedBox(
+                                        width: Sizing.kSizingMultiple.h,
+                                      ),
+                                          Text(
+                                            '334 sqft',
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .titleSmall
+                                                ?.copyWith(
+                                                  color: CustomTypography
+                                                      .kTitleMedium,
+                                                  fontWeight: FontWeight.w700,
+                                                ),
+                                          ),
+                                        ],
+                                      )
+                                    ],
+                                  )
+                                ],
+                              ),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      '\$342',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleMedium
+                                          ?.copyWith(
+                                            fontWeight: FontWeight.w700,
+                                          ),
+                                    ),
+                                     SizedBox(
+                                        height: Sizing.kSizingMultiple/2.h,
+                                      ),
+                                    Text(
+                                      'Monthly',
+                                      style:  Theme.of(context)
+                                                .textTheme
+                                                .titleSmall
+                                                ?.copyWith(
+                                                  color: CustomTypography
+                                                      .kTitleMedium,
+                                                  fontWeight: FontWeight.w700,
+                                                ),
+                                    ),
+                                  ],
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                      ))
                 ],
               ),
             );
           },
         ),
-        
       ],
     );
   }
+
+Widget _buildMentorshipBox(){
+  return SingleChildScrollView(
+    physics:const BouncingScrollPhysics(),
+    child: Column(children: [
+      _buildMentorshipSection("I have interview coming up"),
+     // SizedBox(height: Sizing.kHSpacing10,),
+      _buildMentorshipSection("I want to grow my career"),
+     // SizedBox(height: Sizing.kHSpacing10,),
+      _buildMentorshipSection("I need legal advice"),
+    ],),
+  );
+}
+
+   Widget _buildMentorshipSection(String title) {
+    
+    final List<Map<String, dynamic>> items = [
+      {
+        "image": "assets/images/com12.png",
+        "count": "Data Engineer - Apple",
+        "title": 'Name Surname'
+      },
+      {
+        "image": "assets/images/com13.png",
+        "count": "Data Engineer - Apple",
+        "title": 'Name Surname'
+      },
+      {
+        "image": "assets/images/com14.png",
+        "count": "Data Engineer - Apple",
+        "title": 'Name Surname'
+      },
+      {
+        "image": "assets/images/com12.png",
+        "count": "Data Engineer - Apple",
+        "title": 'Name Surname'
+      },
+      {
+        "image": "assets/images/com14.png",
+        "count": "Data Engineer - Apple",
+        "title": 'Name Surname'
+      },
+      {
+        "image": "assets/images/com13.png",
+        "count": "Data Engineer - Apple",
+       "title": 'Name Surname'
+      },
+    ];
+    return SizedBox(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              InkWell(
+                splashColor: Colors.transparent,
+                highlightColor: Colors.transparent,
+                onTap: () {},
+                child: Text(
+                  title,
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        color: const Color(0xFF0D0D0D),
+                        height: 0.9,
+                      ),
+                ),
+              ),
+              Row(
+                children: [
+                  InkWell(
+                      splashColor: Colors.transparent,
+                      highlightColor: Colors.transparent,
+                      onTap: () {
+                       // bottomNavCProvider.pageIndex = 2;
+                        // context.router.push( MyProcessTabRoute(nav: "newMigrant"));
+                        // context.router.push(route)
+                      },
+                      child: Text(
+                        "See More",
+                        style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                              color: const Color(0xFF595959),
+                              height: 0.9,
+                            ),
+                      )),
+                  Image.asset(
+                    'assets/images/forward_arrow.png',
+                    width: (Sizing.kSizingMultiple * 2).w,
+                    height: (Sizing.kSizingMultiple * 2).h,
+                  ),
+                ],
+              ),
+            ],
+          ),
+          SizedBox(
+            height: Sizing.kHSpacing10,
+          ),
+          Container(
+           // color: Colors.red,
+            height: 120.h,
+            width: MediaQuery.sizeOf(context).width,
+            child: ListView.builder(
+              // padEnds: false,
+              padding: EdgeInsets.fromLTRB(0, 0, 0.w, 0),
+              shrinkWrap: true,
+              dragStartBehavior: DragStartBehavior.start,
+              scrollDirection: Axis.horizontal,
+              physics: const BouncingScrollPhysics(),
+              itemCount: items.length,
+              itemBuilder: (context, index) {
+                final data = items[index];
+                return _buildMentorshipList(
+                    data['title'], data['image'], data['count']);
+              },
+            ),
+          ),
+          SizedBox(height: (Sizing.kSizingMultiple * 2.5).h),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMentorshipList(String title, String img, String count) {
+    return Container(
+      //width: 120,
+      padding: EdgeInsets.only(left: 0.w),
+      //color: Colors.red,
+      margin: EdgeInsets.only(right: Sizing.kSizingMultiple.h),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: 100,
+            height: 100,
+            decoration: ShapeDecoration(
+              image: DecorationImage(
+                image: AssetImage(img),
+                fit: BoxFit.fill,
+              ),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8)),
+            ),
+          ),
+          LayoutBuilder(
+            builder: (BuildContext context, BoxConstraints constraints) {
+              return SizedBox(
+                width: 100,
+                //height: 50,
+                child: Text(
+                   title,
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        color: const Color(0xFF344054),
+                        fontWeight: FontWeight.w400,
+                        fontSize: 13.sp
+                      ),
+                  maxLines: constraints.maxHeight > 50 ? null : 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              );
+            },
+          ),
+          // SizedBox(
+          //   height: Sizing.kSizingMultiple.h,
+          // ),
+          Text(
+            count,
+            style: Theme.of(context).textTheme.titleSmall?.copyWith(
+              fontSize: 9.sp,
+              fontWeight: FontWeight.w400
+                 // color: const Color(0xFF344054),
+                  //height: 0.9,
+                ),
+          ),
+        ],
+      ),
+    );
+  }
+
 }

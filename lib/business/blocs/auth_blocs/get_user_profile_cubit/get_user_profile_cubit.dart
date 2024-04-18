@@ -29,9 +29,9 @@ class GetUserProfileCubit
           failure: failure),
       (userProfile) {
         // cache snapshot
-        if (userProfile.hasUserInfo) {
-          _snapshotCache.userInfo = userProfile.user;
-        }
+        // if (userProfile.hasUserInfo) {
+        //   _snapshotCache.userInfo = userProfile.user;
+        // }
 
         return BlocState<Failure<ExceptionMessage>, UserInfoModel>.success(
             data: userProfile);

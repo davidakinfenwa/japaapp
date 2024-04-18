@@ -277,6 +277,7 @@ class _FormFieldInputHalfState extends State<FormFieldInputHalf> {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(Sizing.kBorderRadius),
         // color: CustomTypography.kGreyColor40,
+         color: CustomTypography.kBottomNavColor,
       ),
       child: TextFormField(
         cursorColor: CustomTypography.kPrimaryColor500,
@@ -580,15 +581,65 @@ class _PhoneNumberInputFieldState extends State<PhoneNumberInputField> {
               Expanded(
                 child: Theme(
                   data: Theme.of(context).copyWith(
-                      // Specify dropdownColor
-                      // dropdownMenuTheme: DropdownMenuThemeData(inputDecorationTheme: InputDecorationTheme(fillColor: Colors.white)), // Yo
-                      //ur desired color
-                      dropdownMenuTheme: const DropdownMenuThemeData(menuStyle: MenuStyle(backgroundColor: MaterialStatePropertyAll(Colors.red)),inputDecorationTheme: InputDecorationTheme())
-                      //dialogTheme:DialogTheme(backgroundColor: CustomTypography.kWhiteColor),
-                      ),
-                      //dialogBackgroundColor: Colors.white),
+                    // Specify dropdownColor
+                    dropdownMenuTheme:  DropdownMenuThemeData(
+                        inputDecorationTheme: InputDecorationTheme(
+                            fillColor: Colors.white,
+                             labelStyle: Theme.of(context).textTheme.labelSmall?.copyWith(
+                            fontWeight: FontWeight.w500,
+                            color: CustomTypography.kBlackColor,
+                            fontSize: 13.0.sp) ,
+                      )), // Yo
+                    //ur desired color
+                    // dropdownMenuTheme: const DropdownMenuThemeData(menuStyle: MenuStyle(backgroundColor: MaterialStatePropertyAll(Colors.red)),inputDecorationTheme: InputDecorationTheme()),
+                    dialogTheme: const DialogTheme(
+                      backgroundColor: CustomTypography.kWhiteColor,
+                      shadowColor: Colors.white,
+                      surfaceTintColor: Colors.white,
+                      titleTextStyle: TextStyle(color: Colors.black),
+                    ),
+                  ),
+                  //dialogBackgroundColor: Colors.white),
                   child: IntlPhoneField(
-                    pickerDialogStyle: PickerDialogStyle(backgroundColor:  Colors.white,width: MediaQuery.sizeOf(context).width,),
+                    pickerDialogStyle: PickerDialogStyle(
+                      backgroundColor: Colors.white,
+                      width: MediaQuery.sizeOf(context).width,
+                      padding: EdgeInsets.all(20.sp),
+                      searchFieldInputDecoration: InputDecoration( 
+                        
+                        //filled: true,
+                      fillColor: CustomTypography.kWhiteColor,
+                      labelStyle: Theme.of(context).textTheme.labelSmall?.copyWith(
+                            fontWeight: FontWeight.w500,
+                            color: CustomTypography.kBlackColor,
+                            fontSize: 13.0.sp) ,
+                      label: Text(
+                        widget.hintText.toString(),
+                        style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                            fontWeight: FontWeight.w500,
+                            color: CustomTypography.kBlackColor,
+                            fontSize: 13.0.sp),
+                      ),
+                      contentPadding: EdgeInsets.all(15.w),
+                      helperStyle:Theme.of(context)
+                          .textTheme
+                          .labelSmall
+                          ?.copyWith(
+                              fontWeight: FontWeight.w500,
+                              color: CustomTypography.kGreyColorlabel,
+                              fontSize: 13.0.sp) ,
+                      hintStyle: Theme.of(context)
+                          .textTheme
+                          .labelSmall
+                          ?.copyWith(
+                              fontWeight: FontWeight.w500,
+                              color: CustomTypography.kGreyColorlabel,
+                              fontSize: 13.0.sp),
+                      
+                      ) // Specify the desired width
+                    ),
+
+                    //pickerDialogStyle: PickerDialogStyle(backgroundColor:  Colors.white, width: MediaQuery.sizeOf(context).width,),
                     initialCountryCode: "",
                     cursorColor: CustomTypography.kPrimaryColor500,
                     focusNode: widget.fieldFocusNode,
@@ -599,13 +650,15 @@ class _PhoneNumberInputFieldState extends State<PhoneNumberInputField> {
                     dropdownIconPosition: IconPosition.trailing,
                     style: const TextStyle(color: Colors.black),
                     controller: widget.controller,
+                    keyboardType: TextInputType.number,
 
                     //dropdownDecoration: BoxDecoration(color: Colors.red),
                     decoration: InputDecoration(
+                      
                       filled: true,
                       fillColor: CustomTypography.kBottomNavColor,
-                     // hintText: widget.hintText,
-                      //labelStyle: TextStyle(color: Colors.red),
+                      // hintText: widget.hintText,
+                      // labelStyle: TextStyle(color: Colors.red),
                       label: Text(
                         widget.hintText.toString(),
                         style: Theme.of(context).textTheme.labelSmall?.copyWith(
@@ -645,6 +698,7 @@ class _PhoneNumberInputFieldState extends State<PhoneNumberInputField> {
                     ),
                     //dropdownDecoration: const BoxDecoration(),
                     //initialCountryCode: 'NG',
+                    dropdownDecoration: BoxDecoration(),
                     showCountryFlag: true,
 
                     onChanged: widget.onChanged,
@@ -770,7 +824,7 @@ class _FormFieldInputPreffixState extends State<FormFieldInputPreffix> {
           prefixIconConstraints:
               const BoxConstraints(minHeight: 24, minWidth: 24),
           prefixIcon: Padding(
-            padding: EdgeInsetsDirectional.only(start: 5),
+            padding: const EdgeInsetsDirectional.only(start: 5),
             child: widget.prefixIcon,
           ),
           hintText: widget.hint,

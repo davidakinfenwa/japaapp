@@ -24,7 +24,7 @@ abstract class _$AppRouter extends RootStackRouter {
     AccountBasicInfoRoute.name: (routeData) {
       return AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: const AccountBasicInfoPage(),
+        child: WrappedRoute(child: const AccountBasicInfoPage()),
       );
     },
     AccountBudgetRoute.name: (routeData) {
@@ -36,31 +36,41 @@ abstract class _$AppRouter extends RootStackRouter {
     AccountEducationRoutes.name: (routeData) {
       return AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: const AccountEducationPages(),
+        child: WrappedRoute(child: const AccountEducationPages()),
       );
     },
     AccountFamilyRoute.name: (routeData) {
       return AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: const AccountFamilyPage(),
+        child: WrappedRoute(child: const AccountFamilyPage()),
       );
     },
     AccountWorkRoutes.name: (routeData) {
       return AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: const AccountWorkPages(),
+        child: WrappedRoute(child: const AccountWorkPages()),
+      );
+    },
+    CommunityDetailRoute.name: (routeData) {
+      final args = routeData.argsAs<CommunityDetailRouteArgs>();
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: CommunityDetailScreen(
+          key: args.key,
+          title: args.title,
+        ),
       );
     },
     CreateAccountRoute.name: (routeData) {
       return AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: const CreateAccountPage(),
+        child: WrappedRoute(child: const CreateAccountPage()),
       );
     },
     EmailVerificationRoute.name: (routeData) {
       return AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: const EmailVerificationPage(),
+        child: WrappedRoute(child: const EmailVerificationPage()),
       );
     },
     FirstRouteOndoard.name: (routeData) {
@@ -122,9 +132,15 @@ abstract class _$AppRouter extends RootStackRouter {
       );
     },
     OTPVerificationRoute.name: (routeData) {
+      final args = routeData.argsAs<OTPVerificationRouteArgs>(
+          orElse: () => const OTPVerificationRouteArgs());
       return AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: const OTPVerificationPage(),
+        child: WrappedRoute(
+            child: OTPVerificationPage(
+          key: args.key,
+          source: args.source,
+        )),
       );
     },
     SelectedServicesRoute.name: (routeData) {
@@ -140,7 +156,7 @@ abstract class _$AppRouter extends RootStackRouter {
     SignInRoute.name: (routeData) {
       return AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: const SignInPage(),
+        child: WrappedRoute(child: const SignInPage()),
       );
     },
     SplashRoute.name: (routeData) {
@@ -158,7 +174,7 @@ abstract class _$AppRouter extends RootStackRouter {
     TabRoute.name: (routeData) {
       return AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: const TabScreen(),
+        child: WrappedRoute(child: const TabScreen()),
       );
     },
   };
@@ -246,6 +262,44 @@ class AccountWorkRoutes extends PageRouteInfo<void> {
   static const String name = 'AccountWorkRoutes';
 
   static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
+/// [CommunityDetailScreen]
+class CommunityDetailRoute extends PageRouteInfo<CommunityDetailRouteArgs> {
+  CommunityDetailRoute({
+    Key? key,
+    required String title,
+    List<PageRouteInfo>? children,
+  }) : super(
+          CommunityDetailRoute.name,
+          args: CommunityDetailRouteArgs(
+            key: key,
+            title: title,
+          ),
+          initialChildren: children,
+        );
+
+  static const String name = 'CommunityDetailRoute';
+
+  static const PageInfo<CommunityDetailRouteArgs> page =
+      PageInfo<CommunityDetailRouteArgs>(name);
+}
+
+class CommunityDetailRouteArgs {
+  const CommunityDetailRouteArgs({
+    this.key,
+    required this.title,
+  });
+
+  final Key? key;
+
+  final String title;
+
+  @override
+  String toString() {
+    return 'CommunityDetailRouteArgs{key: $key, title: $title}';
+  }
 }
 
 /// generated route for
@@ -428,16 +482,40 @@ class MyProcessTabRouteArgs {
 
 /// generated route for
 /// [OTPVerificationPage]
-class OTPVerificationRoute extends PageRouteInfo<void> {
-  const OTPVerificationRoute({List<PageRouteInfo>? children})
-      : super(
+class OTPVerificationRoute extends PageRouteInfo<OTPVerificationRouteArgs> {
+  OTPVerificationRoute({
+    Key? key,
+    OtpVerificationScreenSource source = OtpVerificationScreenSource.signup,
+    List<PageRouteInfo>? children,
+  }) : super(
           OTPVerificationRoute.name,
+          args: OTPVerificationRouteArgs(
+            key: key,
+            source: source,
+          ),
           initialChildren: children,
         );
 
   static const String name = 'OTPVerificationRoute';
 
-  static const PageInfo<void> page = PageInfo<void>(name);
+  static const PageInfo<OTPVerificationRouteArgs> page =
+      PageInfo<OTPVerificationRouteArgs>(name);
+}
+
+class OTPVerificationRouteArgs {
+  const OTPVerificationRouteArgs({
+    this.key,
+    this.source = OtpVerificationScreenSource.signup,
+  });
+
+  final Key? key;
+
+  final OtpVerificationScreenSource source;
+
+  @override
+  String toString() {
+    return 'OTPVerificationRouteArgs{key: $key, source: $source}';
+  }
 }
 
 /// generated route for

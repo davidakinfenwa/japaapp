@@ -2,21 +2,37 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:japaapp/business/blocs/auth_blocs/signin_form_cubit/signin_form_cubit.dart';
+import 'package:japaapp/business/blocs/bloc_state.dart';
 import 'package:japaapp/core/constants.dart';
+import 'package:japaapp/core/dependence/dependence.dart';
+import 'package:japaapp/core/exceptions/exceptions.dart';
 import 'package:japaapp/core/route/app_router.dart';
 import 'package:japaapp/core/theme/custom_typography.dart';
+import 'package:japaapp/core/util/keyboard_util.dart';
+import 'package:japaapp/core/util/snackbar_util.dart';
 import 'package:japaapp/core/util/width_constraints.dart';
+import 'package:japaapp/domain/form_params/auth/signin_form_params.dart';
+import 'package:japaapp/domain/model/auth/user_info_model.dart';
 import 'package:japaapp/presentation/shared/custom_button.dart';
 import 'package:japaapp/presentation/widget/back_button.dart';
 import 'package:japaapp/presentation/widget/form_field.dart';
 
 @RoutePage()
-class SignInPage extends StatefulWidget {
+class SignInPage extends StatefulWidget implements AutoRouteWrapper {
   const SignInPage({super.key});
 
   @override
   State<SignInPage> createState() => _SignInPageState();
+    @override
+  Widget wrappedRoute(BuildContext context) {
+    return BlocProvider<SigninFormCubit>(
+      create: (context) => getIt<SigninFormCubit>(),
+      child: this,
+    );
+  }
 }
 
 class _SignInPageState extends State<SignInPage> {
@@ -35,7 +51,7 @@ class _SignInPageState extends State<SignInPage> {
 
   void _handlePress() {
     HapticFeedback.vibrate();
-    context.router.replace(const CreateAccountRoute());
+    context.router.replace(const EmailVerificationRoute());
   }
 
   @override
@@ -44,6 +60,16 @@ class _SignInPageState extends State<SignInPage> {
     _passwordTextFieldController.dispose();
     super.dispose();
   }
+
+    void _onUserSignInCallback() async{
+    KeyboardUtil.hideKeyboard(context);
+
+    //if (!_formKey.currentState!.validate()) return;
+
+    final signInFromParams = SignInFromParams(email: _emailTextFieldController.text, password: _passwordTextFieldController.text);
+    context.read<SigninFormCubit>().signin(signInFromParams: signInFromParams);
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -175,7 +201,7 @@ class _SignInPageState extends State<SignInPage> {
     );
   }
 
-  Widget _buildActionButton() {
+  Widget _buildActionButtonb() {
     return Column(
       children: [
         CustomButton(
@@ -195,6 +221,63 @@ class _SignInPageState extends State<SignInPage> {
         ),
         _buildAuthModeSwitcherSection()
       ],
+    );
+  }
+
+
+      Widget _buildActionButton() {
+    return BlocConsumer<SigninFormCubit,
+        BlocState<Failure<ExceptionMessage>, UserInfoModel>>(
+      listener: (context, state) {
+        state.maybeMap(
+          orElse: () => null,
+          success: (state) {
+            if (state.data.accessToken!.isNotEmpty) {
+              // clear form inputs
+              _formKey.currentState!.reset();
+
+              context.router.replace(const TabRoute());
+            } else {
+              SnackBarUtil.snackbarError<String>(
+                context,
+                code: ExceptionCode.UNDEFINED,
+                message: state.data.message,
+              );
+            }
+          },
+          error: (state) {
+            SnackBarUtil.snackbarError<String>(
+              context,
+              code: state.failure.exception.code,
+              message: state.failure.exception.message.toString(),
+              onRefreshCallback: () => _onUserSignInCallback(),
+            );
+          },
+        );
+      },
+      builder: (context, state) {
+        final isLoading =
+            state is Loading<Failure<ExceptionMessage>, UserInfoModel>;
+
+        return Column(
+          children: [
+            CustomButton(
+              type: ButtonType.regularButton(
+                  onTap: () => _onUserSignInCallback(),
+                   label: 'Login',
+                  isLoadingMode: isLoading,
+                  backgroundColor: CustomTypography.kPrimaryColor300,
+                  textColor: CustomTypography.kWhiteColor,
+                  borderRadius: BorderRadius.all(
+                      Radius.circular(Sizing.kBorderRadius * 7.r))),
+            ),
+             SizedBox(
+          height: Sizing.kHSpacing10,
+        ),
+        _buildAuthModeSwitcherSection()
+          ],
+        );
+      },
     );
   }
 

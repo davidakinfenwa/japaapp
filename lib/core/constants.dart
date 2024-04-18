@@ -46,7 +46,7 @@ class Sizing {
 
   // top verification code
   static const kOTPCodeLength = 4;
-  static const kOTPExpiryDuration = 300; // seconds
+  static const kOTPExpiryDuration = 60; // seconds
 
   // splash screen
   static const kSplashScreenDelay = 25; // seconds
@@ -104,4 +104,19 @@ class ExceptionMessages {
     code: ExceptionCode.NO_INTERNET_CONNECTION,
     message: ExceptionMessage.NO_INTERNET_CONNECTION,
   );
+}
+
+String formatError(dynamic errors) {
+  if (errors is Map) {
+    return errors.entries.toList().asMap().entries.map((entry) {
+      int index = entry.key + 1;
+      String key = entry.value.key;
+      String values = entry.value.value.join(", ");
+      return "$index: $values";
+    }).join("\n");
+  } else if (errors is String) {
+    return errors;
+  } else {
+    return "Invalid input type";
+  }
 }

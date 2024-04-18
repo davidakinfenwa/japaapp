@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:japaapp/domain/model/auth/email_verification_otp_model.dart';
 import 'package:japaapp/domain/model/models.dart';
 
 
@@ -7,6 +8,7 @@ class AuthSnapshotCache with ChangeNotifier {
   static UserInfo? _userInfo;
   static UserInfo? _userInfoContext;
   static AuthKeyModel? _authKeyModel;
+  static EmailVerificationOtpModel? _emailVerificationOtpModel;
 
   static String? _forgotPasswordPhoneNumber;
 
@@ -35,6 +37,13 @@ class AuthSnapshotCache with ChangeNotifier {
     _forgotPasswordPhoneNumber = phoneNumber;
     notifyListeners();
   }
+
+EmailVerificationOtpModel get emailVerificationOtpModel => _emailVerificationOtpModel??EmailVerificationOtpModel.empty();
+set emailVerificationOtpModel(EmailVerificationOtpModel emailVerificationOtpModel){
+  _emailVerificationOtpModel=emailVerificationOtpModel;
+  notifyListeners();
+}
+
 
   void notifyAllListeners() {
     notifyListeners();

@@ -23,18 +23,15 @@ class SigninFormCubit extends Cubit<BlocState<Failure<ExceptionMessage>, UserInf
   Future<void> signin({required SignInFromParams signInFromParams}) async {
     emit(const BlocState<Failure<ExceptionMessage>, UserInfoModel>.loading());
 
-    final _signinEither =
-        await _repository.signin(signInFromParams: signInFromParams);
+    final _signinEither = await _repository.signin(signInFromParams: signInFromParams);
 
     final _state = _signinEither.fold(
       (failure) => BlocState<Failure<ExceptionMessage>, UserInfoModel>.error(
           failure: failure),
       (userInfoModel) {
         // cache snapshot
-        if (userInfoModel.hasUserInfo) {
-          _snapshotCache.userInfo = userInfoModel.user;
-        }
-
+         _snapshotCache.userInfo = userInfoModel.data;
+       
         return BlocState<Failure<ExceptionMessage>, UserInfoModel>.success(
             data: userInfoModel);
       },

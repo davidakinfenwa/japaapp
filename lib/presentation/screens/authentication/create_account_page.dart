@@ -4,32 +4,52 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:japaapp/business/blocs/auth_blocs/signup_form_cubit/signup_form_cubit.dart';
+import 'package:japaapp/business/blocs/bloc_state.dart';
 import 'package:japaapp/core/constants.dart';
+import 'package:japaapp/core/dependence/dependence.dart';
+import 'package:japaapp/core/exceptions/exceptions.dart';
 import 'package:japaapp/core/route/app_router.dart';
 import 'package:japaapp/core/theme/custom_typography.dart';
+import 'package:japaapp/core/util/keyboard_util.dart';
+import 'package:japaapp/core/util/snackbar_util.dart';
 import 'package:japaapp/core/util/width_constraints.dart';
+import 'package:japaapp/data/local_data/local_storage.dart';
+import 'package:japaapp/domain/form_params/auth/signup_form_params.dart';
+import 'package:japaapp/domain/model/models.dart';
 import 'package:japaapp/presentation/shared/custom_button.dart';
 import 'package:japaapp/presentation/widget/back_button.dart';
 import 'package:japaapp/presentation/widget/form_field.dart';
 
 @RoutePage()
-class CreateAccountPage extends StatefulWidget {
+class CreateAccountPage extends StatefulWidget implements AutoRouteWrapper {
   const CreateAccountPage({super.key});
 
   @override
   State<CreateAccountPage> createState() => _CreateAccountPageState();
+
+  @override
+  Widget wrappedRoute(BuildContext context) {
+    return BlocProvider<SignupFormCubit>(
+      create: (context) => getIt<SignupFormCubit>(),
+      child: this,
+    );
+  }
+
+
+  
+
 }
 
 class _CreateAccountPageState extends State<CreateAccountPage> {
-  TextEditingController _comfirmPasswordTextFieldController =
-      TextEditingController();
+  TextEditingController _comfirmPasswordTextFieldController = TextEditingController();
   TextEditingController _firstNameTextFieldController = TextEditingController();
   TextEditingController _otherNameTextFieldController = TextEditingController();
   TextEditingController _lastNameTextFieldController = TextEditingController();
   TextEditingController _passwordTextFieldController = TextEditingController();
-  TextEditingController _phoneNumerTextFieldController =
-      TextEditingController();
+  TextEditingController _phoneNumerTextFieldController =TextEditingController();
   late StreamController<String> phoneNumberStreamController;
   dynamic completePhoneNumber;
   String countryDialCode = '';
@@ -58,10 +78,8 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
 
   void validateStreams() {
     phoneNumberStreamController = StreamController<String>.broadcast();
-
     _passwordTextFieldController.addListener(() {
-      phoneNumberStreamController.sink
-          .add(_passwordTextFieldController.text.trim());
+      phoneNumberStreamController.sink.add(_passwordTextFieldController.text.trim());
       // validateInputs();
     });
   }
@@ -75,6 +93,15 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
     _passwordTextFieldController.dispose();
     _phoneNumerTextFieldController.dispose();
     super.dispose();
+  }
+
+  void _onUserSignUpCallback() async{
+    KeyboardUtil.hideKeyboard(context);
+    final userId = await TokenService().retrieveUserId();
+    //if (!_formKey.currentState!.validate()) return;
+
+    final signUpFromParams = SignUpFromParams(id: userId.toString(), firstName: _firstNameTextFieldController.text, otherName: _otherNameTextFieldController.text, lastName: _lastNameTextFieldController.text, phoneNumber: _phoneNumerTextFieldController.text, password: _passwordTextFieldController.text, confirmPassword: _comfirmPasswordTextFieldController.text);
+    context.read<SignupFormCubit>().signup(signUpFromParams: signUpFromParams);
   }
 
   @override
@@ -98,13 +125,9 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                             _buildTopSection(),
                             SizedBox(height: (Sizing.kSizingMultiple).h),
                             _buildFormSection(),
-                            SizedBox(
-                                height:
-                                    (MediaQuery.sizeOf(context).height * 0.05).h),
+                            SizedBox(  height:(MediaQuery.sizeOf(context).height * 0.05).h),
                             _buildActionButton(),
-                            SizedBox(
-                                height:
-                                    (MediaQuery.sizeOf(context).height * 0.1).h),
+                            SizedBox( height:(MediaQuery.sizeOf(context).height * 0.1).h),
                           ],
                         
                       ),
@@ -244,7 +267,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
               },
               onCountryChanged: (val) {
                 countryDialCode = val.fullCountryCode;
-                completePhoneNumber = sign + countryDialCode + phonenumber;
+                //_phoneNumerTextFieldController.text = sign + countryDialCode + phonenumber;
                 print(val.name);
               },
             );
@@ -296,7 +319,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
     );
   }
 
-  Widget _buildActionButton() {
+  Widget _buildActionButton2() {
     return Column(
       children: [
         CustomButton(
@@ -316,6 +339,63 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
         ),
         _buildAuthModeSwitcherSection()
       ],
+    );
+  }
+
+  
+    Widget _buildActionButton() {
+    return BlocConsumer<SignupFormCubit,
+        BlocState<Failure<ExceptionMessage>, UserInfoModel>>(
+      listener: (context, state) {
+        state.maybeMap(
+          orElse: () => null,
+          success: (state) {
+            if (state.data.status=="success") {
+              // clear form inputs
+              _formKey.currentState!.reset();
+
+             context.router.replace(const TabRoute());
+            } else {
+              SnackBarUtil.snackbarError<String>(
+                context,
+                code: ExceptionCode.UNDEFINED,
+                message: state.data.message,
+              );
+            }
+          },
+          error: (state) {
+            SnackBarUtil.snackbarError<String>(
+              context,
+              code: state.failure.exception.code,
+              message: state.failure.exception.message.toString(),
+              onRefreshCallback: () => _onUserSignUpCallback(),
+            );
+          },
+        );
+      },
+      builder: (context, state) {
+        final isLoading =
+            state is Loading<Failure<ExceptionMessage>, UserInfoModel>;
+
+        return Column(
+          children: [
+            CustomButton(
+              type: ButtonType.regularButton(
+                  onTap: () => _onUserSignUpCallback(),
+                   label: 'Creat Account',
+                  isLoadingMode: isLoading,
+                  backgroundColor: CustomTypography.kPrimaryColor300,
+                  textColor: CustomTypography.kWhiteColor,
+                  borderRadius: BorderRadius.all(
+                      Radius.circular(Sizing.kBorderRadius * 7.r))),
+            ),
+             SizedBox(
+          height: Sizing.kHSpacing10,
+        ),
+        _buildAuthModeSwitcherSection()
+          ],
+        );
+      },
     );
   }
 

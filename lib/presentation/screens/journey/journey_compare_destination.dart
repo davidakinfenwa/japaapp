@@ -123,7 +123,7 @@ class _JoureyCompareDestinationPageState
               ),
             ],
           ),
-          SizedBox(width: (Sizing.kSizingMultiple * 4).h),
+          SizedBox(width: (Sizing.kSizingMultiple * 3).h),
           Column(
             children: [
               SizedBox(
@@ -143,7 +143,7 @@ class _JoureyCompareDestinationPageState
               ),
             ],
           ),
-          SizedBox(width: (Sizing.kSizingMultiple * 4).h),
+          SizedBox(width: (Sizing.kSizingMultiple * 2).h),
           Column(
             children: [
               SizedBox(
@@ -151,7 +151,7 @@ class _JoureyCompareDestinationPageState
                   height: 32,
                   child: Image.asset('assets/images/canada.png')),
               SizedBox(
-                width: 32,
+                width: 40,
                 height: 32,
                 child: Text(
                   "Canada",
@@ -163,7 +163,7 @@ class _JoureyCompareDestinationPageState
               ),
             ],
           ),
-          SizedBox(width: (Sizing.kSizingMultiple).h),
+          SizedBox(width: (Sizing.kSizingMultiple*3).h),
         ],
       ),
     );

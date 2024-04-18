@@ -2,22 +2,28 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:japaapp/business/blocs/bloc_state.dart';
+import 'package:japaapp/business/snapshot_cache/snapshot_cache.dart';
 import 'package:japaapp/core/constants.dart';
+import 'package:japaapp/core/exceptions/exceptions.dart';
 import 'package:japaapp/core/route/app_router.dart';
 import 'package:japaapp/core/theme/custom_typography.dart';
 import 'package:japaapp/core/util/width_constraints.dart';
+import 'package:japaapp/domain/model/models.dart';
 
-import 'package:japaapp/presentation/screens/profile/provider/account_provider.dart';
 import 'package:japaapp/presentation/shared/custom_button.dart';
 import 'package:provider/provider.dart';
+
 
 class MyBottomSheet extends StatefulWidget {
   const MyBottomSheet({
     super.key,
     required this.onItemSelected,
+    required this.state
   });
 
   final Function(String) onItemSelected;
+  final BlocState<Failure<ExceptionMessage>, ProfileDropDownModel> state;
   @override
   State<MyBottomSheet> createState() => _MyBottomSheetState();
 }
@@ -35,63 +41,52 @@ class _MyBottomSheetState extends State<MyBottomSheet> {
       {"title": 'Master’s degree'},
       {"title": 'Doctoral degree'},
     ];
+     final _userInfo = context.watch<AccountSnapshotCache>().userDropdownInfo;
     return Container(
-      height: 393.h,
+      height: 273.h,
       decoration: BoxDecoration(
+        color: CustomTypography.kWhiteColor,
+        borderRadius: BorderRadius.only(topLeft: Radius.circular(Sizing.kBorderRadius*3.r),topRight: Radius.circular(Sizing.kBorderRadius*3.r)),
         border: Border(
-            // top: BorderSide(
-            //   width: 1.w, // Width of the border
-            //   color: const Color(0xFFB7C6CC),
-            // ),
-            // left: BorderSide(
-            //   width: 1.w, // Width of the border
-            //   color: const Color(0xFFB7C6CC),
-            // ),
-            // right: BorderSide(
-            //   width: 1.w, // Width of the border
-            //   color: const Color(0xFFB7C6CC),
-            // ),
             bottom: BorderSide(
           width: 1.16.w, // Width of the border
-          color: const Color(0xFFB7C6CC),
+          color: CustomTypography.kWhiteColor,
         )),
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Padding(
-            padding: EdgeInsets.only(top: 10, left: 15.w),
+            padding: EdgeInsets.only(top: Sizing.kSizingMultiple*2.h),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Text(
-                  'Select highest level of education  ',
+                 "Select highest education level",
                   //style: AppTheme.inputText
-                  style: Theme.of(context)
-                      .textTheme
-                      .headlineLarge
-                      ?.copyWith(color: Colors.grey.shade600, fontSize: 18.sp),
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      color: CustomTypography.kBlackColor, fontSize: 20.sp, fontWeight: FontWeight.w700),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(right: 0, top: 10),
-                  child: IconButton(
-                    icon: Icon(Icons.close),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                ),
+                // Padding(
+                //   padding: const EdgeInsets.only(right: 0, top: 10),
+                //   child: IconButton(
+                //     icon: Icon(Icons.close),
+                //     onPressed: () {
+                //       Navigator.of(context).pop();
+                //     },
+                //   ),
+                // ),
               ],
             ),
           ),
           Expanded(
             child: ListView.builder(
-              itemCount: items.length,
+              itemCount: _userInfo.data.levelofeduction.length,
               itemBuilder: (BuildContext context, int index) {
-                final content = items[index];
+                final content = _userInfo.data.levelofeduction[index];
                 return InkWell(
                   onTap: () {
-                    widget.onItemSelected(content['title']);
+                    widget.onItemSelected(content.name);
                     Navigator.of(context).pop();
                   },
                   child: Padding(
@@ -108,7 +103,7 @@ class _MyBottomSheetState extends State<MyBottomSheet> {
                       child: Padding(
                         padding: EdgeInsets.only(left: 10.0.w, top: 15.h),
                         child: Text(
-                          content['title'],
+                          content.name,
                           style:
                               Theme.of(context).textTheme.titleLarge?.copyWith(
                                     color: const Color(0xFF344053),
@@ -144,8 +139,9 @@ class MyBottomSheetScalePoint extends StatefulWidget {
 class _MyBottomSheetScalePointState extends State<MyBottomSheetScalePoint> {
   @override
   Widget build(BuildContext context) {
-    //final loanProvider = Provider.of<LoanProvider>(context);
-    final scale = Provider.of<AccountPageProvider>(context, listen: false);
+   
+     final _userInfo = context.watch<AccountSnapshotCache>().userDropdownInfo;
+    
     final List<Map<String, dynamic>> items = [
       {"title": '4-Point Scale'},
       {"title": '5-Point Scale'},
@@ -155,65 +151,53 @@ class _MyBottomSheetScalePointState extends State<MyBottomSheetScalePoint> {
       {"title": 'Letter Grade'},
       {"title": 'Percentage Scale'},
     ];
-    return Container(
-      height: 393.h,
+    return  Container(
+      height: 273.h,
       decoration: BoxDecoration(
+        color: CustomTypography.kWhiteColor,
+        borderRadius: BorderRadius.only(topLeft: Radius.circular(Sizing.kBorderRadius*3.r),topRight: Radius.circular(Sizing.kBorderRadius*3.r)),
         border: Border(
-            // top: BorderSide(
-            //   width: 1.w, // Width of the border
-            //   color: const Color(0xFFB7C6CC),
-            // ),
-            // left: BorderSide(
-            //   width: 1.w, // Width of the border
-            //   color: const Color(0xFFB7C6CC),
-            // ),
-            // right: BorderSide(
-            //   width: 1.w, // Width of the border
-            //   color: const Color(0xFFB7C6CC),
-            // ),
             bottom: BorderSide(
           width: 1.16.w, // Width of the border
-          color: const Color(0xFFB7C6CC),
+          color: CustomTypography.kWhiteColor,
         )),
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Padding(
-            padding: EdgeInsets.only(top: 10, left: 15.w),
+            padding: EdgeInsets.only(top: Sizing.kSizingMultiple*2.h),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Text(
-                  'Select scale point',
+                 "Select Scale Point",
                   //style: AppTheme.inputText
-                  style: Theme.of(context)
-                      .textTheme
-                      .headlineLarge
-                      ?.copyWith(color: Colors.grey.shade600, fontSize: 18.sp),
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      color: CustomTypography.kBlackColor, fontSize: 20.sp, fontWeight: FontWeight.w700),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(right: 0, top: 10),
-                  child: IconButton(
-                    icon: const Icon(Icons.close),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                ),
+                // Padding(
+                //   padding: const EdgeInsets.only(right: 0, top: 10),
+                //   child: IconButton(
+                //     icon: Icon(Icons.close),
+                //     onPressed: () {
+                //       Navigator.of(context).pop();
+                //     },
+                //   ),
+                // ),
               ],
             ),
           ),
           Expanded(
             child: ListView.builder(
-              itemCount: items.length,
+              itemCount: _userInfo.data.gradescale.length,
               itemBuilder: (BuildContext context, int index) {
-                final content = items[index];
+                final content = _userInfo.data.gradescale[index];
                 return InkWell(
                   onTap: () {
                     //this line is to fetch the Period[Monthly,weekly,daily]
                     // scale.scaleType = content['title'].toString().toLowerCase();
-                    widget.onItemSelected(content['title']);
+                    widget.onItemSelected(content.name);
 
                     Navigator.of(context).pop();
                   },
@@ -231,7 +215,7 @@ class _MyBottomSheetScalePointState extends State<MyBottomSheetScalePoint> {
                       child: Padding(
                         padding: EdgeInsets.only(left: 10.0.w, top: 15.h),
                         child: Text(
-                          content['title'],
+                          content.name,
                           style:
                               Theme.of(context).textTheme.titleLarge?.copyWith(
                                     color: const Color(0xFF344053),
@@ -271,52 +255,40 @@ class _MyBottomMaritalSheetState extends State<MyBottomMaritalSheet> {
       {"title": 'Divorced/Separated'},
       {"title": 'Widowed'},
     ];
-    return Container(
-      height: 393.h,
+    return     Container(
+      height: 273.h,
       decoration: BoxDecoration(
+        color: CustomTypography.kWhiteColor,
+        borderRadius: BorderRadius.only(topLeft: Radius.circular(Sizing.kBorderRadius*3.r),topRight: Radius.circular(Sizing.kBorderRadius*3.r)),
         border: Border(
-            // top: BorderSide(
-            //   width: 1.w, // Width of the border
-            //   color: const Color(0xFFB7C6CC),
-            // ),
-            // left: BorderSide(
-            //   width: 1.w, // Width of the border
-            //   color: const Color(0xFFB7C6CC),
-            // ),
-            // right: BorderSide(
-            //   width: 1.w, // Width of the border
-            //   color: const Color(0xFFB7C6CC),
-            // ),
             bottom: BorderSide(
           width: 1.16.w, // Width of the border
-          color: const Color(0xFFB7C6CC),
+          color: CustomTypography.kWhiteColor,
         )),
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Padding(
-            padding: EdgeInsets.only(top: 10, left: 15.w),
+            padding: EdgeInsets.only(top: Sizing.kSizingMultiple*2.h),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Text(
-                  'Please select your marital status',
+                 "Select Marital Status",
                   //style: AppTheme.inputText
-                  style: Theme.of(context)
-                      .textTheme
-                      .headlineLarge
-                      ?.copyWith(color: Colors.grey.shade600, fontSize: 18.sp),
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      color: CustomTypography.kBlackColor, fontSize: 20.sp, fontWeight: FontWeight.w700),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(right: 0, top: 10),
-                  child: IconButton(
-                    icon: Icon(Icons.close),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                ),
+                // Padding(
+                //   padding: const EdgeInsets.only(right: 0, top: 10),
+                //   child: IconButton(
+                //     icon: Icon(Icons.close),
+                //     onPressed: () {
+                //       Navigator.of(context).pop();
+                //     },
+                //   ),
+                // ),
               ],
             ),
           ),
@@ -394,50 +366,41 @@ class _MyBottomAwardSheetState extends State<MyBottomAwardSheet> {
       {"title": 'Provincial Nomination visa'},
       {"title": 'Family-Sponsorship Program'},
     ];
-    return Container(
-      height: 393.h,
+    return
+          Container(
+      height: 273.h,
       decoration: BoxDecoration(
+        color: CustomTypography.kWhiteColor,
+        borderRadius: BorderRadius.only(topLeft: Radius.circular(Sizing.kBorderRadius*3.r),topRight: Radius.circular(Sizing.kBorderRadius*3.r)),
         border: Border(
-            // top: BorderSide(
-            //   width: 1.w, // Width of the border
-            //   color: const Color(0xFFB7C6CC),
-            // ),
-            // left: BorderSide(
-            //   width: 1.w, // Width of the border
-            //   color: const Color(0xFFB7C6CC),
-            // ),
-            // right: BorderSide(
-            //   width: 1.w, // Width of the border
-            //   color: const Color(0xFFB7C6CC),
-            // ),
             bottom: BorderSide(
           width: 1.16.w, // Width of the border
-          color: const Color(0xFFB7C6CC),
+          color: CustomTypography.kWhiteColor,
         )),
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Padding(
-            padding: EdgeInsets.only(top: 10, left: 15.w),
+            padding: EdgeInsets.only(top: Sizing.kSizingMultiple*2.h),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Text(
-                 widget.nav=="visa"?'Please select visa type': 'Please select your marital status',
+                  widget.nav=="visa"?'Please select visa type': 'Please select your marital status',
                   //style: AppTheme.inputText
-                  style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-                      color: CustomTypography.kBlackColor, fontSize: 18.sp),
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      color: CustomTypography.kBlackColor, fontSize: 20.sp, fontWeight: FontWeight.w700),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(right: 0, top: 10),
-                  child: IconButton(
-                    icon: Icon(Icons.close),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                ),
+                // Padding(
+                //   padding: const EdgeInsets.only(right: 0, top: 10),
+                //   child: IconButton(
+                //     icon: Icon(Icons.close),
+                //     onPressed: () {
+                //       Navigator.of(context).pop();
+                //     },
+                //   ),
+                // ),
               ],
             ),
           ),
@@ -616,24 +579,26 @@ class _MyBottomCountryCompareSheetState
   List<int> selectedItems = [];
 
   Widget _buildActionButton() {
-    return Column(
-      children: [
-        CustomButton(
-          type: ButtonType.regularButton(
-              onTap: () {
-                context.router.push(const JoureyCompareDestinationRoute());
-              },
-              label: 'Continue',
-              isLoadingMode: false,
-              backgroundColor: CustomTypography.kPrimaryColor200,
-              textColor: CustomTypography.kWhiteColor,
-              borderRadius: BorderRadius.all(
-                  Radius.circular(Sizing.kBorderRadius * 7.r))),
-        ),
-        SizedBox(
-          height: Sizing.kHSpacing10,
-        ),
-      ],
+    return WidthConstraint(context).withHorizontalSymmetricalPadding(
+      child: Column(
+        children: [
+          CustomButton(
+            type: ButtonType.regularButton(
+                onTap: () {
+                  context.router.push(const JoureyCompareDestinationRoute());
+                },
+                label: 'Continue',
+                isLoadingMode: false,
+                backgroundColor: CustomTypography.kPrimaryColor200,
+                textColor: CustomTypography.kWhiteColor,
+                borderRadius: BorderRadius.all(
+                    Radius.circular(Sizing.kBorderRadius * 7.r))),
+          ),
+          SizedBox(
+            height: Sizing.kHSpacing10,
+          ),
+        ],
+      ),
     );
   }
 
@@ -644,42 +609,43 @@ class _MyBottomCountryCompareSheetState
       {"title": 'United States', 'svg': 'assets/svg/nija.svg'},
       {"title": 'United Kingdom', 'svg': 'assets/svg/nija.svg'},
     ];
-    return Container(
-      height: 393.h,
+    return     Container(
+      height: 293.h,
       decoration: BoxDecoration(
+        color: CustomTypography.kWhiteColor,
+        borderRadius: BorderRadius.only(topLeft: Radius.circular(Sizing.kBorderRadius*3.r),topRight: Radius.circular(Sizing.kBorderRadius*3.r)),
         border: Border(
             bottom: BorderSide(
           width: 1.16.w, // Width of the border
-          color: const Color(0xFFB7C6CC),
+          color: CustomTypography.kWhiteColor,
         )),
       ),
-      child: WidthConstraint(context).withHorizontalSymmetricalPadding(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Padding(
-              padding: EdgeInsets.only(top: 10, left: 5.w),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Text(
-                    'Compare destination',
-                    //style: AppTheme.inputText
-                    style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-                        color: CustomTypography.kBlackColor, fontSize: 18.sp),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(right: 0, top: 10),
-                    child: IconButton(
-                      icon: Icon(Icons.close),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                    ),
-                  ),
-                ],
-              ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Padding(
+            padding: EdgeInsets.only(top: Sizing.kSizingMultiple*2.h),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Text(
+                "Compare Destination",
+                  //style: AppTheme.inputText
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      color: CustomTypography.kBlackColor, fontSize: 20.sp, fontWeight: FontWeight.w700),
+                ),
+                // Padding(
+                //   padding: const EdgeInsets.only(right: 0, top: 10),
+                //   child: IconButton(
+                //     icon: Icon(Icons.close),
+                //     onPressed: () {
+                //       Navigator.of(context).pop();
+                //     },
+                //   ),
+                // ),
+              ],
             ),
+          ),
             Expanded(
               child: ListView.builder(
                 itemCount: items.length,
@@ -749,7 +715,7 @@ class _MyBottomCountryCompareSheetState
             _buildActionButton()
           ],
         ),
-      ),
+      
     );
   }
 }

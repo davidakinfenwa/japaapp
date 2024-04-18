@@ -3,11 +3,15 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:japaapp/business/blocs/bloc_state.dart';
 import 'package:japaapp/business/snapshot/tabscreen_provider.dart';
+import 'package:japaapp/business/snapshot_cache/auth_snapshot_cache.dart';
 import 'package:japaapp/core/constants.dart';
+import 'package:japaapp/core/exceptions/exceptions.dart';
 import 'package:japaapp/core/route/app_router.dart';
 import 'package:japaapp/core/theme/custom_typography.dart';
 import 'package:japaapp/core/util/width_constraints.dart';
+import 'package:japaapp/domain/model/models.dart';
 import 'package:japaapp/presentation/shared/custom_button.dart';
 import 'package:provider/provider.dart';
 
@@ -16,9 +20,17 @@ class DashboardTab extends StatefulWidget {
 
   @override
   State<DashboardTab> createState() => _DashboardTabState();
+
+  
 }
 
 class _DashboardTabState extends State<DashboardTab> {
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
   @override
   void dispose() {
     super.dispose();
@@ -26,7 +38,12 @@ class _DashboardTabState extends State<DashboardTab> {
 
   ScrollPhysics _physics = const BouncingScrollPhysics();
 
-  Widget _buildSalutationSection() {
+  Widget _buildSalutationSection( ) {
+    //  final _isLoadingState =
+    //     state is Loading<Failure<ExceptionMessage>, AccountBalance>;
+
+    final userProfile =
+        context.watch<AuthSnapshotCache>().userInfo;
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -34,7 +51,7 @@ class _DashboardTabState extends State<DashboardTab> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Hello Debbie',
+              'Hello ${userProfile.firstName}',
               style: Theme.of(context).textTheme.headlineLarge?.copyWith(),
             ),
             SizedBox(width: (Sizing.kWSpacing4).h),
@@ -215,8 +232,8 @@ class _DashboardTabState extends State<DashboardTab> {
                       splashColor: Colors.transparent,
                       highlightColor: Colors.transparent,
                       onTap: () {
-                           bottomNavCProvider.pageIndex = 2;
-                         // context.router.push( MyProcessTabRoute(nav: "newMigrant"));
+                        bottomNavCProvider.pageIndex = 2;
+                        // context.router.push( MyProcessTabRoute(nav: "newMigrant"));
                         // context.router.push(route)
                       },
                       child: Text(
@@ -238,7 +255,7 @@ class _DashboardTabState extends State<DashboardTab> {
           SizedBox(
             height: Sizing.kHSpacing10,
           ),
-          Container(
+          SizedBox(
             // color: Colors.red,
             height: 155.h,
             width: MediaQuery.sizeOf(context).width,
@@ -252,8 +269,13 @@ class _DashboardTabState extends State<DashboardTab> {
               itemCount: items.length,
               itemBuilder: (context, index) {
                 final data = items[index];
-                return _buildCommunityList(
-                    data['title'], data['image'], data['count']);
+                return InkWell(
+                  onTap: (){
+                    context.router.push(CommunityDetailRoute(title:  data['title'] ));
+                  },
+                  child: _buildCommunityList(
+                      data['title'], data['image'], data['count']),
+                );
               },
             ),
           ),
@@ -284,26 +306,27 @@ class _DashboardTabState extends State<DashboardTab> {
                   borderRadius: BorderRadius.circular(8)),
             ),
           ),
-        LayoutBuilder(
-  builder: (BuildContext context, BoxConstraints constraints) {
-    return SizedBox(
-      width: 100,
-      height: 50,
-      child: Text(
-       constraints.maxHeight > 50? "$title...":title,
-        style: Theme.of(context).textTheme.titleMedium?.copyWith(
-          color: const Color(0xFF344054),
-          fontWeight: FontWeight.w500,
-        ),
-        maxLines: constraints.maxHeight > 50 ? null : 1,
-              //overflow: TextOverflow.ellipsis,
-      ),
-    );
-  },
-),
-          SizedBox(
-            height: Sizing.kSizingMultiple.h,
+          LayoutBuilder(
+            builder: (BuildContext context, BoxConstraints constraints) {
+              return SizedBox(
+                width: 100,
+                height: 50,
+                child: Text(
+                  constraints.maxHeight > 50 ? "$title..." : title,
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        color: const Color(0xFF344054),
+                        fontWeight: FontWeight.w500,
+                        fontSize: 14.sp
+                      ),
+                  maxLines: constraints.maxHeight > 50 ? null : 1,
+                  //overflow: TextOverflow.ellipsis,
+                ),
+              );
+            },
           ),
+          // SizedBox(
+          //   height: Sizing.kSizingMultiple.h,
+          // ),
           Text(
             count,
             style: Theme.of(context).textTheme.titleSmall?.copyWith(
@@ -393,8 +416,8 @@ class _DashboardTabState extends State<DashboardTab> {
             height: 180.h,
             width: MediaQuery.sizeOf(context).width,
             child: ListView.builder(
-              // padEnds: false,
-              padding: EdgeInsets.fromLTRB(0, 0, 30.w, 0),
+              
+              padding: EdgeInsets.fromLTRB(0, 0, 0.w, 0),
               shrinkWrap: true,
               dragStartBehavior: DragStartBehavior.start,
               scrollDirection: Axis.horizontal,
@@ -415,12 +438,18 @@ class _DashboardTabState extends State<DashboardTab> {
 
   Widget _buildConsultantList(String title, String img, String count) {
     return Container(
-      padding: EdgeInsets.only(left: 10.w),
+     // padding: EdgeInsets.only(left: 10.w),
+     margin: EdgeInsets.only(right: Sizing.kWSpacing12.w),
+     
+      decoration:BoxDecoration(
+        border: Border.all(color: CustomTypography.kGreyColor40),
+        borderRadius: BorderRadius.circular(Sizing.kSizingMultiple)
+      ) ,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            width: 120,
+            width: 130,
             height: 120,
             decoration: ShapeDecoration(
               image: DecorationImage(
@@ -428,53 +457,69 @@ class _DashboardTabState extends State<DashboardTab> {
                 fit: BoxFit.cover,
               ),
               shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8)),
+                  borderRadius: BorderRadius.only(topLeft: Radius.circular(Sizing.kBorderRadius.r),topRight: Radius.circular(Sizing.kBorderRadius.r))),
             ),
           ),
-          SizedBox(
-            width: 120,
-            child: Text(
-              title,
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    color: const Color(0xFF344054),
-                    fontWeight: FontWeight.w700,
-                    fontSize: 14.sp,
-                    height: 1.2.h,
-                  ),
-            ),
-          ),
-          SizedBox(
-            height: Sizing.kSizingMultiple.h,
-          ),
-          Row(
-            children: List.generate(
-              4,
-              (index) => SvgPicture.asset("assets/svg/star.svg"),
-            ),
-          ),
-          SizedBox(
-            height: Sizing.kSizingMultiple.h,
-          ),
-          Text.rich(
-            TextSpan(
-              text: 'Hourly Price:',
-              children: [
-                TextSpan(
-                  text: ' \$100',
-                  style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                      fontWeight: FontWeight.w700,
-                      color: CustomTypography.kBlackColor,
-                      fontSize: 12.0.sp),
-                  //recognizer: _tapRecognizer,
+       Padding(
+         padding: const EdgeInsets.only(left: 8),
+         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+             
+            Padding(
+              padding: const EdgeInsets.only(right: 8),
+              child: SizedBox(
+                width: 120,
+                child: Text(
+                  title,
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        color: const Color(0xFF344054),
+                        fontWeight: FontWeight.w700,
+                        fontSize: 14.sp,
+                        height: 1.2.h,
+                      ),
                 ),
-              ],
-              style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                  fontWeight: FontWeight.w500,
-                  color: CustomTypography.kGreyColorlabel,
-                  height: 0.15.h,
-                  fontSize: 10.0.sp),
+              ),
             ),
-          )
+            SizedBox(
+              height: Sizing.kSizingMultiple.h,
+            ),
+            Padding(
+              padding: const EdgeInsets.only(right: 15),
+              child: Row(
+                children: List.generate(
+                  4,
+                  (index) => SvgPicture.asset("assets/svg/star.svg"),
+                ),
+              ),
+            ),
+            SizedBox( height: Sizing.kSizingMultiple.h),
+            Padding(
+              padding:  EdgeInsets.only(right: 14.w),
+              child: Text.rich(
+                TextSpan(
+                  text: 'Hourly Price:',
+                  children: [
+                    TextSpan(
+                      text: ' \$100',
+                      style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                          fontWeight: FontWeight.w700,
+                          color: CustomTypography.kBlackColor,
+                          fontSize: 12.0.sp),
+                      //recognizer: _tapRecognizer,
+                    ),
+                  ],
+                  style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                      fontWeight: FontWeight.w500,
+                      color: CustomTypography.kGreyColorlabel,
+                      height: 0.15.h,
+                      fontSize: 10.0.sp),
+                ),
+              ),
+            ),
+         ],),
+       )
+
         ],
       ),
     );
@@ -484,40 +529,27 @@ class _DashboardTabState extends State<DashboardTab> {
     final List<Map<String, dynamic>> items = [
       {
         "image": "assets/images/com12.png",
-        "count": "45 People",
+        "count": "2h ago · by Isabella Kwai",
         "title": 'UK net migration in 2022 revised upwards to 745,000'
       },
       // {"image": "assets/svgs/squarepassword.svg", "title": 'Locked Savings'},
       {
         "image": "assets/images/com13.png",
-        "count": "20 People",
+        "count": "2h ago · by Isabella Kwai",
         "title": 'Immigration is rocketing. Thats brilliant news for Britain.'
       },
       {
         "image": "assets/images/com14.png",
-        "count": "10 People",
+        "count": "2h ago · by Isabella Kwai",
         "title":
             'Immigration Series: All about how to get naturalised in Germany'
       },
       {
         "image": "assets/images/com12.png",
-        "count": "45 People",
+        "count": "2h ago · by Isabella Kwai",
         "title":
             'Immigration Series: All about how to get naturalised in Germany'
       },
-      // {"image": "assets/svgs/squarepassword.svg", "title": 'Locked Savings'},
-      // {
-      //   "image": "assets/images/com14.png",
-      //   "count": "20 People",
-      //   "title":
-      //       'Immigration Series: All about how to get naturalised in Germany'
-      // },
-      // {
-      //   "image": "assets/images/com13.png",
-      //   "count": "10 People",
-      //   "title":
-      //       'Immigration Series: All about how to get naturalised in Germany'
-      // },
     ];
     return SizedBox(
       child: Container(
@@ -570,8 +602,9 @@ class _DashboardTabState extends State<DashboardTab> {
             SizedBox(
               height: Sizing.kHSpacing10,
             ),
-            SizedBox(
-              height: 220.h,
+            Container(
+              
+              height: 380.h,
               width: MediaQuery.sizeOf(context).width,
               child: ListView.builder(
                 // padEnds: false,
@@ -579,7 +612,7 @@ class _DashboardTabState extends State<DashboardTab> {
                 shrinkWrap: true,
                 dragStartBehavior: DragStartBehavior.start,
                 scrollDirection: Axis.vertical,
-                physics: _physics,
+                physics: NeverScrollableScrollPhysics(),
                 itemCount: items.length,
 
                 itemBuilder: (context, index) {
@@ -589,7 +622,7 @@ class _DashboardTabState extends State<DashboardTab> {
                 },
               ),
             ),
-            SizedBox(height: (Sizing.kSizingMultiple * 2.5).h),
+            //SizedBox(height: (Sizing.kSizingMultiple * 2.5).h),
           ],
         ),
       ),
@@ -600,7 +633,7 @@ class _DashboardTabState extends State<DashboardTab> {
     return Container(
       width: MediaQuery.sizeOf(context).width.w,
       //color: Colors.red,
-      padding: EdgeInsets.only(left: 0.w, bottom: 10.h),
+      padding: EdgeInsets.only(left: 0.w, bottom: 15.h),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -619,31 +652,52 @@ class _DashboardTabState extends State<DashboardTab> {
           SizedBox(
             width: Sizing.kSizingMultiple * 2.h,
           ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(
-                width: MediaQuery.sizeOf(context).width * 0.52,
-                child: Text(
-                  title,
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        color: const Color(0xFF344054),
-                        fontWeight: FontWeight.w500,
-                        height: 1.2.h,
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // SizedBox(
+                //   width: MediaQuery.sizeOf(context).width*0.5,
+                //   child: Text(
+                //     title,
+                //     style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                //           color: const Color(0xFF344054),
+                //           fontWeight: FontWeight.w500,
+                //           // height: 1.2.h,
+                //         ),
+                //   ),
+                // ),
+                LayoutBuilder(
+                  builder: (BuildContext context, BoxConstraints constraints) {
+                    return SizedBox(
+                     width: MediaQuery.sizeOf(context).width*0.5,
+                      height: 50,
+                      child: Text(
+                        constraints.maxHeight > 50 ? "$title..." : title,
+                        style:
+                            Theme.of(context).textTheme.titleMedium?.copyWith(
+                                  color: const Color(0xFF344054),
+                                  fontWeight: FontWeight.w500,
+                                ),
+                        maxLines: constraints.maxHeight > 50 ? null : 1,
+                        //overflow: TextOverflow.ellipsis,
+                      ),
+                    );
+                  },
+                ),
+                SizedBox(
+                  height: Sizing.kSizingMultiple.h,
+                ),
+                Text(
+                  count,
+                  style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                        color: const Color(0xFF6C7072),
+                        fontWeight: FontWeight.w400
+                       
                       ),
                 ),
-              ),
-              SizedBox(
-                height: Sizing.kSizingMultiple.h,
-              ),
-              Text(
-                count,
-                style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                      color: const Color(0xFF344054),
-                      height: 0.9,
-                    ),
-              ),
-            ],
+              ],
+            ),
           ),
         ],
       ),
@@ -738,23 +792,22 @@ class _DashboardTabState extends State<DashboardTab> {
               height: Sizing.kHSpacing10,
             ),
             SizedBox(
-              height: MediaQuery.sizeOf(context).height * 0.13.h,
+              height: MediaQuery.sizeOf(context).height * 0.1.h,
               width: MediaQuery.sizeOf(context).width.w,
               child: ListView.builder(
                 // padEnds: false,
                 itemCount: items.length,
-              padding: EdgeInsets.fromLTRB(0, 0, 30.w, 0),
-              shrinkWrap: true,
-              dragStartBehavior: DragStartBehavior.start,
-              scrollDirection: Axis.horizontal,
-              physics: const BouncingScrollPhysics(),
+                padding: EdgeInsets.fromLTRB(0, 0, 0.w, 0),
+                shrinkWrap: true,
+                dragStartBehavior: DragStartBehavior.start,
+                scrollDirection: Axis.horizontal,
+                physics: const BouncingScrollPhysics(),
 
                 itemBuilder: (context, index) {
-                  
                   return Container(
                     width: MediaQuery.sizeOf(context).width * 0.6,
-                    margin: EdgeInsets.all(10),
-                    padding: EdgeInsets.all(10),
+                    margin: EdgeInsets.only(right: Sizing.kSizingMultiple*2.w),
+                    padding:const EdgeInsets.all(10),
                     decoration: BoxDecoration(
                       color: const Color(0xFFF8F8F8),
                       borderRadius: BorderRadius.circular(16),
@@ -788,7 +841,7 @@ class _DashboardTabState extends State<DashboardTab> {
                 },
               ),
             ),
-            SizedBox(height: (Sizing.kSizingMultiple * 2.5).h),
+            //SizedBox(height: (Sizing.kSizingMultiple * 2.5).h),
           ],
         ),
       ),
@@ -863,7 +916,7 @@ class _DashboardTabState extends State<DashboardTab> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(height: (Sizing.kSizingMultiple * 1).h),
+                    SizedBox(height: (Sizing.kSizingMultiple * 2).h),
                     _buildSalutationAndProfileAvatarRowSection(),
                     SizedBox(height: (Sizing.kSizingMultiple).h),
                     _buildIntroSection(),
@@ -871,12 +924,12 @@ class _DashboardTabState extends State<DashboardTab> {
                     _buildActionButton(),
                     SizedBox(height: (Sizing.kSizingMultiple * 4).h),
                     _buildCommunitySection(),
-                    //SizedBox(height: (Sizing.kSizingMultiple).h),
+                    //SizedBox(height: (Sizing.kSizingMultiple * 4).h),
                     _buildNewsSection(),
                     SizedBox(height: (Sizing.kSizingMultiple * 4).h),
 
                     _buildToolsSection(),
-                    SizedBox(height: (Sizing.kSizingMultiple).h),
+                    SizedBox(height: (Sizing.kSizingMultiple * 4).h),
                     _buildConsultantSection(),
                     // // _buildFeaturesSection(),
                   ],

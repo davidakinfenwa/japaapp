@@ -1,19 +1,19 @@
 import 'package:equatable/equatable.dart';
 
 class ResendOtpFormParams extends Equatable {
-  final String phoneNumber;
+  final String id;
 
-  const ResendOtpFormParams({required this.phoneNumber});
+  const ResendOtpFormParams({required this.id});
 
   Map<String, dynamic> toJson() {
     return {
-      'u_key': phoneNumber,
+      'id': id,
     };
   }
 
   @override
-  List<Object> get props => [phoneNumber];
+  List<Object> get props => [id];
 
   @override
-  String toString() => 'ResendOtpFormParams(phoneNumber: $phoneNumber)';
+  String toString() => 'ResendOtpFormParams(phoneNumber: $id)';
 }

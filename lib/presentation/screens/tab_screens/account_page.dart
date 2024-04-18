@@ -1,10 +1,14 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:japaapp/business/blocs/account_bloc/get_all_user_data_form_cubit.dart';
+import 'package:japaapp/business/blocs/account_bloc/get_user_drop_down_form_cubit.dart';
 import 'package:japaapp/core/constants.dart';
+import 'package:japaapp/core/dependence/dependence.dart';
 import 'package:japaapp/core/route/app_router.dart';
 import 'package:japaapp/core/theme/custom_typography.dart';
 
@@ -13,11 +17,30 @@ import 'package:japaapp/core/util/width_constraints.dart';
 import 'package:japaapp/presentation/widget/back_button.dart';
 import 'package:japaapp/presentation/widget/custom_app_bar.dart';
 
-class AccountTab extends StatefulWidget {
+class AccountTab extends StatefulWidget implements AutoRouteWrapper {
   const AccountTab({super.key});
 
   @override
   State<AccountTab> createState() => _AccountTabState();
+  @override
+  Widget wrappedRoute(BuildContext context) {
+     //final userInfo = context.read<AccountSnapshotCache>().userInfo;
+
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<GetAllUserDataFormCubit>(
+          create: (context) => getIt<GetAllUserDataFormCubit>()..userAuthenticatedData(),
+        ),
+         BlocProvider<GetUserDropdownFormCubit>(
+          create: (context) => getIt<GetUserDropdownFormCubit>()..userDropdownData(),
+        ),
+        // BlocProvider<CreateBasicInformationCubit>(
+        //   create: (context) => getIt<CreateBasicInformationCubit>(),
+        // ),
+      ],
+      child: this,
+    );
+  }
 }
 
 class _AccountTabState extends State<AccountTab> {
@@ -73,7 +96,7 @@ class _AccountTabState extends State<AccountTab> {
   Widget _buildTopSection() {
     return Column(
       children: [
-        eachProfileOption(context,
+        eachProfileOptionFirst(context,
             iconType: false,
             iconPath: "assets/svg/user.svg",
             optionName: "My profile", onPresssed: () {
@@ -181,7 +204,78 @@ eachProfileOption(BuildContext context,
                 color: const Color(0xFFEAECF0),
               ),
             ),
-            borderRadius: BorderRadius.circular(4), // Add border radius
+           //borderRadius: BorderRadius.circular(4), // Add border radius
+          ),
+          child: Row(
+            children: [
+              iconType == true
+                  ? Image.asset(iconPath, height: 22)
+                  : SvgPicture.asset(iconPath),
+              const SizedBox(width: 7),
+              Text(
+                optionName,
+                style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.w500,
+                      color: const Color(0xFF344053),
+                    ),
+              ),
+              if (hasTrailing)
+                Expanded(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      child ??
+                          CustomForwardButton(
+                            onTapExit: () {},
+                          )
+                    ],
+                  ),
+                )
+            ],
+          ),
+        ),
+      ),
+      const SizedBox(height: 1),
+    ],
+  );
+}
+
+eachProfileOptionFirst(BuildContext context,
+    {required String iconPath,
+    required String optionName,
+    required bool iconType,
+    Widget? child,
+    bool hasTrailing = true,
+    required VoidCallback onPresssed}) {
+  return Column(
+    children: [
+      InkWell(
+        onTap: onPresssed,
+        splashColor:
+            Colors.transparent.withOpacity(0.1), // Customize ripple color
+        highlightColor: Colors.grey.withOpacity(0.2),
+        borderRadius: BorderRadius.circular(4), // Add border radius
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 5),
+          width: MediaQuery.of(context).size.width * 0.9,
+          height: 56,
+          decoration: BoxDecoration(
+            border: Border(
+              top: BorderSide(
+                width: 1.16.w, // Width of the border
+                color: const Color(0xFFEAECF0),
+              ),
+              left: BorderSide(
+                width: 1.16.w, // Width of the border
+                color: const Color(0xFFEAECF0),
+              ),
+              right: BorderSide(
+                width: 1.16.w, // Width of the border
+                color: const Color(0xFFEAECF0),
+              ),
+            ),
+            borderRadius: BorderRadius.only(topLeft: Radius.circular(Sizing.kBorderRadius.r),topRight: Radius.circular(Sizing.kBorderRadius.r)), // Add border radius
           ),
           child: Row(
             children: [
@@ -254,7 +348,7 @@ eachProfileOptionLast(BuildContext context,
                   width: 1.16.w, // Width of the border
                   color: const Color(0xFFEAECF0),
                 )),
-            borderRadius: BorderRadius.circular(4), // Add border radius
+             borderRadius: BorderRadius.only(bottomLeft: Radius.circular(Sizing.kBorderRadius.r),bottomRight: Radius.circular(Sizing.kBorderRadius.r)),// Add border radius
           ),
           child: Row(
             children: [

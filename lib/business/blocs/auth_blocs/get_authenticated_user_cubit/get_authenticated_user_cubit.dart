@@ -30,9 +30,9 @@ class GetAuthenticatedUserCubit
           failure: failure),
       (userInfoModel) {
         // cache snapshot
-        if (userInfoModel.hasUserInfo) {
-          _snapshotCache.userInfo = userInfoModel.user;
-        }
+        // if (userInfoModel.hasUserInfo) {
+        //   _snapshotCache.userInfo = userInfoModel.user;
+        // }
 
         return BlocState<Failure<ExceptionMessage>, UserInfoModel>.success(
             data: userInfoModel);

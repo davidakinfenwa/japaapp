@@ -77,7 +77,7 @@ class _MyProcessTabScreenState extends State<MyProcessTabScreen> {
                                 ? _buildActionButton()
                                 : _buildActionContinueButton(),
                             SizedBox(height: (Sizing.kSizingMultiple).h),
-                            _buildNotice()
+                            widget.nav == "home"? const SizedBox(): _buildNotice()
                           ],
                         ),
                       ),
@@ -91,8 +91,9 @@ class _MyProcessTabScreenState extends State<MyProcessTabScreen> {
       ),
     );
   }
+  
 
-  Widget _buildBackground() {
+Widget _buildBackground() {
     return Opacity(
       opacity: 0.4, // Set opacity value (0.0 to 1.0)
       child:
@@ -162,11 +163,13 @@ class _MyProcessTabScreenState extends State<MyProcessTabScreen> {
 
             Expanded(
               child: PopupMenuButton(
-               
-                        color: Colors.white,
-                        icon: const Icon(
+                            
+                        color: Color(0xFFFFFFFF),
+                        shadowColor: Colors.white,
+                        surfaceTintColor: Colors.white,
+                        icon:  Icon(
                           Icons.more_horiz,
-                          color: Colors.black,
+                          color: CustomTypography.kPrimaryColor300,
                           size: 24,
                         ),
                         //  elevation: 0,
@@ -198,7 +201,7 @@ class _MyProcessTabScreenState extends State<MyProcessTabScreen> {
                               ),
                               onTap: () {},
                             ),
-
+              
                             PopupMenuItem<String>(
                               value: 'Delete',
                               child: Row(

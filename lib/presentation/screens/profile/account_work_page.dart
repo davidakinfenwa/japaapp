@@ -1,37 +1,67 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
+import 'package:japaapp/business/blocs/account_bloc/create_work_info_form_cubit.dart';
+import 'package:japaapp/business/blocs/bloc_state.dart';
+import 'package:japaapp/business/snapshot_cache/snapshot_cache.dart';
 
 import 'package:japaapp/core/constants.dart';
+import 'package:japaapp/core/dependence/dependence.dart';
+import 'package:japaapp/core/exceptions/exceptions.dart';
 import 'package:japaapp/core/route/app_router.dart';
 import 'package:japaapp/core/theme/custom_typography.dart';
+import 'package:japaapp/core/util/snackbar_util.dart';
 import 'package:japaapp/core/util/width_constraints.dart';
-import 'package:japaapp/presentation/screens/profile/provider/account_provider.dart';
+import 'package:japaapp/domain/form_params/form_params.dart';
+import 'package:japaapp/domain/model/models.dart';
+
 import 'package:japaapp/presentation/shared/custom_button.dart';
 
 import 'package:japaapp/presentation/widget/custom_app_bar.dart';
+import 'package:japaapp/presentation/widget/form_field.dart';
 
 import 'package:japaapp/presentation/widget/input_field_with_label.dart';
+import 'package:provider/provider.dart';
 
 
 
 @RoutePage()
-class AccountWorkPages extends StatefulWidget {
+class AccountWorkPages extends StatefulWidget implements AutoRouteWrapper {
   const AccountWorkPages({super.key});
 
   @override
   State<AccountWorkPages> createState() => _AccountWorkPagesState();
+    @override
+  Widget wrappedRoute(BuildContext context) {
+     //final userInfo = context.read<AccountSnapshotCache>().userInfo;
+      // context.read<AccountSnapshotCache>().userInfo.data.education;
+      
+
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<CreateWorkInformationCubit>(
+          create: (context) => getIt<CreateWorkInformationCubit>(),
+        ),
+        
+        // BlocProvider<CreateBasicInformationCubit>(
+        //   create: (context) => getIt<CreateBasicInformationCubit>(),
+        // ),
+      ],
+      child: this,
+    );
+  }
 }
 
 class _AccountWorkPagesState extends State<AccountWorkPages> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  TextEditingController _companynameTextFieldController =
-      TextEditingController();
+  TextEditingController _companynameTextFieldController =  TextEditingController();
   TextEditingController _positionTextFieldController = TextEditingController();
   TextEditingController _gradeTextFieldController = TextEditingController();
   
-  DateTime userDOB = DateTime.now();
+  DateTime userDOB1 = DateTime.now();
+  DateTime userDOB2 = DateTime.now();
   String fromDate = '';
   String toDate = '';
 
@@ -41,6 +71,11 @@ class _AccountWorkPagesState extends State<AccountWorkPages> {
     _companynameTextFieldController = TextEditingController();
     _positionTextFieldController = TextEditingController();
     _gradeTextFieldController = TextEditingController();
+     final userInfo = context.read<AccountSnapshotCache>().userInfo.data.work;
+     print(userInfo);
+      for (var i = 0; i < userInfo.length; i++) {
+      addNewWorkSection(i, userInfo[i]);
+    }
   }
 
   @override
@@ -49,6 +84,17 @@ class _AccountWorkPagesState extends State<AccountWorkPages> {
     _positionTextFieldController.dispose();
     _gradeTextFieldController.dispose();
     super.dispose();
+  }
+
+   List<Widget> addNewWorkList = [];
+  List<WorkData> workDataList = [];
+  void addFirstDefaultMilestone() {
+    WorkData defaultMilestone = WorkData(companyName: _companynameTextFieldController.text, position: _positionTextFieldController.text, dateFrom: userDOB1, dateTo: userDOB2, isCurrentWork: false);
+    if (defaultMilestone.companyName.isNotEmpty) {
+      workDataList.insert(0,defaultMilestone);
+    } else {
+      
+    }
   }
 
     Future<void> _selectDate(BuildContext context, String nav) async {
@@ -61,40 +107,70 @@ class _AccountWorkPagesState extends State<AccountWorkPages> {
 
     if (nav == "fromD") {
       if (picked != null && picked != DateTime.now()) {
-        String formattedDate = DateFormat('dd MMM yyyy').format(picked);
+        String formattedDate = DateFormat('MMM yyyy').format(picked);
         setState(() {
-          userDOB = picked;
+          userDOB1 = picked;
           fromDate = formattedDate;
         });
       }
     } else {
       if (picked != null && picked != DateTime.now()) {
-        String formattedDate = DateFormat('dd MMM yyyy').format(picked);
+        String formattedDate = DateFormat('MMM yyyy').format(picked);
         setState(() {
-          userDOB = picked;
+          userDOB2 = picked;
           toDate = formattedDate;
         });
       }
     }
   }
 
-  List<Widget> addNewWorkList = [];
 
-  void addNewWorkSection(int index) {
+
+  void addNewWorkSection(int index, WorkUser workUser) {
     //  WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
     //   setState(() {});
     // });
+  TextEditingController _companynameListTextFieldController =  TextEditingController(text: workUser.companyName);
+  TextEditingController _positionListTextFieldController = TextEditingController(text:  workUser.position);
+   TextEditingController fromDateFieldController = TextEditingController(text: workUser.dateFrom.toString());
+    TextEditingController toDateFieldController = TextEditingController(text: workUser.dateTo.toString());
+ DateTime userDOB1 = DateTime.now();
+ DateTime userDOB2 = DateTime.now();
+  String fromDateList = '';
+  String toDateList = '';
+    void _selectDateListe(String nav) async {
+    DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(1900),
+      lastDate: DateTime.now(),
+    );
 
-    // TextEditingController titleController = TextEditingController();
-    // TextEditingController amountController = TextEditingController();
-    // TextEditingController dateCController = TextEditingController();
-
-    // milestonData[index].amount = amountController.text.replaceAll(",", "");
-    // Milestone newMilestone = Milestone(
-    //   title: titleController.text,
-    //   amount: amountController.text.replaceAll(",", ""),
-    //   dueDate: dateCController.text,
-    // );
+    if (nav == "fromD") {
+      if (picked != null && picked != DateTime.now()) {
+        String formattedDate = DateFormat('MMM yyyy').format(picked);
+        setState(() {
+          userDOB1 = picked;
+          fromDateList = formattedDate;
+          fromDateFieldController.text=formattedDate;
+          print(fromDateList);
+           workDataList[index].dateFrom = userDOB1;
+        });
+      }
+    } else {
+      if (picked != null && picked != DateTime.now()) {
+        String formattedDate = DateFormat('MMM yyyy').format(picked);
+        setState(() {
+          userDOB2 = picked;
+          toDateList = formattedDate;
+          toDateFieldController.text=formattedDate;
+          workDataList[index].dateTo = userDOB2;
+        });
+      }
+    }
+  }
+   WorkData workData = WorkData(companyName: _companynameListTextFieldController.text, position: _positionListTextFieldController.text, dateFrom: userDOB1, dateTo: userDOB2, isCurrentWork: false);
+  
 
     addNewWorkList.add(Column(
       children: [
@@ -103,9 +179,9 @@ class _AccountWorkPagesState extends State<AccountWorkPages> {
           onTap: () {
             setState(() {
               addNewWorkList.removeAt(index);
-              // if (index >= 0 && index < milestonData.length) {
-              //   milestonData.removeAt(index);
-              // }
+              if (index >= 0 && index < workDataList.length) {
+                workDataList.removeAt(index);
+              }
 
               // titleController.clear();
               // amountController.clear();
@@ -129,15 +205,138 @@ class _AccountWorkPagesState extends State<AccountWorkPages> {
           ),
         ),
         const SizedBox(height: 10),
-        _buildCompanyNameTextField(),
+        InputFieldWithLabel(
+        hintText: "Name of Company",
+        title: "Company",
+        validateText: "company name is required",
+        controller: _companynameListTextFieldController,
+        textType: TextInputType.text,
+        onChanged: (value){
+           setState(() {
+              if (index >= 0 && index < workDataList.length) {
+                workDataList[index].companyName = value.toString();
+              }
+            });
+        }),
         SizedBox(height: (Sizing.kSizingMultiple * 1.5).h),
-        _buildPositionTextField(),
+       InputFieldWithLabel(
+        hintText: "what is your position in the Company",
+        title: "Position",
+        validateText: "position is required",
+        controller: _positionListTextFieldController,
+        textType: TextInputType.text,
+        onChanged: (value){
+           setState(() {
+              if (index >= 0 && index < workDataList.length) {
+                workDataList[index].position = value.toString();
+              }
+            });
+        },),
         SizedBox(height: (Sizing.kSizingMultiple * 1.5).h),
-        _buildWorkDurationTextField(),
+                Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "From",
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w500,
+                    color: CustomTypography.kGreyColorlabel,
+                  ),
+            ),
+            SizedBox(
+              height: Sizing.kHSpacing8 / 2,
+            ),
+            InkWell(
+              onTap: () {
+                setState(() {});
+                
+              },
+              child:   SizedBox(
+                width: MediaQuery.sizeOf(context).width * 0.40.w,
+                child: 
+                FormFieldInput(
+                          suffixIcon:  Image.asset(
+                          'assets/images/datee.png',
+                          width: 24,
+                          height: 24,
+                        ),
+                          readOnly: true,
+                          hint: "MM/YYYY",
+                          controller:fromDateFieldController,
+                          onChanged: (value){
+                            print(DateTime.parse(value.toString()));
+                          if (index >= 0 && index < workDataList.length) {
+                            workDataList[index].dateFrom = DateTime.parse(value.toString());
+                          }
+                          },
+                          onTap: () {
+                            _selectDateListe( "fromD");
+                          },
+                          // onTapData: ,
+                        ),
+              ),
+          
+      
+              ),
+            
+          ],
+        ),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "To",
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w500,
+                    color: CustomTypography.kGreyColorlabel,
+                  ),
+            ),
+            SizedBox(
+              height: Sizing.kHSpacing8 / 2,
+            ),
+            InkWell(
+              onTap: () {
+                setState(() {});
+                
+              },
+              child:  SizedBox(
+                width: MediaQuery.sizeOf(context).width * 0.40.w,
+                child: 
+                FormFieldInput(
+                          suffixIcon:  Image.asset(
+                          'assets/images/datee.png',
+                          width: 24,
+                          height: 24,
+                        ),
+                          readOnly: true,
+                          hint: "MM/YYYY",
+                          controller:toDateFieldController,
+                          onChanged: (value){
+                            print(DateTime.parse(value.toString()));
+                if (index >= 0 && index < workDataList.length) {
+                  workDataList[index].dateTo = DateTime.parse(value.toString());
+                }
+                          },
+                          onTap: () {
+                            _selectDateListe( "toD");
+                          },
+                          // onTapData: ,
+                        ),
+              ),
+              
+           
+            ),
+          ],
+        ),
+      ],
+    ),
         SizedBox(height: (Sizing.kSizingMultiple * 1.5).h),
       ],
     ));
-    // milestonData.add(newMilestone);
+   workDataList.add(workData);
   }
 
   @override
@@ -269,6 +468,7 @@ class _AccountWorkPagesState extends State<AccountWorkPages> {
                 decoration: BoxDecoration(
                   //color: Colors.red,
                   //color: const Color(0xFFF4F4F4),
+                   color: CustomTypography.kBottomNavColor,
                   borderRadius: BorderRadius.circular(4.r),
                   border: Border.all(
                     width: 1.w, // Width of the border
@@ -335,6 +535,7 @@ class _AccountWorkPagesState extends State<AccountWorkPages> {
                 padding: EdgeInsets.all(10.dm),
                 decoration: BoxDecoration(
                   //color: const Color(0xFFF4F4F4),
+                   color: CustomTypography.kBottomNavColor,
                   borderRadius: BorderRadius.circular(4.r),
                   border: Border.all(
                     width: 1.w, // Width of the border
@@ -385,7 +586,7 @@ class _AccountWorkPagesState extends State<AccountWorkPages> {
         InkWell(
           onTap: () {
             setState(() {
-              addNewWorkSection(addNewWorkList.length);
+              addNewWorkSection(addNewWorkList.length,WorkUser.empty());
             });
           },
           child: Row(
@@ -418,13 +619,16 @@ class _AccountWorkPagesState extends State<AccountWorkPages> {
     );
   }
 
-  Widget _buildActionButton() {
+  Widget _buildActionButtonback() {
     return Column(
       children: [
         CustomButton(
           type: ButtonType.regularButton(
               onTap: () {
-                context.router.push(const AccountFamilyRoute());
+                 addFirstDefaultMilestone();
+                 List<Map<String, dynamic>> milestoneListAsMap = workDataList.map((milestone) => milestone.toJson()).toList();
+                          print(milestoneListAsMap);
+                //context.router.push(const AccountFamilyRoute());
               },
               label: 'Next',
               isLoadingMode: false,
@@ -434,6 +638,71 @@ class _AccountWorkPagesState extends State<AccountWorkPages> {
                   Radius.circular(Sizing.kBorderRadius * 7.r))),
         ),
       ],
+    );
+  }
+
+   void _onUserSignUpCallback() async{
+    //KeyboardUtil.hideKeyboard(context);
+    //DateTime dateTime = DateTime.parse(toDate);
+     addFirstDefaultMilestone();
+                 List<Map<String, dynamic>> milestoneListAsMap = workDataList.map((milestone) => milestone.toJson()).toList();
+                          print(milestoneListAsMap);
+    context.read<CreateWorkInformationCubit>().createWorkInfo(workLevelModel: milestoneListAsMap);
+  }
+
+      Widget _buildActionButton() {
+    return BlocConsumer<CreateWorkInformationCubit,
+        BlocState<Failure<ExceptionMessage>, CompoundUserInfoModel>>(
+      listener: (context, state) {
+        state.maybeMap(
+          orElse: () => null,
+          success: (state) {
+            if (state.data.status=="success") {
+              // clear form inputs
+              _formKey.currentState!.reset();
+
+             context.router.push(const AccountFamilyRoute());
+            } else {
+              SnackBarUtil.snackbarError<String>(
+                context,
+                code: ExceptionCode.UNDEFINED,
+                message: "Something went wrong try again",
+              );
+            }
+          },
+          error: (state) {
+            SnackBarUtil.snackbarError<String>(
+              context,
+              code: state.failure.exception.code,
+              message: state.failure.exception.message.toString(),
+              onRefreshCallback: () => _onUserSignUpCallback(),
+            );
+          },
+        );
+      },
+      builder: (context, state) {
+        final isLoading =
+            state is Loading<Failure<ExceptionMessage>, CompoundUserInfoModel>;
+
+        return Column(
+          children: [
+            CustomButton(
+              type: ButtonType.regularButton(
+                  onTap: () => _onUserSignUpCallback(),
+                   label: 'Next',
+                  isLoadingMode: isLoading,
+                  backgroundColor: CustomTypography.kPrimaryColor300,
+                  textColor: CustomTypography.kWhiteColor,
+                  borderRadius: BorderRadius.all(
+                      Radius.circular(Sizing.kBorderRadius * 7.r))),
+            ),
+             SizedBox(
+          height: Sizing.kHSpacing10,
+        ),
+       // _buildAuthModeSwitcherSection()
+          ],
+        );
+      },
     );
   }
 }

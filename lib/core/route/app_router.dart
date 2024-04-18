@@ -23,7 +23,7 @@ class AppRouter extends _$AppRouter {
         CustomRoute(page: EmailVerificationRoute.page,transitionsBuilder: TransitionsBuilders.slideLeftWithFade, durationInMilliseconds: 600),
         CustomRoute(page: OTPVerificationRoute.page,transitionsBuilder: TransitionsBuilders.slideLeftWithFade, durationInMilliseconds: 600),
         CustomRoute(page: CreateAccountRoute.page,path: '/signup',transitionsBuilder: TransitionsBuilders.slideLeftWithFade, durationInMilliseconds: 600),
-        CustomRoute(page: AccountBasicInfoRoute.page,path: '/basic_info',transitionsBuilder: TransitionsBuilders.slideLeftWithFade, durationInMilliseconds: 600),
+        CustomRoute(page: AccountBasicInfoRoute.page,path: '/basic_info',transitionsBuilder: TransitionsBuilders.noTransition, durationInMilliseconds: 600),
         CustomRoute(page: AccountEducationRoutes.page,path: '/edu_page',transitionsBuilder: TransitionsBuilders.slideLeftWithFade, durationInMilliseconds: 600),
         CustomRoute(page: AccountWorkRoutes.page,path: '/work_page',transitionsBuilder: TransitionsBuilders.slideLeftWithFade, durationInMilliseconds: 600),
         CustomRoute(page: AccountFamilyRoute.page,path: '/family_page',transitionsBuilder: TransitionsBuilders.slideLeftWithFade, durationInMilliseconds: 600),
@@ -37,6 +37,7 @@ class AppRouter extends _$AppRouter {
         CustomRoute(page: JoureyCompareDestinationRoute.page,transitionsBuilder: TransitionsBuilders.slideRight, durationInMilliseconds: 900),
         CustomRoute(page: MyProcessTabRoute.page,transitionsBuilder: TransitionsBuilders.noTransition,),
         CustomRoute(page: SelectedServicesRoute.page,transitionsBuilder: TransitionsBuilders.noTransition, ),
+        CustomRoute(page: CommunityDetailRoute.page,transitionsBuilder: TransitionsBuilders.noTransition, ),
 
         
       ];

@@ -7,6 +7,9 @@ import 'package:dio/dio.dart';
 import 'package:http/http.dart' as http;
 import 'package:japaapp/core/exceptions/exceptions.dart';
 import 'package:japaapp/core/network/network.dart';
+import 'package:japaapp/data/local_data/local_storage.dart';
+import 'package:japaapp/domain/form_params/form_params.dart';
+
 
 
 
@@ -17,24 +20,33 @@ class Services {
   }):_exceptionMapper=exceptionMapper;
    
 
- Future<Response> post(String uri, {
-        data,
+ Future<Response> post({
+  required String uri,
+       required data,
         Map<String, dynamic>? queryParameters,
         Options? options,
         CancelToken? cancelToken,
         ProgressCallback? onSendProgress,
         ProgressCallback? onReceiveProgress,
+        String? authorization
       }) async {
    try {
       final response = await dioClient.post(
         uri,
         data: data,
         queryParameters: queryParameters,
+        options: Options(
+        headers: {
+          'Authorization': authorization,
+          "content-type": "application/json",
+          "Accept": "application/json"
+        },
+        )
       );
 
      return response;
     } on DioException catch (e) {
-
+      print (e.response?.data);
       throw _exceptionMapper.mapException(e);
     }
     on SocketException catch (e) {
@@ -50,17 +62,28 @@ class Services {
 
 
 
-   Future<Response> get(String uri, {
+   Future<Response> get( {
+     required String uri,
+       //required data,
         Map<String, dynamic>? queryParameters,
         Options? options,
         CancelToken? cancelToken,
         ProgressCallback? onSendProgress,
         ProgressCallback? onReceiveProgress,
+         String? authorization
       }) async {
    try {
       final response = await dioClient.get(
         uri,
         queryParameters: queryParameters,
+        options: Options(
+        headers: {
+          'Authorization': authorization,
+          "content-type": "application/json",
+          "Accept": "application/json"
+        },
+        )
+
       );
 
      return response;
@@ -102,6 +125,7 @@ class Services {
         cancelToken: cancelToken,
         onReceiveProgress: onReceiveProgress,
         deleteOnError: deleteOnError,
+        
       );
       return response;
     } on DioException catch (e) {
@@ -210,7 +234,7 @@ class Services {
 
 
 
-Future<Response> uploadFile({
+Future<Response> uploadMultipleFile({
   required String url,
   Map<String, String>? data,
   Map<String, String>? uploadFiles,
@@ -252,6 +276,59 @@ Future<Response> uploadFile({
     }
 }
 
+Future<Response> uploadFile({
+  required String url,
+  dynamic data,
+  File? uploadFile,
+  Options? options,
+  String? authorization
+}) async {
+  print(data);
+
+  final formData = FormData();
+
+  if (data != null && data is BasicInformationFormParams) {
+    // Convert data to Map<String, dynamic>
+    final basicInformationMap = data.toJson();
+
+    // Add the single data field to formData
+    basicInformationMap.forEach((key, value) {
+      formData.fields.add(MapEntry(key, value.toString()));
+    });
+  } else {
+    throw ArgumentError('Invalid data type. Expected BasicInformationFormParams.');
+  }
+
+  // Add the file to formData
+  if (uploadFile != null) {
+    final file = await MultipartFile.fromFile(uploadFile.path);
+    formData.files.add(MapEntry('image', file)); // Specify field name as 'file'
+  }
+
+  try {
+    final response = await dioClient.post(
+      url,
+      data: formData,
+      options: Options(
+        headers: {
+          'Authorization': authorization,
+          "content-type": "application/json",
+          "Accept": "application/json"
+        },
+      ),
+    );
+    return response;
+  } on DioError catch (e) {
+    throw _exceptionMapper.mapException(e);
+  } on SocketException catch (e) {
+    throw SocketException(e.toString());
+  } on FormatException catch (_) {
+    throw FormatException("Unable to process the data");
+  } catch (e) {
+    // Catch any other exception and rethrow
+    rethrow;
+  }
+}
 
   // Future<Response> upload({
   //   required String url,

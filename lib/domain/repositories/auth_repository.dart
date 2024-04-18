@@ -1,14 +1,28 @@
 import 'package:dartz/dartz.dart';
 import 'package:japaapp/core/exceptions/exceptions.dart';
 import 'package:japaapp/core/util/unit_impl.dart';
+import 'package:japaapp/domain/form_params/auth/email_validation_form_params.dart';
 import 'package:japaapp/domain/form_params/form_params.dart';
+import 'package:japaapp/domain/model/auth/email_verification_otp_model.dart';
+import 'package:japaapp/domain/model/auth/resend_otp_response_model.dart';
 
 import '../model/models.dart';
-
 
 abstract class AuthRepository {
   Future<Either<Failure<ExceptionMessage>, UserInfoModel>>
       getAuthenticatedUser();
+
+  Future<Either<Failure<ExceptionMessage>, UserInfoModel>> emailRegistration(
+      {required EmailValidationFromParams emailValidationFromParams});
+
+  Future<Either<Failure<ExceptionMessage>, EmailVerificationOtpModel>>
+      verifyEmailOTPCode({
+    required EmailOtpVerificationFormParams emailOtpVerificationFormParams,
+  });
+
+  Future<Either<Failure<ExceptionMessage>, ResendOtpModel>>
+      resendOTPVerificationCode(
+          {required ResendOtpFormParams resendOtpFormParams});
 
   Future<Either<Failure<ExceptionMessage>, UserInfoModel>> signup(
       {required SignUpFromParams signUpFromParams});
@@ -27,18 +41,7 @@ abstract class AuthRepository {
           {required ForgotPasswordOtpVerificationFormParams
               forgotPasswordOtpVerificationFormParams});
 
-  Future<Either<Failure<ExceptionMessage>, GenericResponseModel>>
-      changePassword(
-          {required ChangePasswordFormParams changePasswordFormParams});
-
-  Future<Either<Failure<ExceptionMessage>, ResponseModel<GenericResponseModel>>>
-      verifySignupOTPCode({
-    required SignupOtpVerificationFormParams signupOtpVerificationFormParams,
-  });
-
-  Future<Either<Failure<ExceptionMessage>, GenericResponseModel>>
-      resendOTPVerificationCode(
-          {required ResendOtpFormParams resendOtpFormParams});
+ 
 
   Future<Either<Failure<ExceptionMessage>, UnitImpl>> signout();
 }

@@ -3,34 +3,34 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:japaapp/business/blocs/bloc_state.dart';
 import 'package:japaapp/core/exceptions/exceptions.dart';
 import 'package:japaapp/domain/form_params/form_params.dart';
-import 'package:japaapp/domain/model/models.dart';
+import 'package:japaapp/domain/model/auth/resend_otp_response_model.dart';
 import 'package:japaapp/domain/repositories/repositories.dart';
 
 
 class ResendOtpCodeFormCubit
-    extends Cubit<BlocState<Failure<ExceptionMessage>, GenericResponseModel>> {
+    extends Cubit<BlocState<Failure<ExceptionMessage>, ResendOtpModel>> {
   final AuthRepository _repository;
 
   ResendOtpCodeFormCubit({required AuthRepository repository})
       : _repository = repository,
         super(const BlocState<Failure<ExceptionMessage>,
-            GenericResponseModel>.initial());
+            ResendOtpModel>.initial());
 
   Future<void> resendOTPVerificationCode(
       {required ResendOtpFormParams resendOtpFormParams}) async {
     emit(const BlocState<Failure<ExceptionMessage>,
-        GenericResponseModel>.loading());
+        ResendOtpModel>.loading());
 
     final _resendOTPVerificationCodeEither = await _repository
         .resendOTPVerificationCode(resendOtpFormParams: resendOtpFormParams);
 
     final _state = _resendOTPVerificationCodeEither.fold(
       (failure) =>
-          BlocState<Failure<ExceptionMessage>, GenericResponseModel>.error(
+          BlocState<Failure<ExceptionMessage>, ResendOtpModel>.error(
               failure: failure),
       (responseModel) {
         return BlocState<Failure<ExceptionMessage>,
-            GenericResponseModel>.success(data: responseModel);
+            ResendOtpModel>.success(data: responseModel);
       },
     );
 

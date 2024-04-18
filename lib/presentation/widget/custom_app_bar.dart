@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:japaapp/presentation/widget/back_button.dart';
 
@@ -31,22 +33,28 @@ class CustomApbar extends StatelessWidget {
                     },
                   ),
               Expanded(
-                flex: 3,
+                flex: 1,
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    Text(
-                      title,
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          fontSize: 20.sp,
-                          fontWeight: FontWeight.w600,
-                          
-                          color: const Color(0xff344054)),
+                    Container(
+                      //color: Colors.green,
+                      width: 200,
+                      child: Text(
+                        title,
+                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                            fontSize: 20.sp,
+                            fontWeight: FontWeight.w600,
+                            
+                            color: const Color(0xff344054)),
+                            overflow: TextOverflow.ellipsis,
+                            textAlign: TextAlign.center,
+                      ),
                     ),
                   ],
                 ),
               ),
-              Expanded(flex: 0, child: otherWidget ?? const SizedBox.shrink()),
+              otherWidget ?? const SizedBox.shrink(),
             ],
           ),
           10.verticalSpace

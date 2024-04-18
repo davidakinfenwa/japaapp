@@ -24,11 +24,30 @@
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
-	<key>UILaunchStoryboardName</key>
-	<string>LaunchScreen</string>
-	<key>UIMainStoryboardFile</key>
-	<string>Main</string>
-	<key>UISupportedInterfaceOrientations</key>
+	<key>NSCameraUsageDescription</key>
+		<string>We need access to your camera to enable you update your user profile picture</string>
+		<key>NSContactsUsageDescription</key>
+		<string>We need access to your contacts to enable you pick phone numbers for your usage</string>
+		<key>NSLocationWhenInUseUsageDescription</key>
+		<string>We need access to your location to help provide you with support specific to your
+			location</string>
+		<key>NSPhotoLibraryAddUsageDescription</key>
+		<string>We need access to your photo library to enable you upload your user profile picture.</string>
+		<key>NSPhotoLibraryUsageDescription</key>
+		<string>We need access to your photo library to help you upload your user profile picture.</string>
+		<key>NSMicrophoneUsageDescription</key>
+		<string>We need microphone access to enable voice chat feature for support.</string>
+		<key>NSFaceIDUsageDescription</key>
+		<string>To securely log in to your account using Face ID.</string>
+		<key>NSContactsUsageDescription</key>
+		<string>Reason we need access to the contact list</string>
+		<key>UIApplicationSupportsIndirectInputEvents</key>
+		<true />
+		<key>UILaunchStoryboardName</key>
+		<string>LaunchScreen</string>
+		<key>UIMainStoryboardFile</key>
+		<string>Main</string>
+		<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
 		<string>UIInterfaceOrientationLandscapeLeft</string>

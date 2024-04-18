@@ -3,13 +3,18 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 
 
-class UploadDocUi extends StatelessWidget {
+class UploadDocUi extends StatefulWidget {
   const UploadDocUi({super.key, this.getFilePopUp});
   final VoidCallback? getFilePopUp;
 
   @override
+  State<UploadDocUi> createState() => _UploadDocUiState();
+}
+
+class _UploadDocUiState extends State<UploadDocUi> {
+  @override
   Widget build(BuildContext context) {
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) { });
+    
 
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 20)
@@ -75,97 +80,104 @@ class UploadDocUi extends StatelessWidget {
 
   Widget uploadOptionsBody(BuildContext context) {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) { });
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 7.sp, vertical: 20),
-      child: Column(mainAxisSize: MainAxisSize.min, children: [
-        Container(
-          width: double.infinity,
-          padding: EdgeInsets.symmetric(vertical: 10.h),
-          decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(20)),
-          child: Column(
-            children: [
-              Text(
-                "Upload image",
-                style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w400,
+    return StatefulBuilder(
+      builder: (context,changerr) {
+        return Container(
+          padding: EdgeInsets.symmetric(horizontal: 7.sp, vertical: 20),
+          child: Column(mainAxisSize: MainAxisSize.min, children: [
+            Container(
+              width: double.infinity,
+              padding: EdgeInsets.symmetric(vertical: 10.h),
+              decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20)),
+              child: Column(
+                children: [
+                  Text(
+                    "Upload image",
+                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w400,
+                        ),
+                  ),
+                  SizedBox(
+                    height: 7.sp,
+                  ),
+                   Divider(color: Colors.grey.shade400,),
+                  SizedBox(
+                    height: 7.sp,
+                  ),
+                  InkWell(
+                    onTap: () {
+                      changerr(() {
+                         if (widget.getFilePopUp != null) {
+                        widget.getFilePopUp!(); // Call the getFilePopUp callback
+                      }
+                      Navigator.pop(context);
+                      });
+                     
+        
+                      // _getSingleFileFromDevice(isXLSXFile: true);
+                    },
+                    child: Text(
+                      "Upload from phone",
+                      style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                            fontSize: 20,
+                            color: Colors.black,
+                            fontWeight: FontWeight.w400,
+                          ),
                     ),
+                  ),
+                  SizedBox(
+                    height: 7.sp,
+                  ),
+                  //const Divider(),
+                   Divider(color: Colors.grey.shade400,),
+        
+                  SizedBox(
+                    height: 7.sp,
+                  ),
+                  InkWell(
+                    onTap: () {
+                      //value.setUploadProgress = -1;
+                      Navigator.pop(context);
+                    },
+                    child: Text(
+                      "Take a Picture",
+                      style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                            fontSize: 20,
+                            color: Colors.black,
+                            fontWeight: FontWeight.w400,
+                          ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 7.sp,
+                  ),
+                  //Take a photo
+                ],
               ),
-              SizedBox(
-                height: 7.sp,
-              ),
-               Divider(color: Colors.grey.shade400,),
-              SizedBox(
-                height: 7.sp,
-              ),
-              InkWell(
-                onTap: () {
-                  if (getFilePopUp != null) {
-                    getFilePopUp!(); // Call the getFilePopUp callback
-                  }
-                  Navigator.pop(context);
-
-                  // _getSingleFileFromDevice(isXLSXFile: true);
-                },
-                child: Text(
-                  "Upload from phone",
-                  style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                        fontSize: 20,
-                        color: Colors.black,
-                        fontWeight: FontWeight.w400,
-                      ),
-                ),
-              ),
-              SizedBox(
-                height: 7.sp,
-              ),
-              //const Divider(),
-               Divider(color: Colors.grey.shade400,),
-
-              SizedBox(
-                height: 7.sp,
-              ),
-              InkWell(
-                onTap: () {
-                  //value.setUploadProgress = -1;
+            ),
+            SizedBox(
+              height: 8.h,
+            ),
+            ElevatedButton(
+                onPressed: () {
                   Navigator.pop(context);
                 },
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.white,
+                    fixedSize: Size(MediaQuery.of(context).size.width, 61)),
                 child: Text(
-                  "Take a Picture",
-                  style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                        fontSize: 20,
-                        color: Colors.black,
-                        fontWeight: FontWeight.w400,
-                      ),
-                ),
-              ),
-              SizedBox(
-                height: 7.sp,
-              ),
-              //Take a photo
-            ],
-          ),
-        ),
-        SizedBox(
-          height: 8.h,
-        ),
-        ElevatedButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.white,
-                fixedSize: Size(MediaQuery.of(context).size.width, 61)),
-            child: Text(
-              "Cancel",
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  color: Colors.blue,
-                  fontSize: 20,
-                  fontWeight: FontWeight.w500),
-            ))
-      ]),
+                  "Cancel",
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      color: Colors.blue,
+                      fontSize: 20,
+                      fontWeight: FontWeight.w500),
+                ))
+          ]),
+        );
+      }
     );
   }
 }

@@ -8,6 +8,7 @@ export 'authentication/create_account_page.dart';
 export 'tab_screens/dashboard.dart';
 export 'tab_screens/tab_screen.dart';
 export 'tab_screens/process_tab.dart';
+export 'community/community_detail_screen.dart';
 
 
 

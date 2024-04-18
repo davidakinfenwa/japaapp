@@ -13,12 +13,14 @@ class InputFieldWithLabel extends StatefulWidget {
     required this.validateText,
     required this.controller,
     required this.textType,
+    this.onChanged
   });
   final TextEditingController controller;
   final String hintText;
   final String title;
   final String validateText;
  final TextInputType textType;
+  final Function(String?)? onChanged;
 
   @override
   State<InputFieldWithLabel> createState() => _InputFieldWithLabelState();
@@ -44,6 +46,9 @@ class _InputFieldWithLabelState extends State<InputFieldWithLabel> {
           controller: widget.controller,
           textInputType: TextInputType.name,
           hint: widget.hintText,
+          onChanged: (value){
+             widget.onChanged?.call(value);
+          },
           validate: (value) {
             return widget.controller.text.isEmpty
                 ? widget.validateText

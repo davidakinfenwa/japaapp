@@ -2,21 +2,39 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:japaapp/business/blocs/auth_blocs/email_registration_form_cubit/email_registration_form_cubit.dart';
+import 'package:japaapp/business/blocs/bloc_state.dart';
 import 'package:japaapp/core/constants.dart';
+import 'package:japaapp/core/dependence/dependence.dart';
+import 'package:japaapp/core/exceptions/exceptions.dart';
 import 'package:japaapp/core/route/app_router.dart';
 import 'package:japaapp/core/theme/custom_typography.dart';
+import 'package:japaapp/core/util/keyboard_util.dart';
+import 'package:japaapp/core/util/snackbar_util.dart';
 import 'package:japaapp/core/util/width_constraints.dart';
+import 'package:japaapp/domain/form_params/auth/email_validation_form_params.dart';
+import 'package:japaapp/domain/model/models.dart';
 import 'package:japaapp/presentation/shared/custom_button.dart';
 import 'package:japaapp/presentation/widget/back_button.dart';
 import 'package:japaapp/presentation/widget/form_field.dart';
 
 @RoutePage()
-class EmailVerificationPage extends StatefulWidget {
+class EmailVerificationPage extends StatefulWidget implements AutoRouteWrapper {
   const EmailVerificationPage({super.key});
 
   @override
   State<EmailVerificationPage> createState() => _EmailVerificationPageState();
+
+
+    @override
+  Widget wrappedRoute(BuildContext context) {
+    return BlocProvider<EmailRegistaionCubit>(
+      create: (context) => getIt<EmailRegistaionCubit>(),
+      child: this,
+    );
+  }
 }
 
 class _EmailVerificationPageState extends State<EmailVerificationPage> {
@@ -43,6 +61,20 @@ class _EmailVerificationPageState extends State<EmailVerificationPage> {
     _emailOneTextFieldController.dispose();
     _emailTwoTextFieldController.dispose();
     super.dispose();
+  }
+
+
+   void _onUserEmailRegisatrationCallback() {
+    KeyboardUtil.hideKeyboard(context);
+
+    //if (!_formKey.currentState!.validate()) return;
+
+    final emailRegistrationFromParams = EmailValidationFromParams(
+      confirmEmail: _emailTwoTextFieldController.text,
+      email: _emailOneTextFieldController.text,
+      
+    );
+    context.read<EmailRegistaionCubit>().emailRegistraiton(emailValidationFromParams: emailRegistrationFromParams);
   }
 
   @override
@@ -115,6 +147,7 @@ class _EmailVerificationPageState extends State<EmailVerificationPage> {
                 ),
           ),
         ),
+        
       ],
     );
   }
@@ -174,12 +207,12 @@ class _EmailVerificationPageState extends State<EmailVerificationPage> {
     );
   }
 
-  Widget _buildActionButton() {
+  Widget _buildActionButtonback() {
     return Column(
       children: [
         CustomButton(
           type: ButtonType.regularButton(
-              onTap: () {context.router.push(const OTPVerificationRoute());},
+              onTap: () {context.router.push( OTPVerificationRoute());},
               label: 'Get Started',
               isLoadingMode: false,
               backgroundColor: CustomTypography.kPrimaryColor300,
@@ -192,6 +225,63 @@ class _EmailVerificationPageState extends State<EmailVerificationPage> {
         ),
         _buildAuthModeSwitcherSection()
       ],
+    );
+  }
+
+
+    Widget _buildActionButton() {
+    return BlocConsumer<EmailRegistaionCubit,
+        BlocState<Failure<ExceptionMessage>, UserInfoModel>>(
+      listener: (context, state) {
+        state.maybeMap(
+          orElse: () => null,
+          success: (state) {
+            if (state.data.status=="success") {
+              // clear form inputs
+              _formKey.currentState!.reset();
+
+              context.router.push( OTPVerificationRoute());
+            } else {
+              SnackBarUtil.snackbarError<String>(
+                context,
+                code: ExceptionCode.UNDEFINED,
+                message: state.data.message,
+              );
+            }
+          },
+          error: (state) {
+            SnackBarUtil.snackbarError<String>(
+              context,
+              code: state.failure.exception.code,
+              message: state.failure.exception.message.toString(),
+              onRefreshCallback: () => _onUserEmailRegisatrationCallback(),
+            );
+          },
+        );
+      },
+      builder: (context, state) {
+        final isLoading =
+            state is Loading<Failure<ExceptionMessage>, UserInfoModel>;
+
+        return Column(
+          children: [
+            CustomButton(
+              type: ButtonType.regularButton(
+                  onTap: () => _onUserEmailRegisatrationCallback(),
+                   label: 'Get Started',
+                  isLoadingMode: isLoading,
+                  backgroundColor: CustomTypography.kPrimaryColor300,
+                  textColor: CustomTypography.kWhiteColor,
+                  borderRadius: BorderRadius.all(
+                      Radius.circular(Sizing.kBorderRadius * 7.r))),
+            ),
+             SizedBox(
+          height: Sizing.kHSpacing10,
+        ),
+        _buildAuthModeSwitcherSection()
+          ],
+        );
+      },
     );
   }
 
