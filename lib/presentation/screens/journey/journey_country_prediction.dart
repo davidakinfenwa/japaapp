@@ -1,21 +1,38 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:bot_toast/bot_toast.dart';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:japaapp/business/blocs/bloc_state.dart';
+import 'package:japaapp/business/blocs/journey/country_prediction_form_cubit.dart';
+import 'package:japaapp/business/snapshot_cache/journey_snapshot_cache.dart';
 import 'package:japaapp/core/constants.dart';
+import 'package:japaapp/core/dependence/dependence.dart';
+import 'package:japaapp/core/exceptions/exceptions.dart';
 import 'package:japaapp/core/route/app_router.dart';
 import 'package:japaapp/core/theme/custom_typography.dart';
+import 'package:japaapp/core/util/snackbar_util.dart';
 import 'package:japaapp/core/util/width_constraints.dart';
+import 'package:japaapp/domain/model/journey/country_prediction_model.dart';
 import 'package:japaapp/presentation/shared/custom_button.dart';
 import 'package:japaapp/presentation/widget/back_button.dart';
 
 @RoutePage()
-class JourneyCountryPredictedPage extends StatefulWidget {
+class JourneyCountryPredictedPage extends StatefulWidget implements AutoRouteWrapper {
   const JourneyCountryPredictedPage({super.key});
 
   @override
   State<JourneyCountryPredictedPage> createState() =>
       _JourneyCountryPredictedPageState();
+
+       @override
+  Widget wrappedRoute(BuildContext context) {
+    return BlocProvider<CountryPredictionCubit>(
+      create: (context) => getIt<CountryPredictionCubit>(),
+      child: this,
+    );
+  }
 }
 
 class _JourneyCountryPredictedPageState
@@ -75,7 +92,9 @@ class _JourneyCountryPredictedPageState
                                     child: Column(
                               children: [
                                 _buildActionButton(),
-                                _buildOtherActionButton("Rerun Assessment"),
+                                _buildSupriseMeSection(),
+                      SizedBox(height: (Sizing.kSizingMultiple).h),
+
                                 _buildOtherActionButton("Pick a country"),
                               ],
                             ),
@@ -126,7 +145,7 @@ class _JourneyCountryPredictedPageState
     return SizedBox(
       width: MediaQuery.sizeOf(context).width * 0.8.w,
       child: Text(
-        'Based on your profile, you will be a good fit for',
+        'Based on your profile,',
         textAlign: TextAlign.center,
         style: Theme.of(context).textTheme.titleMedium?.copyWith(
               //color: Colors.black,
@@ -137,10 +156,11 @@ class _JourneyCountryPredictedPageState
   }
 
   Widget _buildSuggestedCountrySection() {
+    final result= context.watch<JourneySnapshotCache>().countryPredictionModel;
     return SizedBox(
       width: MediaQuery.sizeOf(context).width * 0.8.w,
       child: Text(
-        'Canada',
+        result.data,
         textAlign: TextAlign.center,
         style: Theme.of(context).textTheme.headlineSmall?.copyWith(
               color: Colors.black,
@@ -191,6 +211,68 @@ class _JourneyCountryPredictedPageState
           height: Sizing.kHSpacing10,
         ),
       ],
+    );
+  }
+
+
+  
+ void _onUserRerunCallback() async{
+    // KeyboardUtil.hideKeyboard(context);
+    // final userId = await TokenService().retrieveUserId();
+    //if (!_formKey.currentState!.validate()) return;
+     LoadingData.showCustomDialog(context);
+
+    //final signUpFromParams = SignUpFromParams(id: userId.toString(), firstName: _firstNameTextFieldController.text, otherName: _otherNameTextFieldController.text, lastName: _lastNameTextFieldController.text, phoneNumber: _phoneNumerTextFieldController.text, password: _passwordTextFieldController.text, confirmPassword: _comfirmPasswordTextFieldController.text);
+    context.read<CountryPredictionCubit>().countryPrediction();
+  }
+
+   Widget _buildSupriseMeSection() {
+    return BlocConsumer<CountryPredictionCubit,
+        BlocState<Failure<ExceptionMessage>, CountryPredictionModel>>(
+      listener: (context, state) {
+        state.maybeMap(
+          orElse: () => null,
+          success: (state) {
+            if (state.data.status=="success") {
+              // clear form inputs
+             // _formKey.currentState!.reset();
+             BotToast.cleanAll();
+
+             //context.router.replace(const JourneyCountryPredictedRoute());
+            } else {
+              BotToast.cleanAll();
+              SnackBarUtil.snackbarError<String>(
+                context,
+                code: ExceptionCode.UNDEFINED,
+                message: state.data.message,
+              );
+            }
+          },
+          error: (state) {
+            BotToast.cleanAll();
+            SnackBarUtil.snackbarError<String>(
+              context,
+              code: state.failure.exception.code,
+              message: state.failure.exception.message.toString(),
+              onRefreshCallback: () => _onUserRerunCallback(),
+            );
+          },
+        );
+      },
+      builder: (context, state) {
+        final isLoading = state is Loading<Failure<ExceptionMessage>, CountryPredictionModel>;
+
+        return  CustomButton(
+          type: ButtonType.withBorderLongButton(
+              onTap:  () => _onUserRerunCallback(),
+              label: "Rerun Assessment",
+              isLoadingMode: false,
+               textColor: CustomTypography.kPrimaryColor300,
+              borderColor: CustomTypography.kPrimaryColor300,
+              borderRadius: BorderRadius.all(
+                  Radius.circular(Sizing.kBorderRadius * 7.r))),
+        );
+      },
     );
   }
 }

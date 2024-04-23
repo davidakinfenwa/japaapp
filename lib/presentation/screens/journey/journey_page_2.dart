@@ -1,13 +1,22 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:bot_toast/bot_toast.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:japaapp/business/blocs/bloc_state.dart';
+import 'package:japaapp/business/blocs/journey/country_prediction_form_cubit.dart';
 import 'package:japaapp/core/constants.dart';
+import 'package:japaapp/core/dependence/dependence.dart';
+import 'package:japaapp/core/exceptions/exceptions.dart';
 import 'package:japaapp/core/route/app_router.dart';
 import 'package:japaapp/core/theme/custom_typography.dart';
+import 'package:japaapp/core/util/snackbar_util.dart';
 import 'package:japaapp/core/util/width_constraints.dart';
+import 'package:japaapp/domain/model/journey/country_prediction_model.dart';
+import 'package:japaapp/presentation/shared/alert_dialog.dart';
 import 'package:japaapp/presentation/shared/custom_button.dart';
 import 'package:japaapp/presentation/widget/back_button.dart';
 import 'package:japaapp/presentation/widget/bottom_sheet_item.dart';
@@ -15,11 +24,20 @@ import 'package:japaapp/presentation/widget/item_with_dropdown.dart';
 
 
 @RoutePage()
-class JourneySelectionPage extends StatefulWidget {
+class JourneySelectionPage extends StatefulWidget implements AutoRouteWrapper {
   const JourneySelectionPage({super.key});
 
   @override
   State<JourneySelectionPage> createState() => _JourneySelectionPageState();
+  
+  @override
+  Widget wrappedRoute(BuildContext context) {
+    return BlocProvider<CountryPredictionCubit>(
+      create: (context) => getIt<CountryPredictionCubit>(),
+      child: this,
+    );
+  }
+
 }
 
 class _JourneySelectionPageState extends State<JourneySelectionPage> {
@@ -143,11 +161,12 @@ class _JourneySelectionPageState extends State<JourneySelectionPage> {
     );
   }
 
-  Widget _buildSupriseMeSection() {
+  Widget _buildSupriseMeSectionBack() {
     return CustomButton(
       type: ButtonType.withBorderIconFontButton(
           onTap: () {
             //context.router.push(const SignInRoute());
+            LoadingData.showCustomDialog(context);
           },
           //itemSpacingWidth: 10,
           label: 'Surprise Me',
@@ -159,6 +178,75 @@ class _JourneySelectionPageState extends State<JourneySelectionPage> {
           borderColor: CustomTypography.kPrimaryColor300,
           borderRadius:
               BorderRadius.all(Radius.circular(Sizing.kBorderRadius * 7.r))),
+    );
+  }
+
+ 
+ void _onUserPredictionCallback() async{
+    // KeyboardUtil.hideKeyboard(context);
+    // final userId = await TokenService().retrieveUserId();
+    //if (!_formKey.currentState!.validate()) return;
+     LoadingData.showCustomDialog(context);
+
+    //final signUpFromParams = SignUpFromParams(id: userId.toString(), firstName: _firstNameTextFieldController.text, otherName: _otherNameTextFieldController.text, lastName: _lastNameTextFieldController.text, phoneNumber: _phoneNumerTextFieldController.text, password: _passwordTextFieldController.text, confirmPassword: _comfirmPasswordTextFieldController.text);
+    context.read<CountryPredictionCubit>().countryPrediction();
+  }
+
+   Widget _buildSupriseMeSection() {
+    return BlocConsumer<CountryPredictionCubit,
+        BlocState<Failure<ExceptionMessage>, CountryPredictionModel>>(
+      listener: (context, state) {
+        state.maybeMap(
+          orElse: () => null,
+          success: (state) {
+            if (state.data.status=="success") {
+              // clear form inputs
+             // _formKey.currentState!.reset();
+             BotToast.cleanAll();
+
+             context.router.replace(const JourneyCountryPredictedRoute());
+            } else {
+
+              BotToast.cleanAll();
+              showCustomAlertDialog(context, subtitle: state.data.message, title: 'Error',backgroundColor: true,buttonText: "Dismiss",onTap: (){context.router.maybePop();},alertType: AlertType.warning);
+              // SnackBarUtil.snackbarError<String>(
+              //   context,
+              //   code: ExceptionCode.UNDEFINED,
+              //   message: state.data.message,
+              // );
+            }
+          },
+          error: (state) {
+            BotToast.cleanAll();
+              showCustomAlertDialog(context, subtitle: state.failure.exception.message.toString(), title: 'Error',backgroundColor: true,buttonText: "Dismiss",onTap: (){context.router.maybePop();},alertType: AlertType.warning);
+
+            // SnackBarUtil.snackbarError<String>(
+            //   context,
+            //   code: state.failure.exception.code,
+            //   message: state.failure.exception.message.toString(),
+            //   onRefreshCallback: () => _onUserPredictionCallback(),
+            // );
+          },
+        );
+      },
+      builder: (context, state) {
+        final isLoading = state is Loading<Failure<ExceptionMessage>, CountryPredictionModel>;
+
+        return CustomButton(
+      type: ButtonType.withBorderIconFontButton(
+          onTap:  () => _onUserPredictionCallback(),
+          //itemSpacingWidth: 10,
+          label: 'Surprise Me',
+          isLoadingMode: false,
+          svgImageChecker: false,
+          lotties: "magicwand.json",
+          itemSpacingWidth: Sizing.kWSpacing10.w,
+          textColor: CustomTypography.kPrimaryColor300,
+          borderColor: CustomTypography.kPrimaryColor300,
+          borderRadius:
+              BorderRadius.all(Radius.circular(Sizing.kBorderRadius * 7.r))),
+    );
+      },
     );
   }
 

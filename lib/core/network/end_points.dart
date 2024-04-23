@@ -12,6 +12,17 @@ class Endpoints {
   static const String createBasicInfo = 'profile/personal-bio';
   static const String createEducationInfo = 'profile/education';
   static const String createWorkInfo = 'profile/work';
+  static const String createFamilyInfo = 'profile/family';
+  static const String createAwardInfo = 'profile/record';
+  static const String createBudgetInfo = 'profile/budget';
+
+
+  //Journey
+  static const String countryPrediction = 'profile/analyse';
+  static const String visaPrediction = 'profile/visa-recommendation';
+  
+
+  
 
  
 }

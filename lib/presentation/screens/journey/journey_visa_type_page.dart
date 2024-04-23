@@ -1,25 +1,45 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:bot_toast/bot_toast.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:japaapp/business/blocs/bloc_state.dart';
+import 'package:japaapp/business/blocs/journey/visa_prediction_form_cubit.dart';
+import 'package:japaapp/business/snapshot_cache/journey_snapshot_cache.dart';
 import 'package:japaapp/core/constants.dart';
+import 'package:japaapp/core/dependence/dependence.dart';
+import 'package:japaapp/core/exceptions/exceptions.dart';
 import 'package:japaapp/core/route/app_router.dart';
 import 'package:japaapp/core/theme/custom_typography.dart';
+import 'package:japaapp/core/util/snackbar_util.dart';
 import 'package:japaapp/core/util/width_constraints.dart';
+import 'package:japaapp/domain/form_params/journey/visa_selection_form_params.dart';
+import 'package:japaapp/domain/model/journey/country_prediction_model.dart';
+import 'package:japaapp/presentation/shared/alert_dialog.dart';
 import 'package:japaapp/presentation/shared/custom_button.dart';
 import 'package:japaapp/presentation/widget/back_button.dart';
 import 'package:japaapp/presentation/widget/bottom_sheet_item.dart';
 import 'package:japaapp/presentation/widget/item_with_dropdown.dart';
+import 'package:provider/provider.dart';
 
 
 @RoutePage()
-class JourneyVisaTypeSelectionPage extends StatefulWidget {
+class JourneyVisaTypeSelectionPage extends StatefulWidget implements AutoRouteWrapper {
   const JourneyVisaTypeSelectionPage({super.key});
 
   @override
   State<JourneyVisaTypeSelectionPage> createState() => _JourneyVisaTypeSelectionPageState();
+
+   @override
+  Widget wrappedRoute(BuildContext context) {
+    return BlocProvider<VisaPredictionCubit>(
+      create: (context) => getIt<VisaPredictionCubit>(),
+      child: this,
+    );
+  }
 }
 
 class _JourneyVisaTypeSelectionPageState extends State<JourneyVisaTypeSelectionPage> {
@@ -142,7 +162,7 @@ class _JourneyVisaTypeSelectionPageState extends State<JourneyVisaTypeSelectionP
     );
   }
 
-  Widget _buildSupriseMeSection() {
+  Widget _buildSupriseMeSectionback() {
     return CustomButton(
       type: ButtonType.withBorderIconFontButton(
           onTap: () {
@@ -158,6 +178,75 @@ class _JourneyVisaTypeSelectionPageState extends State<JourneyVisaTypeSelectionP
           borderColor: CustomTypography.kPrimaryColor300,
           borderRadius:
               BorderRadius.all(Radius.circular(Sizing.kBorderRadius * 7.r))),
+    );
+  }
+
+   
+ void _onUserPredictionCallback() async{
+    // KeyboardUtil.hideKeyboard(context);
+    // final userId = await TokenService().retrieveUserId();
+    //if (!_formKey.currentState!.validate()) return;
+     LoadingData.showCustomDialog(context);
+      final visa=context.read<JourneySnapshotCache>().visaPredictionModel.data;
+    final visaFromParams = VisaSelectionFormParams(recommendedCountry: visa);
+    context.read<VisaPredictionCubit>().visaPrediction(visaSelectionFormParams:visaFromParams );
+  }
+
+   Widget _buildSupriseMeSection() {
+    return BlocConsumer<VisaPredictionCubit,
+        BlocState<Failure<ExceptionMessage>, CountryPredictionModel>>(
+      listener: (context, state) {
+        state.maybeMap(
+          orElse: () => null,
+          success: (state) {
+            if (state.data.status=="success") {
+              // clear form inputs
+             // _formKey.currentState!.reset();
+             BotToast.cleanAll();
+
+             context.router.replace(const JourneyVisaPredictedRoute());
+            } else {
+              BotToast.cleanAll();
+              showCustomAlertDialog(context, subtitle: state.data.message, title: 'Error',backgroundColor: true,buttonText: "Dismiss",onTap: (){context.router.maybePop();},alertType: AlertType.warning);
+
+              // SnackBarUtil.snackbarError<String>(
+              //   context,
+              //   code: ExceptionCode.UNDEFINED,
+              //   message: state.data.message,
+              // );
+            }
+          },
+          error: (state) {
+            BotToast.cleanAll();
+              showCustomAlertDialog(context, subtitle: state.failure.exception.message.toString(), title: 'Error',backgroundColor: true,buttonText: "Dismiss",onTap: (){context.router.maybePop();},alertType: AlertType.warning);
+
+            // SnackBarUtil.snackbarError<String>(
+            //   context,
+            //   code: state.failure.exception.code,
+            //   message: state.failure.exception.message.toString(),
+            //   onRefreshCallback: () => _onUserPredictionCallback(),
+            // );
+          },
+        );
+      },
+      builder: (context, state) {
+        final isLoading = state is Loading<Failure<ExceptionMessage>, CountryPredictionModel>;
+
+        return CustomButton(
+      type: ButtonType.withBorderIconFontButton(
+          onTap:  () => _onUserPredictionCallback(),
+          //itemSpacingWidth: 10,
+          label: 'Surprise Me',
+          isLoadingMode: false,
+          svgImageChecker: false,
+          lotties: "magicwand.json",
+          itemSpacingWidth: Sizing.kWSpacing10.w,
+          textColor: CustomTypography.kPrimaryColor300,
+          borderColor: CustomTypography.kPrimaryColor300,
+          borderRadius:
+              BorderRadius.all(Radius.circular(Sizing.kBorderRadius * 7.r))),
+    );
+      },
     );
   }
 

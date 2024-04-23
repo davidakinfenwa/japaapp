@@ -24,6 +24,8 @@ class AccountBudgetPage extends StatefulWidget {
 class _AccountBudgetPageState extends State<AccountBudgetPage> {
   
 int selectedMeansOfPayment = -2;
+late double _startValue;
+late double _endValue;
 
   @override
   void initState() {
@@ -114,7 +116,10 @@ int selectedMeansOfPayment = -2;
           //color: Colors.red,
           width: MediaQuery.sizeOf(context).width.w,
           height: 70,
-          child: RangeSlide())
+          child: RangeSlide(data: (RangeValues values ) {  
+                _startValue=values.start;
+                _endValue=values.end;
+          },))
       ],
     );
   }
@@ -164,6 +169,7 @@ int selectedMeansOfPayment = -2;
         CustomButton(
           type: ButtonType.regularButton(
               onTap: () {
+                
                 context.router.push(const TabRoute());
               },
               label: 'Next',

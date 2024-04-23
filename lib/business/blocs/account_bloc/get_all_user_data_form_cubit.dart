@@ -30,6 +30,7 @@ class GetAllUserDataFormCubit extends  Cubit<BlocState<Failure<ExceptionMessage>
       (success) { 
         
           _snapshotCache.userInfor=success;
+          
         return  BlocState<Failure<ExceptionMessage>, CompoundUserInfoModel>.success(data: success);
       },
     );

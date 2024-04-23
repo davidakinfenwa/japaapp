@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:japaapp/business/snapshot_cache/journey_snapshot_cache.dart';
 import 'package:japaapp/core/constants.dart';
 import 'package:japaapp/core/route/app_router.dart';
 import 'package:japaapp/core/theme/custom_typography.dart';
@@ -9,6 +10,7 @@ import 'package:japaapp/core/util/width_constraints.dart';
 import 'package:japaapp/presentation/shared/custom_button.dart';
 import 'package:japaapp/presentation/widget/back_button.dart';
 import 'package:japaapp/presentation/widget/bottom_sheet_item.dart';
+import 'package:provider/provider.dart';
 
 @RoutePage()
 class JourneyVisaPredictedPage extends StatefulWidget {
@@ -145,6 +147,7 @@ class _JourneyVisaPredictedPageState extends State<JourneyVisaPredictedPage> {
   }
 
   Widget _buildGoodFitText() {
+    final result= context.watch<JourneySnapshotCache>().visaPredictionModel;
     return SizedBox(
       width: MediaQuery.sizeOf(context).width * 0.8.w,
       child: RichText(
@@ -157,19 +160,19 @@ class _JourneyVisaPredictedPageState extends State<JourneyVisaPredictedPage> {
                 ),
             children: <TextSpan>[
               TextSpan(
-                text: ' \nCanada',
+                text: ' \n${result.data}',
                 style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                       color: Colors.black,
                       fontWeight: FontWeight.w600,
                     ),
               ),
-              TextSpan(
-                text: ' \n will be a good fit for you',
-                style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                    color: const Color(0xFF344054),
-                    fontWeight: FontWeight.w500,
-                    fontSize: 13.sp),
-              ),
+              // TextSpan(
+              //   text: ' \n will be a good fit for you',
+              //   style: Theme.of(context).textTheme.titleSmall?.copyWith(
+              //       color: const Color(0xFF344054),
+              //       fontWeight: FontWeight.w500,
+              //       fontSize: 13.sp),
+              // ),
               // TextSpan(text: '!'),
             ],
           )),
@@ -182,7 +185,7 @@ class _JourneyVisaPredictedPageState extends State<JourneyVisaPredictedPage> {
         CustomButton(
           type: ButtonType.regularButton(
               onTap: () {
-                context.router.push(const JourneyVisaTypeSelectionRoute());
+                context.router.push( MyProcessTabRoute(nav: "home"));
               },
               label: 'Begin my process',
               isLoadingMode: false,

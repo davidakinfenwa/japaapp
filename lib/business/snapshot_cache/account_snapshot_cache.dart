@@ -6,6 +6,10 @@ class AccountSnapshotCache with ChangeNotifier {
    static CompoundUserInfoModel? _basicUserInfo;
    static CompoundUserInfoModel? _workUserInfo;
   static CompoundUserInfoModel? _userInfoContext;
+  static CompoundUserInfoModel? _eduInfoContext;
+  static CompoundUserInfoModel? _familyInfoContext;
+  static CompoundUserInfoModel? _awardInfoContext;
+  static CompoundUserInfoModel? _budgetInfoContext;
 
    static ProfileDropDownModel? _userDropdownInfo;
 
@@ -19,6 +23,11 @@ class AccountSnapshotCache with ChangeNotifier {
    CompoundUserInfoModel get basicUserInfo=>_basicUserInfo??CompoundUserInfoModel.empty();
   set basicUserInfo(CompoundUserInfoModel userData){
     _basicUserInfo = userData;
+    notifyListeners();
+  }
+     CompoundUserInfoModel get eduInfoContext=>_eduInfoContext??CompoundUserInfoModel.empty();
+  set eduInfoContext(CompoundUserInfoModel userData){
+    _eduInfoContext = userData;
     notifyListeners();
   }
 
@@ -35,6 +44,21 @@ class AccountSnapshotCache with ChangeNotifier {
     notifyListeners();
   }
 
+  CompoundUserInfoModel get familyInfoContext=>_familyInfoContext??CompoundUserInfoModel.empty();
+  set familyInfoContext(CompoundUserInfoModel userData){
+    _familyInfoContext = userData;
+    notifyListeners();
+  }
+   CompoundUserInfoModel get awardInfoContext=>_awardInfoContext??CompoundUserInfoModel.empty();
+  set awardInfoContext(CompoundUserInfoModel userData){
+    _awardInfoContext = userData;
+    notifyListeners();
+  }
+  CompoundUserInfoModel get budgetInfoContext=>_budgetInfoContext??CompoundUserInfoModel.empty();
+  set budgetInfoContext(CompoundUserInfoModel userData){
+    _budgetInfoContext = userData;
+    notifyListeners();
+  }
     ProfileDropDownModel get userDropdownInfo=>_userDropdownInfo??ProfileDropDownModel.empty();
   set userDropdownInfo(ProfileDropDownModel userDropdownInfo){
     _userDropdownInfo=userDropdownInfo;

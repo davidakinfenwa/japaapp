@@ -42,9 +42,9 @@ class UserData extends Equatable{
   final User user;
   final Profile profile;
   final List<Education> education;
-  final List<FamilyStructure> familyStructure;
+  final FamilyStructure familyStructure;
   final List<WorkUser> work;
-  final List<Record> record;
+  final List<RecordAward> record;
   final Budget budget;
 
   UserData({
@@ -61,9 +61,9 @@ class UserData extends Equatable{
     user: json["user"]!=null? User.fromJson(json["user"]):User.empty(),
     profile:json["profile"]!=null? Profile.fromJson(json["profile"]):Profile.empty(),
     education: List<Education>.from(json["education"].map((x) => Education.fromJson(x))),
-    familyStructure: List<FamilyStructure>.from(json["familyStructure"].map((x) => FamilyStructure.fromJson(x))),
+    familyStructure:json["familyStructure"]!=null? FamilyStructure.fromJson(json["familyStructure"]):FamilyStructure.empty(),
     work: List<WorkUser>.from(json["work"].map((x) => WorkUser.fromJson(x))),
-    record: List<Record>.from(json["record"].map((x) => Record.fromJson(x))),
+    record: List<RecordAward>.from(json["record"].map((x) => RecordAward.fromJson(x))),
     budget:json["budget"]!=null? Budget.fromJson(json["budget"]):Budget.empty(),
   );
 
@@ -71,7 +71,7 @@ class UserData extends Equatable{
     "user": user.toJson(),
     "profile": profile.toJson(),
     "education": List<dynamic>.from(education.map((x) => x.toJson())),
-    "familyStructure": List<dynamic>.from(familyStructure.map((x) => x.toJson())),
+    "familyStructure": familyStructure.toJson(),
     "work": List<dynamic>.from(work.map((x) => x.toJson())),
     "record": List<dynamic>.from(record.map((x) => x.toJson())),
     "budget": budget.toJson(),
@@ -82,7 +82,7 @@ class UserData extends Equatable{
       user: User.empty(),
       profile: Profile.empty(),
       education: [],
-      familyStructure: [],
+      familyStructure: FamilyStructure.empty(),
       work: [],
       record: [],
       budget: Budget.empty(),
@@ -96,6 +96,35 @@ class UserData extends Equatable{
   String toString() {
     return 'UserData(user: $user, profile: $profile, education: $education, familyStructure: $familyStructure, work: $work, record: $record, budget: $budget)';
   }
+}
+
+
+class FamilyStructure {
+    final List<Family> family;
+    final List<FamilyWork> work;
+    final List<FamilyEducation> education;
+
+    FamilyStructure({
+        required this.family,
+        required this.work,
+        required this.education,
+    });
+
+    factory FamilyStructure.fromJson(Map<String, dynamic> json) => FamilyStructure(
+        family: List<Family>.from(json["family"].map((x) => Family.fromJson(x))),
+        work: List<FamilyWork>.from(json["work"].map((x) => FamilyWork.fromJson(x))),
+        education: List<FamilyEducation>.from(json["education"].map((x) => FamilyEducation.fromJson(x))),
+    );
+
+    Map<String, dynamic> toJson() => {
+        "family": List<dynamic>.from(family.map((x) => x.toJson())),
+        "work": List<dynamic>.from(work.map((x) => x.toJson())),
+        "education": List<dynamic>.from(education.map((x) => x.toJson())),
+    };
+
+    factory FamilyStructure.empty() {
+      return FamilyStructure(family: [], work: [], education: []);
+    }
 }
 
 class Budget extends Equatable{
@@ -157,7 +186,7 @@ class Budget extends Equatable{
 
 class Education extends Equatable  {
     final dynamic id;
-    final String userId;
+    final dynamic userId;
     final String levelOfEducation;
     final String institution;
     final DateTime fromDate;
@@ -227,9 +256,85 @@ class Education extends Equatable  {
 
 
 
-class FamilyStructure extends Equatable {
-  final String id;
-  final String userId;
+
+class FamilyEducation extends Equatable  {
+    final dynamic id;
+    final dynamic familyStructureId;
+    final dynamic userId;
+    final String levelOfEducation;
+    final String institution;
+    final DateTime fromDate;
+    final DateTime toDate;
+    final dynamic major;
+    final dynamic scale;
+    final dynamic grade;
+    final dynamic isStillInschool;
+    final DateTime createdAt;
+    final DateTime updatedAt;
+
+    FamilyEducation({
+        required this.id,
+        required this.familyStructureId,
+        required this.userId,
+        required this.levelOfEducation,
+        required this.institution,
+        required this.fromDate,
+        required this.toDate,
+        required this.major,
+        required this.scale,
+        required this.grade,
+        required this.isStillInschool,
+        required this.createdAt,
+        required this.updatedAt,
+    });
+
+    factory FamilyEducation.fromJson(Map<String, dynamic> json) => FamilyEducation(
+        id: json["id"],
+        familyStructureId: json["familyStructureId"],
+        userId: json["user_id"],
+        levelOfEducation: json["level_of_education"],
+        institution: json["institution"],
+        fromDate: DateTime.parse(json["from_date"]),
+        toDate: DateTime.parse(json["to_date"]),
+        major: json["major"],
+        scale: json["scale"],
+        grade: json["grade"],
+        isStillInschool: json["is_still_inschool"],
+        createdAt: DateTime.parse(json["created_at"]),
+        updatedAt: DateTime.parse(json["updated_at"]),
+    );
+
+    Map<String, dynamic> toJson() => {
+        "id": id,
+        "familyStructureId":familyStructureId,
+        "user_id": userId,
+        "level_of_education": levelOfEducation,
+        "institution": institution,
+        "from_date": "${fromDate.year.toString().padLeft(4, '0')}-${fromDate.month.toString().padLeft(2, '0')}-${fromDate.day.toString().padLeft(2, '0')}",
+        "to_date": "${toDate.year.toString().padLeft(4, '0')}-${toDate.month.toString().padLeft(2, '0')}-${toDate.day.toString().padLeft(2, '0')}",
+        "major": major,
+        "scale": scale,
+        "grade": grade,
+        "is_still_inschool": isStillInschool,
+        "created_at": createdAt.toIso8601String(),
+        "updated_at": updatedAt.toIso8601String(),
+    };
+     @override
+  List<Object?> get props => [id, userId, levelOfEducation, institution, fromDate, toDate, major, scale, grade, isStillInschool, createdAt, updatedAt,familyStructureId];
+
+  @override
+  String toString() {
+    return 'FamilyEducation{id: $id, userId: $userId, levelOfEducation: $levelOfEducation, institution: $institution, fromDate: $fromDate, toDate: $toDate, major: $major, scale: $scale, grade: $grade, isStillInschool: $isStillInschool, createdAt: $createdAt, updatedAt: $updatedAt}';
+  }
+  factory FamilyEducation.empty(){
+    return FamilyEducation(id: "", userId: "", levelOfEducation: "", institution: "", fromDate: DateTime.now(), toDate: DateTime.now(), major: "", scale: "", grade: "", isStillInschool: "0", createdAt: DateTime.now(), updatedAt: DateTime.now(),familyStructureId: "");
+  }
+}
+
+
+class Family extends Equatable {
+  final dynamic id;
+  final dynamic userId;
   final String maritalStatus;
   final dynamic firstName;
   final dynamic surname;
@@ -238,7 +343,7 @@ class FamilyStructure extends Equatable {
   final DateTime createdAt;
   final DateTime updatedAt;
 
-  FamilyStructure({
+  Family({
     required this.id,
     required this.userId,
     required this.maritalStatus,
@@ -253,7 +358,7 @@ class FamilyStructure extends Equatable {
   @override
   List<Object?> get props => [id, userId, maritalStatus, firstName, surname, otherName, numberOfChildren, createdAt, updatedAt];
 
-  factory FamilyStructure.fromJson(Map<String, dynamic> json) => FamilyStructure(
+  factory Family.fromJson(Map<String, dynamic> json) => Family(
     id: json["id"],
     userId: json["user_id"],
     maritalStatus: json["marital_status"],
@@ -279,7 +384,7 @@ class FamilyStructure extends Equatable {
 
   @override
   String toString() {
-    return 'FamilyStructure{id: $id, userId: $userId, maritalStatus: $maritalStatus, firstName: $firstName, surname: $surname, otherName: $otherName, numberOfChildren: $numberOfChildren, createdAt: $createdAt, updatedAt: $updatedAt}';
+    return 'Family{id: $id, userId: $userId, maritalStatus: $maritalStatus, firstName: $firstName, surname: $surname, otherName: $otherName, numberOfChildren: $numberOfChildren, createdAt: $createdAt, updatedAt: $updatedAt}';
   }
 }
 
@@ -343,16 +448,16 @@ class Profile extends Equatable {
   }
 }
 
-class Record extends Equatable {
-  final String id;
-  final String userId;
+class RecordAward extends Equatable {
+  final dynamic id;
+  final dynamic userId;
   final String type;
   final String title;
   final DateTime date;
   final DateTime createdAt;
   final DateTime updatedAt;
 
-  Record({
+  RecordAward({
     required this.id,
     required this.userId,
     required this.type,
@@ -365,7 +470,7 @@ class Record extends Equatable {
   @override
   List<Object?> get props => [id, userId, type, title, date, createdAt, updatedAt];
 
-  factory Record.fromJson(Map<String, dynamic> json) => Record(
+  factory RecordAward.fromJson(Map<String, dynamic> json) => RecordAward(
     id: json["id"],
     userId: json["user_id"],
     type: json["type"],
@@ -388,6 +493,9 @@ class Record extends Equatable {
   @override
   String toString() {
     return 'Record{id: $id, userId: $userId, type: $type, title: $title, date: $date, createdAt: $createdAt, updatedAt: $updatedAt}';
+  }
+  factory RecordAward.empty(){
+    return RecordAward(id: "", userId: "", type: "", title: "", date: DateTime.now(), createdAt: DateTime.now(), updatedAt: DateTime.now());
   }
 }
 
@@ -543,4 +651,68 @@ class WorkUser extends Equatable {
 }
 
 
+
+
+
+class FamilyWork extends Equatable {
+  final dynamic id;
+  final dynamic familyStructureId;
+  final dynamic userId;
+  final String companyName;
+  final String position;
+  final DateTime dateFrom;
+  final DateTime dateTo;
+  final dynamic isCurrentWork;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+
+  FamilyWork({
+    required this.id,
+     required this.familyStructureId,
+    required this.userId,
+    required this.companyName,
+    required this.position,
+    required this.dateFrom,
+    required this.dateTo,
+    required this.isCurrentWork,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+
+  @override
+  List<Object?> get props => [id, userId, companyName, position, dateFrom, dateTo, isCurrentWork, createdAt, updatedAt];
+
+  factory FamilyWork.fromJson(Map<String, dynamic> json) => FamilyWork(
+    id: json["id"],
+    familyStructureId: json["familyStructureId"],
+    userId: json["user_id"],
+    companyName: json["company_name"],
+    position: json["position"],
+    dateFrom: DateTime.parse(json["date_from"]),
+    dateTo: DateTime.parse(json["date_to"]),
+    isCurrentWork: json["is_current_work"],
+    createdAt: DateTime.parse(json["created_at"]),
+    updatedAt: DateTime.parse(json["updated_at"]),
+  );
+
+  Map<String, dynamic> toJson() => {
+    "id": id,
+    "user_id": userId,
+    "company_name": companyName,
+    "position": position,
+    "date_from": "${dateFrom.year.toString().padLeft(4, '0')}-${dateFrom.month.toString().padLeft(2, '0')}-${dateFrom.day.toString().padLeft(2, '0')}",
+    "date_to": "${dateTo.year.toString().padLeft(4, '0')}-${dateTo.month.toString().padLeft(2, '0')}-${dateTo.day.toString().padLeft(2, '0')}",
+    "is_current_work": isCurrentWork,
+    "created_at": createdAt.toIso8601String(),
+    "updated_at": updatedAt.toIso8601String(),
+  };
+
+  @override
+  String toString() {
+    return 'FamilyWork{id: $id, userId: $userId, companyName: $companyName, position: $position, dateFrom: $dateFrom, dateTo: $dateTo, isCurrentWork: $isCurrentWork, createdAt: $createdAt, updatedAt: $updatedAt}';
+  }
+  factory FamilyWork.empty(){
+    return FamilyWork(id: "", userId: "", companyName: "", position: "", dateFrom: DateTime.now(), dateTo: DateTime.now(), isCurrentWork: "", createdAt: DateTime.now(), updatedAt: DateTime.now(),familyStructureId: "");
+  }
+}
 

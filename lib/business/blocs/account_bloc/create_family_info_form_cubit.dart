@@ -6,16 +6,17 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:japaapp/business/blocs/bloc_state.dart';
 import 'package:japaapp/business/snapshot_cache/snapshot_cache.dart';
 import 'package:japaapp/core/exceptions/exceptions.dart';
+import 'package:japaapp/domain/form_params/account/family_profile_form_params.dart';
 import 'package:japaapp/domain/model/models.dart';
 import 'package:japaapp/domain/repositories/account_repository.dart';
 import 'package:japaapp/domain/repositories/repositories.dart';
 
 
-class CreateEducationInformationCubit extends Cubit<BlocState<Failure<ExceptionMessage>, CompoundUserInfoModel>> {
+class CreateFamilyInformationCubit extends Cubit<BlocState<Failure<ExceptionMessage>, CompoundUserInfoModel>> {
   final AccountRepository _repository;
   final AccountSnapshotCache _snapshotCache;
 
-  CreateEducationInformationCubit({
+  CreateFamilyInformationCubit({
     required AccountRepository repository,
     required AccountSnapshotCache snapshotCache,
   })  : _repository = repository,
@@ -23,10 +24,10 @@ class CreateEducationInformationCubit extends Cubit<BlocState<Failure<ExceptionM
         super(const BlocState<Failure<ExceptionMessage>,
             CompoundUserInfoModel>.initial());
 
-  Future<void> createEducationInfo({required List<dynamic> educationLevelModel}) async {
+  Future<void> createFamilyInfo({required FamilyProfileFormModel familyProfileFormModel}) async {
     emit(const BlocState<Failure<ExceptionMessage>, CompoundUserInfoModel>.loading());
 
-    final _signupEither = await _repository.createEducationInformation(educationLevelModel: educationLevelModel);
+    final _signupEither = await _repository.createFamilyInformation(familyProfileFormModel: familyProfileFormModel);
 
         
 
@@ -35,10 +36,8 @@ class CreateEducationInformationCubit extends Cubit<BlocState<Failure<ExceptionM
           failure: failure),
       (userInfoModel) {
         // cache snapshot
-       
-          _snapshotCache.eduInfoContext = userInfoModel;
+          _snapshotCache.familyInfoContext = userInfoModel;
         
-
         return BlocState<Failure<ExceptionMessage>, CompoundUserInfoModel>.success(data: userInfoModel);
       },
     );

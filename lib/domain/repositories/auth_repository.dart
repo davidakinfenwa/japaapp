@@ -1,7 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:japaapp/core/exceptions/exceptions.dart';
 import 'package:japaapp/core/util/unit_impl.dart';
-import 'package:japaapp/domain/form_params/auth/email_validation_form_params.dart';
 import 'package:japaapp/domain/form_params/form_params.dart';
 import 'package:japaapp/domain/model/auth/email_verification_otp_model.dart';
 import 'package:japaapp/domain/model/auth/resend_otp_response_model.dart';

@@ -35,19 +35,13 @@ class AccountWorkPages extends StatefulWidget implements AutoRouteWrapper {
   State<AccountWorkPages> createState() => _AccountWorkPagesState();
     @override
   Widget wrappedRoute(BuildContext context) {
-     //final userInfo = context.read<AccountSnapshotCache>().userInfo;
-      // context.read<AccountSnapshotCache>().userInfo.data.education;
-      
-
+   
     return MultiBlocProvider(
       providers: [
         BlocProvider<CreateWorkInformationCubit>(
           create: (context) => getIt<CreateWorkInformationCubit>(),
         ),
         
-        // BlocProvider<CreateBasicInformationCubit>(
-        //   create: (context) => getIt<CreateBasicInformationCubit>(),
-        // ),
       ],
       child: this,
     );
@@ -71,13 +65,19 @@ class _AccountWorkPagesState extends State<AccountWorkPages> {
     _companynameTextFieldController = TextEditingController();
     _positionTextFieldController = TextEditingController();
     _gradeTextFieldController = TextEditingController();
-     final userInfo = context.read<AccountSnapshotCache>().userInfo.data.work;
-     print(userInfo);
+    
+  }
+  
+    @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final userInfo = context.read<AccountSnapshotCache>().userInfo.data.work;
+        print(userInfo);
       for (var i = 0; i < userInfo.length; i++) {
       addNewWorkSection(i, userInfo[i]);
     }
   }
-
+  
   @override
   void dispose() {
     _companynameTextFieldController.dispose();
@@ -88,7 +88,7 @@ class _AccountWorkPagesState extends State<AccountWorkPages> {
 
    List<Widget> addNewWorkList = [];
   List<WorkData> workDataList = [];
-  void addFirstDefaultMilestone() {
+  void addFirstDefaultWork() {
     WorkData defaultMilestone = WorkData(companyName: _companynameTextFieldController.text, position: _positionTextFieldController.text, dateFrom: userDOB1, dateTo: userDOB2, isCurrentWork: false);
     if (defaultMilestone.companyName.isNotEmpty) {
       workDataList.insert(0,defaultMilestone);
@@ -96,6 +96,9 @@ class _AccountWorkPagesState extends State<AccountWorkPages> {
       
     }
   }
+
+  
+
 
     Future<void> _selectDate(BuildContext context, String nav) async {
     DateTime? picked = await showDatePicker(
@@ -130,14 +133,14 @@ class _AccountWorkPagesState extends State<AccountWorkPages> {
     //  WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
     //   setState(() {});
     // });
-  TextEditingController _companynameListTextFieldController =  TextEditingController(text: workUser.companyName);
-  TextEditingController _positionListTextFieldController = TextEditingController(text:  workUser.position);
-   TextEditingController fromDateFieldController = TextEditingController(text: workUser.dateFrom.toString());
-    TextEditingController toDateFieldController = TextEditingController(text: workUser.dateTo.toString());
+ TextEditingController _companynameListTextFieldController =  TextEditingController(text: workUser.companyName);
+ TextEditingController _positionListTextFieldController = TextEditingController(text:  workUser.position);
+ TextEditingController fromDateFieldController = TextEditingController(text: workUser.dateFrom.toString());
+ TextEditingController toDateFieldController = TextEditingController(text: workUser.dateTo.toString());
  DateTime userDOB1 = DateTime.now();
  DateTime userDOB2 = DateTime.now();
-  String fromDateList = '';
-  String toDateList = '';
+ String fromDateList = '';
+ String toDateList = '';
     void _selectDateListe(String nav) async {
     DateTime? picked = await showDatePicker(
       context: context,
@@ -183,9 +186,7 @@ class _AccountWorkPagesState extends State<AccountWorkPages> {
                 workDataList.removeAt(index);
               }
 
-              // titleController.clear();
-              // amountController.clear();
-              // dateCController.clear();
+            
             });
           },
           child: Row(
@@ -625,7 +626,7 @@ class _AccountWorkPagesState extends State<AccountWorkPages> {
         CustomButton(
           type: ButtonType.regularButton(
               onTap: () {
-                 addFirstDefaultMilestone();
+                 addFirstDefaultWork();
                  List<Map<String, dynamic>> milestoneListAsMap = workDataList.map((milestone) => milestone.toJson()).toList();
                           print(milestoneListAsMap);
                 //context.router.push(const AccountFamilyRoute());
@@ -642,12 +643,10 @@ class _AccountWorkPagesState extends State<AccountWorkPages> {
   }
 
    void _onUserSignUpCallback() async{
-    //KeyboardUtil.hideKeyboard(context);
-    //DateTime dateTime = DateTime.parse(toDate);
-     addFirstDefaultMilestone();
-                 List<Map<String, dynamic>> milestoneListAsMap = workDataList.map((milestone) => milestone.toJson()).toList();
-                          print(milestoneListAsMap);
-    context.read<CreateWorkInformationCubit>().createWorkInfo(workLevelModel: milestoneListAsMap);
+     addFirstDefaultWork();
+    List<Map<String, dynamic>> workListMap= workDataList.map((milestone) => milestone.toJson()).toList();
+     print(workListMap);
+    context.read<CreateWorkInformationCubit>().createWorkInfo(workLevelModel: workListMap);
   }
 
       Widget _buildActionButton() {

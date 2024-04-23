@@ -2,9 +2,11 @@
 
 // ignore_for_file: constant_identifier_names
 
+import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:japaapp/core/exceptions/exceptions.dart';
+import 'package:japaapp/core/theme/custom_typography.dart';
 
 
 
@@ -117,6 +119,46 @@ String formatError(dynamic errors) {
   } else if (errors is String) {
     return errors;
   } else {
-    return "Invalid input type";
+    return "Something went wrong.... we are checking";
   }
+}
+
+
+
+class LoadingData {
+  static showCustomDialog(BuildContext context, {String title = ""}) {
+    BotToast.showWidget(
+        toastBuilder: (_) => SizedBox.expand(
+              child: Container(
+                color: Colors.black.withOpacity(0.1),
+                child: Center(
+                  child: SizedBox.square(
+                    dimension: 100,
+                    child: Center(
+                      child: Transform.scale(
+                        scale: 0.5,
+                        child: Container(
+                          decoration: BoxDecoration(
+                              border: Border.all(
+                                color: CustomTypography.kGreyColor40,
+                              ),
+                              color: CustomTypography.kGreyColor40,
+                              borderRadius: BorderRadius.circular(20)),
+                          child: Center(
+                            child: CircularProgressIndicator(
+                                backgroundColor: CustomTypography.kPrimaryColor300,
+                                strokeWidth: 4,
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                    Colors.grey.shade200)),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ));
+
+  }
+
 }

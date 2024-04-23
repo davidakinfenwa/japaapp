@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:japaapp/business/snapshot/tabscreen_provider.dart';
+import 'package:japaapp/business/snapshot_cache/journey_snapshot_cache.dart';
 import 'package:japaapp/core/dependence/dependence.dart';
 import 'package:japaapp/core/route/app_router.dart';
 import 'package:japaapp/core/theme/custom_typography.dart';
@@ -18,6 +19,7 @@ import 'core/interceptors/interceptors.dart';
 import 'core/network/network.dart';
 import 'package:country_picker/country_picker.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import "package:bot_toast/bot_toast.dart";
 
 void _setupDioInterceptors() {
   dioClient.interceptors.add(getIt<LoggingInterceptors>());
@@ -41,6 +43,7 @@ void main() async {
         ChangeNotifierProvider(create: (context) => AuthSnapshotCache()),
         ChangeNotifierProvider(create: (context) => AccountPageProvider()),
         ChangeNotifierProvider(create: (context) => AccountSnapshotCache()),
+        ChangeNotifierProvider(create: (context) => JourneySnapshotCache()),
         
       ],
       child: MultiBlocProvider(providers: [
@@ -57,6 +60,7 @@ void main() async {
 //  runApp(const MyApp()),
   
   
+
 }
 
 class MyApp extends StatefulWidget {
@@ -68,7 +72,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   final _appRouter = AppRouter();
-
+ final botToastBuilder = BotToastInit();
   @override
   Widget build(BuildContext context) {
     return ScreenUtilInit(
@@ -123,6 +127,10 @@ class _MyAppState extends State<MyApp> {
             themeMode: ThemeMode.system,
             routerDelegate: _appRouter.delegate(),
             routeInformationParser: _appRouter.defaultRouteParser(),
+             builder: (context, child) {
+                child = botToastBuilder(context, child);
+                return child;
+              },
           ),
         );
       },

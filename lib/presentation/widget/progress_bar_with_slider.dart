@@ -49,7 +49,8 @@ class _LinearSliderState extends State<LinearSlider> {
 }
 
 class RangeSlide extends StatefulWidget {
-  const RangeSlide({super.key});
+   RangeSlide({super.key, required this.data});
+  Function(RangeValues)  data;
 
   @override
   State<RangeSlide> createState() => _RangeSlideState();
@@ -86,6 +87,7 @@ class _RangeSlideState extends State<RangeSlide> {
               setState(() {
                 _startValue = values.start.roundToDouble();
                 _endValue = values.end.roundToDouble();
+                widget.data(values);
               });
             },
 

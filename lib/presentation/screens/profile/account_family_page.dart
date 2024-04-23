@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
+import 'package:japaapp/business/blocs/account_bloc/create_family_info_form_cubit.dart';
 import 'package:japaapp/business/blocs/account_bloc/create_education_info_form_cubit.dart';
 import 'package:japaapp/business/blocs/account_bloc/create_work_info_form_cubit.dart';
 import 'package:japaapp/business/blocs/account_bloc/get_user_drop_down_form_cubit.dart';
@@ -13,6 +14,7 @@ import 'package:japaapp/core/dependence/dependence.dart';
 import 'package:japaapp/core/exceptions/exceptions.dart';
 import 'package:japaapp/core/route/app_router.dart';
 import 'package:japaapp/core/theme/custom_typography.dart';
+import 'package:japaapp/core/util/snackbar_util.dart';
 import 'package:japaapp/core/util/width_constraints.dart';
 import 'package:japaapp/domain/form_params/form_params.dart';
 import 'package:japaapp/domain/model/account/compound_user_info_model.dart';
@@ -40,6 +42,9 @@ class AccountFamilyPage extends StatefulWidget implements AutoRouteWrapper {
 
     return MultiBlocProvider(
       providers: [
+         BlocProvider<CreateFamilyInformationCubit>(
+          create: (context) => getIt<CreateFamilyInformationCubit>(),
+        ),
         BlocProvider<CreateEducationInformationCubit>(
           create: (context) => getIt<CreateEducationInformationCubit>(),
         ),
@@ -59,10 +64,10 @@ class AccountFamilyPage extends StatefulWidget implements AutoRouteWrapper {
 }
 
 class _AccountFamilyPageState extends State<AccountFamilyPage> {
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  TextEditingController _institutionTextFieldController =
-      TextEditingController();
 
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  
+  TextEditingController _institutionTextFieldController =TextEditingController();
   TextEditingController _maritalTextController = TextEditingController();
   TextEditingController _majorTextFieldController = TextEditingController();
   TextEditingController _gradeTextFieldController = TextEditingController();
@@ -72,7 +77,7 @@ class _AccountFamilyPageState extends State<AccountFamilyPage> {
   TextEditingController _spouseLastNameTextFieldController =TextEditingController();
   TextEditingController _spouseNumberOfChildrenTextFieldController =TextEditingController();
   TextEditingController _spouseOtherNameTextFieldController =TextEditingController();
-    TextEditingController _companynameTextFieldController = TextEditingController();
+  TextEditingController _companynameTextFieldController = TextEditingController();
   TextEditingController _positionTextFieldController = TextEditingController();
   // TextEditingController _gradeTextFieldController = TextEditingController();
 
@@ -101,18 +106,24 @@ class _AccountFamilyPageState extends State<AccountFamilyPage> {
     _companynameTextFieldController=TextEditingController();
     _positionTextFieldController=TextEditingController();
 
-     final userInfo = context.read<AccountSnapshotCache>().userInfo.data;
-     print(userInfo);
-      for (var i = 0; i < userInfo.work.length; i++) {
-      addNewWorkSection(i, userInfo.work[i]);
-    }
+    
+    
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    //  final userInfo = context.read<AccountSnapshotCache>().userInfo.data;
+    //  print(userInfo);
+    //   for (var i = 0; i < userInfo.work.length; i++) {
+    //   addNewWorkSection(i, userInfo.work[i]);
+    // }
 
       
-     print(userInfo);
-      for (var i = 0; i < userInfo.education.length; i++) {
-      addNewEducationSection(i, userInfo.education[i]);
-    }
-    
+    //  print(userInfo);
+    //   for (var i = 0; i < userInfo.education.length; i++) {
+    //   addNewEducationSection(i, userInfo.education[i]);
+    // }
   }
 
   @override
@@ -133,9 +144,9 @@ class _AccountFamilyPageState extends State<AccountFamilyPage> {
   }
 
   List<Widget> addEducationList = [];
-  List<EducationData> educationDataList = [];
+  List<EducationFamily> educationDataList = [];
   void addFirstDefaultEducation() {
-    EducationData defaultMilestone = EducationData(levelEducation: _levelofEuducationSelTextController.text, institution: _institutionTextFieldController.text, fromDate:userDOBEdu1 , toDate: userDOBEdu2, major: _majorTextFieldController.text, scale: _scalePointTextController.text, grade: _gradeTextFieldController.text, isStillInschool: false);;
+    EducationFamily defaultMilestone = EducationFamily(levelEducation: _levelofEuducationSelTextController.text, institution: _institutionTextFieldController.text, fromDate:userDOBEdu1 , toDate: userDOBEdu2, major: _majorTextFieldController.text, scale: _scalePointTextController.text, grade: _gradeTextFieldController.text, isStillInschool: false);;
     if (defaultMilestone.levelEducation.isNotEmpty) {
       educationDataList.insert(0,defaultMilestone);
     } else {
@@ -144,9 +155,9 @@ class _AccountFamilyPageState extends State<AccountFamilyPage> {
   }
 
   List<Widget> addNewWorkList = [];
-  List<WorkData> workDataList = [];
+  List<WorkFamily> workDataList = [];
   void addFirstDefaultWork() {
-    WorkData defaultMilestone = WorkData(companyName: _companynameTextFieldController.text, position: _positionTextFieldController.text, dateFrom: userDOBWork1, dateTo: userDOBWork2, isCurrentWork: false);
+    WorkFamily defaultMilestone = WorkFamily(companyName: _companynameTextFieldController.text, position: _positionTextFieldController.text, dateFrom: userDOBWork1, dateTo: userDOBWork2, isCurrentWork: false);
     if (defaultMilestone.companyName.isNotEmpty) {
       workDataList.insert(0,defaultMilestone);
     } else {
@@ -248,7 +259,7 @@ class _AccountFamilyPageState extends State<AccountFamilyPage> {
    
 
   
- EducationData eduFormData =EducationData(levelEducation: levelofEuducationSelTextController.text, institution: institutionListTextFieldController.text, fromDate:userDOB1 , toDate: userDOB2, major: majorTextListFieldController.text, scale: scalePointListTextController.text, grade: gradeTextListFieldController.text, isStillInschool: false);
+ EducationFamily eduFormData =EducationFamily(levelEducation: levelofEuducationSelTextController.text, institution: institutionListTextFieldController.text, fromDate:userDOB1 , toDate: userDOB2, major: majorTextListFieldController.text, scale: scalePointListTextController.text, grade: gradeTextListFieldController.text, isStillInschool: false);
     addEducationList.add(Column(
       children: [
         const SizedBox(height: 10),
@@ -552,7 +563,7 @@ void addNewWorkSection(int index, WorkUser workUser) {
       }
     }
   }
-   WorkData workData = WorkData(companyName: _companynameListTextFieldController.text, position: _positionListTextFieldController.text, dateFrom: userDOB1, dateTo: userDOB2, isCurrentWork: false);
+   WorkFamily workData = WorkFamily(companyName: _companynameListTextFieldController.text, position: _positionListTextFieldController.text, dateFrom: userDOB1, dateTo: userDOB2, isCurrentWork: false);
   
 
     addNewWorkList.add(Column(
@@ -901,9 +912,10 @@ void addNewWorkSection(int index, WorkUser workUser) {
         title: "Number of children",
         validateText: "children is required",
         controller: _spouseNumberOfChildrenTextFieldController,
-        textType: TextInputType.text);
+        textType: TextInputType.number);
 
   }
+  
   Widget _buildLevelofEducationTextField() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {});
     return BlocConsumer<GetUserDropdownFormCubit,
@@ -1125,8 +1137,8 @@ void addNewWorkSection(int index, WorkUser workUser) {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        toDateWork.isEmpty ? 'MM/YYYY' : toDateWork,
-                        style: toDateWork.isEmpty
+                        toDateEdu.isEmpty ? 'MM/YYYY' : toDateEdu,
+                        style: toDateEdu.isEmpty
                             ? Theme.of(context).textTheme.labelSmall?.copyWith(
                                 fontWeight: FontWeight.w500,
                                 color: CustomTypography.kGreyColorlabel,
@@ -1417,13 +1429,21 @@ void addNewWorkSection(int index, WorkUser workUser) {
     );
   }
 
-  Widget _buildActionButton() {
+  Widget _buildActionButtonBack() {
     return Column(
       children: [
         CustomButton(
           type: ButtonType.regularButton(
               onTap: () {
-                context.router.push(const AccountAwardRoutes());
+                 addFirstDefaultEducation();
+                 addFirstDefaultWork();
+                 List<WorkFamily> milestoneWork = workDataList;
+                 List<EducationFamily> milestoneEducation = educationDataList;
+
+                 FamilyProfileFormModel modleData= FamilyProfileFormModel( maritalStatus: _maritalTextController.text, firstName: _spouseFirstNameTextFieldController.text, surname: _spouseLastNameTextFieldController.text, otherName: _spouseOtherNameTextFieldController.text, numberOfChildren: _spouseOtherNameTextFieldController.text,  work: milestoneWork, education: milestoneEducation);
+                          print(modleData);
+                          //print(milestoneWork);
+                // context.router.push(const AccountAwardRoutes());
               },
               label: 'Next',
               isLoadingMode: false,
@@ -1433,6 +1453,76 @@ void addNewWorkSection(int index, WorkUser workUser) {
                   Radius.circular(Sizing.kBorderRadius * 7.r))),
         ),
       ],
+    );
+  }
+
+
+
+   void _onUserSignUpCallback() async{
+    
+     addFirstDefaultEducation();
+                 addFirstDefaultWork();
+                 List<WorkFamily> milestoneWork = workDataList;
+                 List<EducationFamily> milestoneEducation = educationDataList;
+
+                 FamilyProfileFormModel modleData= FamilyProfileFormModel( maritalStatus: _maritalTextController.text, firstName: _spouseFirstNameTextFieldController.text, surname: _spouseLastNameTextFieldController.text, otherName: _spouseOtherNameTextFieldController.text, numberOfChildren: _spouseNumberOfChildrenTextFieldController.text,  work: milestoneWork, education: milestoneEducation);
+                          print(modleData);
+    context.read<CreateFamilyInformationCubit>().createFamilyInfo(familyProfileFormModel: modleData);
+  }
+
+      Widget _buildActionButton() {
+    return BlocConsumer<CreateFamilyInformationCubit,
+        BlocState<Failure<ExceptionMessage>, CompoundUserInfoModel>>(
+      listener: (context, state) {
+        state.maybeMap(
+          orElse: () => null,
+          success: (state) {
+            if (state.data.status=="success") {
+              // clear form inputs
+              _formKey.currentState!.reset();
+
+             context.router.push(const AccountAwardRoutes());
+            } else {
+              SnackBarUtil.snackbarError<String>(
+                context,
+                code: ExceptionCode.UNDEFINED,
+                message: "Something went wrong try again",
+              );
+            }
+          },
+          error: (state) {
+            SnackBarUtil.snackbarError<String>(
+              context,
+              code: state.failure.exception.code,
+              message: state.failure.exception.message.toString(),
+              onRefreshCallback: () => _onUserSignUpCallback(),
+            );
+          },
+        );
+      },
+      builder: (context, state) {
+        final isLoading =
+            state is Loading<Failure<ExceptionMessage>, CompoundUserInfoModel>;
+
+        return Column(
+          children: [
+            CustomButton(
+              type: ButtonType.regularButton(
+                  onTap: () => _onUserSignUpCallback(),
+                   label: 'Next',
+                  isLoadingMode: isLoading,
+                  backgroundColor: CustomTypography.kPrimaryColor300,
+                  textColor: CustomTypography.kWhiteColor,
+                  borderRadius: BorderRadius.all(
+                      Radius.circular(Sizing.kBorderRadius * 7.r))),
+            ),
+             SizedBox(
+          height: Sizing.kHSpacing10,
+        ),
+       // _buildAuthModeSwitcherSection()
+          ],
+        );
+      },
     );
   }
 }

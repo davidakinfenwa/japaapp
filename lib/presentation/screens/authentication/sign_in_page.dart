@@ -16,6 +16,7 @@ import 'package:japaapp/core/util/snackbar_util.dart';
 import 'package:japaapp/core/util/width_constraints.dart';
 import 'package:japaapp/domain/form_params/auth/signin_form_params.dart';
 import 'package:japaapp/domain/model/auth/user_info_model.dart';
+import 'package:japaapp/presentation/shared/alert_dialog.dart';
 import 'package:japaapp/presentation/shared/custom_button.dart';
 import 'package:japaapp/presentation/widget/back_button.dart';
 import 'package:japaapp/presentation/widget/form_field.dart';
@@ -238,20 +239,23 @@ class _SignInPageState extends State<SignInPage> {
 
               context.router.replace(const TabRoute());
             } else {
-              SnackBarUtil.snackbarError<String>(
-                context,
-                code: ExceptionCode.UNDEFINED,
-                message: state.data.message,
-              );
+              showCustomAlertDialog(context, subtitle: state.data.message, title: 'Error',backgroundColor: true,buttonText: "Dismiss",onTap: (){context.router.maybePop();},alertType: AlertType.warning);
+              // SnackBarUtil.snackbarError<String>(
+              //   context,
+              //   code: ExceptionCode.UNDEFINED,
+              //   message: state.data.message,
+              // );
             }
           },
           error: (state) {
-            SnackBarUtil.snackbarError<String>(
-              context,
-              code: state.failure.exception.code,
-              message: state.failure.exception.message.toString(),
-              onRefreshCallback: () => _onUserSignInCallback(),
-            );
+              showCustomAlertDialog(context, subtitle: state.failure.exception.message.toString(), title: 'Error',backgroundColor: true,buttonText: "Dismiss",onTap: (){context.router.maybePop();},alertType: AlertType.warning);
+
+            // SnackBarUtil.snackbarError<String>(
+            //   context,
+            //   code: state.failure.exception.code,
+            //   message: state.failure.exception.message.toString(),
+            //   onRefreshCallback: () => _onUserSignInCallback(),
+            // );
           },
         );
       },
@@ -263,7 +267,10 @@ class _SignInPageState extends State<SignInPage> {
           children: [
             CustomButton(
               type: ButtonType.regularButton(
-                  onTap: () => _onUserSignInCallback(),
+                  onTap: () {
+                    
+                    _onUserSignInCallback();
+                  },
                    label: 'Login',
                   isLoadingMode: isLoading,
                   backgroundColor: CustomTypography.kPrimaryColor300,

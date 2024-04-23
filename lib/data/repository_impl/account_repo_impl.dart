@@ -5,8 +5,9 @@ import 'package:japaapp/core/constants.dart';
 import 'package:japaapp/core/exceptions/exceptions.dart';
 import 'package:japaapp/core/network/network.dart';
 import 'package:japaapp/data/remote_data/account_remote_data.dart';
-import 'package:japaapp/domain/form_params/account/basic_information_form_params.dart';
-import 'package:japaapp/domain/form_params/account/level_of_education_form_param.dart';
+import 'package:japaapp/domain/form_params/form_params.dart';
+
+
 
 import 'package:japaapp/domain/model/models.dart';
 import 'package:japaapp/domain/repositories/account_repository.dart';
@@ -98,6 +99,57 @@ class AccountRepositoryImpl implements AccountRepository {
     if ((await _networkInfo.isConnected)) {
       try {
         final userInfoModel = await _remoteDataSource.createWorkInfoData(workLevelModel: workLevelModel);
+        //await TokenService().saveToken(token:userInfoModel.accessToken.toString());
+
+        return right(userInfoModel);
+      } on ExceptionType<ExceptionMessage> catch (e) {
+        return left(Failure.serverFailure(exception: e));
+      }
+    } else {
+      return left(const Failure.serverFailure(
+          exception: ExceptionMessages.NO_INTERNET_CONNECTION));
+    }
+  }
+
+  @override
+  Future<Either<Failure<ExceptionMessage>, CompoundUserInfoModel>> createFamilyInformation({required FamilyProfileFormModel familyProfileFormModel})async {
+       if ((await _networkInfo.isConnected)) {
+      try {
+        final userInfoModel = await _remoteDataSource.createFamilyInformation(familyProfileFormModel: familyProfileFormModel);
+        //await TokenService().saveToken(token:userInfoModel.accessToken.toString());
+
+        return right(userInfoModel);
+      } on ExceptionType<ExceptionMessage> catch (e) {
+        return left(Failure.serverFailure(exception: e));
+      }
+    } else {
+      return left(const Failure.serverFailure(
+          exception: ExceptionMessages.NO_INTERNET_CONNECTION));
+    }
+  }
+  
+  @override
+  Future<Either<Failure<ExceptionMessage>, CompoundUserInfoModel>> createAwardInformation({required AwardFormParam awardFormParam})async {
+   if ((await _networkInfo.isConnected)) {
+      try {
+        final userInfoModel = await _remoteDataSource.createAwardInformation(awardFormParam: awardFormParam);
+        //await TokenService().saveToken(token:userInfoModel.accessToken.toString());
+
+        return right(userInfoModel);
+      } on ExceptionType<ExceptionMessage> catch (e) {
+        return left(Failure.serverFailure(exception: e));
+      }
+    } else {
+      return left(const Failure.serverFailure(
+          exception: ExceptionMessages.NO_INTERNET_CONNECTION));
+    }
+  }
+  
+  @override
+  Future<Either<Failure<ExceptionMessage>, CompoundUserInfoModel>> createBudgetInformation({required BudgetFormParams budgetFormParams}) async{
+  if ((await _networkInfo.isConnected)) {
+      try {
+        final userInfoModel = await _remoteDataSource.createBudgetInformation(budgetFormParams: budgetFormParams);
         //await TokenService().saveToken(token:userInfoModel.accessToken.toString());
 
         return right(userInfoModel);

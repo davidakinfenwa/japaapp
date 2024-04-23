@@ -9,4 +9,7 @@ export 'auth/user_profile_form_params.dart';
 export 'auth/email_validation_form_params.dart';
 export 'account/level_of_education_form_param.dart';
 export 'account/work_profile_form_param.dart';
+export 'account/family_profile_form_params.dart';
+export 'account/award_profile_form_param.dart';
+export 'account/budget_form_params.dart';
 

@@ -11,6 +11,12 @@ abstract class AccountRemoteDataSource {
   Future<CompoundUserInfoModel> createBasicInfoData({required BasicInformationFormParams basicInformationFormParams, required File? image});
   Future<CompoundUserInfoModel> createEducationInfoData({required List<dynamic> educationLevelModel});
   Future<CompoundUserInfoModel> createWorkInfoData({required List<dynamic> workLevelModel});
+  Future< CompoundUserInfoModel> createFamilyInformation({required FamilyProfileFormModel familyProfileFormModel});
+  Future<CompoundUserInfoModel> createAwardInformation({required AwardFormParam awardFormParam});
+  Future< CompoundUserInfoModel> createBudgetInformation({required BudgetFormParams budgetFormParams});
+
+
+
 
 }
 
@@ -52,6 +58,24 @@ class AccountRemoteDataSourceImpl implements AccountRemoteDataSource {
     'work': workLevelModel,
   };
      var apiRes= await _services.post(uri:Endpoints.createWorkInfo,data: requestData,authorization: "Bearer Bearer ${await TokenService().retrieveToken()}");
+    return CompoundUserInfoModel.fromJson(apiRes.data);
+  }
+  
+  @override
+  Future<CompoundUserInfoModel> createFamilyInformation({required FamilyProfileFormModel familyProfileFormModel})async {
+  var apiRes= await _services.post(uri:Endpoints.createFamilyInfo,data: familyProfileFormModel,authorization: "Bearer Bearer ${await TokenService().retrieveToken()}");
+    return CompoundUserInfoModel.fromJson(apiRes.data);
+  }
+  
+  @override
+  Future<CompoundUserInfoModel> createAwardInformation({required AwardFormParam awardFormParam})async {
+   var apiRes= await _services.post(uri:Endpoints.createAwardInfo,data: awardFormParam,authorization: "Bearer Bearer ${await TokenService().retrieveToken()}");
+    return CompoundUserInfoModel.fromJson(apiRes.data);
+  }
+  
+  @override
+  Future<CompoundUserInfoModel> createBudgetInformation({required BudgetFormParams budgetFormParams})async {
+   var apiRes= await _services.post(uri:Endpoints.createBudgetInfo,data: budgetFormParams,authorization: "Bearer Bearer ${await TokenService().retrieveToken()}");
     return CompoundUserInfoModel.fromJson(apiRes.data);
   }
 

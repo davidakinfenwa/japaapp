@@ -1,54 +1,95 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
+import 'package:japaapp/business/blocs/account_bloc/create_award_info_form_cubit.dart';
+import 'package:japaapp/business/blocs/account_bloc/get_user_drop_down_form_cubit.dart';
+import 'package:japaapp/business/blocs/bloc_state.dart';
+import 'package:japaapp/business/snapshot_cache/snapshot_cache.dart';
 
 import 'package:japaapp/core/constants.dart';
+import 'package:japaapp/core/dependence/dependence.dart';
+import 'package:japaapp/core/exceptions/exceptions.dart';
 import 'package:japaapp/core/route/app_router.dart';
 import 'package:japaapp/core/theme/custom_typography.dart';
+import 'package:japaapp/core/util/snackbar_util.dart';
 import 'package:japaapp/core/util/width_constraints.dart';
+import 'package:japaapp/domain/form_params/account/award_profile_form_param.dart';
+import 'package:japaapp/domain/model/models.dart';
 import 'package:japaapp/presentation/shared/custom_button.dart';
 import 'package:japaapp/presentation/widget/bottom_sheet_item.dart';
 import 'package:japaapp/presentation/widget/custom_app_bar.dart';
+import 'package:japaapp/presentation/widget/form_field.dart';
 import 'package:japaapp/presentation/widget/input_field_with_label.dart';
 import 'package:japaapp/presentation/widget/item_with_dropdown.dart';
 
 @RoutePage()
-class AccountAwardPages extends StatefulWidget {
+class AccountAwardPages extends StatefulWidget implements AutoRouteWrapper {
   const AccountAwardPages({super.key});
+
 
   @override
   State<AccountAwardPages> createState() => _AccountAwardPagesState();
+
+       @override
+  Widget wrappedRoute(BuildContext context) {
+    
+    return MultiBlocProvider(
+      providers: [
+         BlocProvider<GetUserDropdownFormCubit>(
+          create: (context) => getIt<GetUserDropdownFormCubit>()..userDropdownData(),
+        ),
+
+           BlocProvider<CreateAwardfInformationCubit>(
+          create: (context) => getIt<CreateAwardfInformationCubit>(),
+        ),
+
+        
+     
+      ],
+      child: this,
+    );
+  }
 }
 
 class _AccountAwardPagesState extends State<AccountAwardPages> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  TextEditingController _companynameTextFieldController =
-      TextEditingController();
-  TextEditingController _positionTextFieldController = TextEditingController();
-  TextEditingController _gradeTextFieldController = TextEditingController();
+  TextEditingController _awwardTitleTextFieldController =TextEditingController();
   TextEditingController _awardTypeTextFieldController = TextEditingController();
 
-  DateTime userDOB = DateTime.now();
-  String fromDate = '';
+  DateTime userDOB1 = DateTime.now();
   String toDate = '';
 
   @override
   void initState() {
     super.initState();
-    _companynameTextFieldController = TextEditingController();
-    _positionTextFieldController = TextEditingController();
-    _gradeTextFieldController = TextEditingController();
+    _awwardTitleTextFieldController = TextEditingController();
     _awardTypeTextFieldController = TextEditingController();
   }
-
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final userInfo = context.read<AccountSnapshotCache>().userInfo.data.record;
+        print(userInfo);
+      for (var i = 0; i < userInfo.length; i++) {
+      addNewAwardkSection(i, userInfo[i]);
+    }
+  }
   @override
   void dispose() {
-    _companynameTextFieldController.dispose();
-    _positionTextFieldController.dispose();
-    _gradeTextFieldController.dispose();
+    _awwardTitleTextFieldController.dispose();
     _awardTypeTextFieldController.dispose();
     super.dispose();
+  }
+
+  List<Widget> addNewAwardList = [];
+  List<AwardRecord> awardDataList = [];
+  void addFirstDefaultMilestone() {
+    AwardRecord defaultMilestone = AwardRecord(type: _awardTypeTextFieldController.text,title: _awwardTitleTextFieldController.text,date: userDOB1);
+    if (defaultMilestone.type.isNotEmpty) {
+      awardDataList.insert(0, defaultMilestone);
+    } else {}
   }
 
   Future<void> _selectDate(BuildContext context, String nav) async {
@@ -59,58 +100,59 @@ class _AccountAwardPagesState extends State<AccountAwardPages> {
       lastDate: DateTime.now(),
     );
 
-    if (nav == "fromD") {
+    if (picked != null && picked != DateTime.now()) {
+      String formattedDate = DateFormat('MMM yyyy').format(picked);
+      setState(() {
+         userDOB1 = picked;
+        toDate = formattedDate;
+      });
+    }
+  }
+
+  
+
+  void addNewAwardkSection(int index, RecordAward recordAward) {
+  
+
+    TextEditingController awardTypeListController = TextEditingController(text: recordAward.type.toString());
+    TextEditingController awardTitleListTextFieldController = TextEditingController(text: recordAward.title.toString());
+    TextEditingController toDateFieldController = TextEditingController(text: recordAward.date.toString());
+    DateTime userDOB = DateTime.now();
+    String toDate = '';
+
+    void selectDateList(String nav) async {
+      DateTime? picked = await showDatePicker(
+        context: context,
+        initialDate: DateTime.now(),
+        firstDate: DateTime(1900),
+        lastDate: DateTime.now(),
+      );
+
       if (picked != null && picked != DateTime.now()) {
         String formattedDate = DateFormat('MMM yyyy').format(picked);
         setState(() {
           userDOB = picked;
-          fromDate = formattedDate;
-        });
-      }
-    } else {
-      if (picked != null && picked != DateTime.now()) {
-        String formattedDate = DateFormat('MMM yyyy').format(picked);
-        setState(() {
-          userDOB = picked;
+          
+        toDateFieldController.text=formattedDate;
           toDate = formattedDate;
         });
       }
     }
-  }
+      AwardRecord awardRecord = AwardRecord(
+        type: _awardTypeTextFieldController.text,
+        title: _awwardTitleTextFieldController.text,
+        date: userDOB);
 
-  List<Widget> addNewWorkList = [];
-
-  void addNewWorkSection(int index) {
-    //  WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-    //   setState(() {});
-    // });
-
-    TextEditingController awardTypeController = TextEditingController();
-    // TextEditingController titleController = TextEditingController();
-    // TextEditingController amountController = TextEditingController();
-    // TextEditingController dateCController = TextEditingController();
-
-    // milestonData[index].amount = amountController.text.replaceAll(",", "");
-    // Milestone newMilestone = Milestone(
-    //   title: titleController.text,
-    //   amount: amountController.text.replaceAll(",", ""),
-    //   dueDate: dateCController.text,
-    // );
-
-    addNewWorkList.add(Column(
+    addNewAwardList.add(Column(
       children: [
         const SizedBox(height: 10),
         InkWell(
           onTap: () {
             setState(() {
-              addNewWorkList.removeAt(index);
-              // if (index >= 0 && index < milestonData.length) {
-              //   milestonData.removeAt(index);
-              // }
-
-              // titleController.clear();
-              // amountController.clear();
-              // dateCController.clear();
+              addNewAwardList.removeAt(index);
+              if (index >= 0 && index < awardDataList.length) {
+                awardDataList.removeAt(index);
+              }
             });
           },
           child: Row(
@@ -130,25 +172,94 @@ class _AccountAwardPagesState extends State<AccountAwardPages> {
           ),
         ),
         const SizedBox(height: 10),
-        ItemWithDropDown(
-            title: "Award Type",
-            suffixIcon: 'assets/images/dropdown.png',
-            hintText: "Select Award Type",
-            bottomSheet: MyBottomAwardSheet(onItemSelected: (String value) {
-              // Assign the value to the desired controller
-              setState(() {
-                awardTypeController.text = value;
-              });
-            }),
-            controller: awardTypeController),
+        BlocConsumer<GetUserDropdownFormCubit,
+            BlocState<Failure<ExceptionMessage>, ProfileDropDownModel>>(
+          listener: (context, state) {
+            state.maybeMap(
+              orElse: () => null,
+              success: (state) {
+                context.read<AccountSnapshotCache>().notifyAllListeners();
+              },
+            );
+          },
+          builder: (context, state) {
+            return ItemWithDropDown(
+                title: "Award Type",
+                suffixIcon: 'assets/images/dropdown.png',
+                hintText: "Select Award Type",
+                bottomSheet: MyBottomAwardMainSheet(
+                    onItemSelected: (String value) {
+                      // Assign the value to the desired controller
+                      awardTypeListController.text = value;
+                      setState(() {
+                        if (index >= 0 && index < awardDataList.length) {
+                          awardDataList[index].type = value.toString();
+                        }
+                      });
+                    },
+                    state: state),
+                controller: awardTypeListController);
+          },
+        ),
         SizedBox(height: (Sizing.kSizingMultiple * 1.5).h),
-        _buildTitleTextField(),
+        InputFieldWithLabel(
+          hintText: "Enter award title",
+          title: "Title",
+          validateText: "title name is required",
+          controller: awardTitleListTextFieldController,
+          textType: TextInputType.text,
+          onChanged: (value) {
+            setState(() {
+              if (index >= 0 && index < awardDataList.length) {
+                awardDataList[index].title = value.toString();
+              }
+            });
+          },
+        ),
         SizedBox(height: (Sizing.kSizingMultiple * 1.5).h),
-        _buildAwardDateTextField(),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "To",
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w500,
+                    color: CustomTypography.kGreyColorlabel,
+                  ),
+            ),
+            SizedBox(
+              height: Sizing.kHSpacing8 / 2,
+            ),
+            InkWell(
+              onTap: () {
+                setState(() {});
+              },
+              child: SizedBox(
+                width: MediaQuery.sizeOf(context).width.w,
+                child: FormFieldInput(
+                  suffixIcon: Image.asset('assets/images/datee.png', width: 24, height: 24,),
+                  readOnly: true,
+                  hint: "MM/YYYY",
+                  controller: toDateFieldController,
+                  onChanged: (value) {
+                    print(DateTime.parse(value.toString()));
+                    if (index >= 0 && index < awardDataList.length) {
+                      awardDataList[index].date =DateTime.parse(value.toString());
+                    }
+                  },
+                  onTap: () {
+                    selectDateList("toD");
+                  },
+                  // onTapData: ,
+                ),
+              ),
+            ),
+          ],
+        ),
         SizedBox(height: (Sizing.kSizingMultiple * 1.5).h),
       ],
     ));
-    // milestonData.add(newMilestone);
+    awardDataList.add(awardRecord);
   }
 
   @override
@@ -233,17 +344,30 @@ class _AccountAwardPagesState extends State<AccountAwardPages> {
   }
 
   Widget _buildAwardTypeTextField() {
-    return ItemWithDropDown(
-        title: "Award Type",
-        suffixIcon: 'assets/images/dropdown.png',
-        hintText: "Select Award Type",
-        bottomSheet: MyBottomAwardSheet(onItemSelected: (String value) {
-          // Assign the value to the desired controller
-          setState(() {
-            _awardTypeTextFieldController.text = value;
-          });
-        }),
-        controller: _awardTypeTextFieldController);
+    return BlocConsumer<GetUserDropdownFormCubit,
+        BlocState<Failure<ExceptionMessage>, ProfileDropDownModel>>(
+      listener: (context, state) {
+        state.maybeMap(
+          orElse: () => null,
+          success: (state) {
+            context.read<AccountSnapshotCache>().notifyAllListeners();
+          },
+        );
+      },
+      builder: (context, state) {
+        return ItemWithDropDown(
+            title: "Award Type",
+            suffixIcon: 'assets/images/dropdown.png',
+            hintText: "Select Award Type",
+            bottomSheet: MyBottomAwardMainSheet(
+                onItemSelected: (String value) {
+                  // Assign the value to the desired controller
+                  _awardTypeTextFieldController.text = value;
+                },
+                state: state),
+            controller: _awardTypeTextFieldController);
+      },
+    );
   }
 
   Widget _buildTitleTextField() {
@@ -251,7 +375,7 @@ class _AccountAwardPagesState extends State<AccountAwardPages> {
         hintText: "Enter award title",
         title: "Title",
         validateText: "title name is required",
-        controller: _companynameTextFieldController,
+        controller: _awwardTitleTextFieldController,
         textType: TextInputType.text);
   }
 
@@ -259,18 +383,18 @@ class _AccountAwardPagesState extends State<AccountAwardPages> {
     return Column(
       children: [
         Column(
-          children: addNewWorkList,
+          children: addNewAwardList,
         ),
         const SizedBox(height: 10),
         InkWell(
           onTap: () {
             setState(() {
-              addNewWorkSection(addNewWorkList.length);
+              addNewAwardkSection(addNewAwardList.length,RecordAward.empty());
             });
           },
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.end,
-            //mainAxisAlignment: MainAxisAlignment.end,
+           
             children: [
               Container(
                 padding:
@@ -315,19 +439,13 @@ class _AccountAwardPagesState extends State<AccountAwardPages> {
         InkWell(
           onTap: () {
             setState(() {});
-            // showModalBottomSheet(
-            //   context: context,
-            //   builder: (context) {
-            //     return const MyBottomSheet();
-            //   },
-            // );
             _selectDate(context, "toD");
           },
           child: Container(
             //width: MediaQuery.sizeOf(context).width * 0.45.w,
             padding: EdgeInsets.all(10.dm),
             decoration: BoxDecoration(
-               color: CustomTypography.kBottomNavColor,
+              color: CustomTypography.kBottomNavColor,
               //color: const Color(0xFFF4F4F4),
               borderRadius: BorderRadius.circular(4.r),
               border: Border.all(
@@ -367,13 +485,17 @@ class _AccountAwardPagesState extends State<AccountAwardPages> {
     );
   }
 
-  Widget _buildActionButton() {
+  Widget _buildActionButtonback() {
     return Column(
       children: [
         CustomButton(
           type: ButtonType.regularButton(
               onTap: () {
-                context.router.push(const AccountBudgetRoute());
+                
+                addFirstDefaultMilestone();
+                 List<AwardRecord> milestoneListAsMap = awardDataList;
+                          print(milestoneListAsMap);
+                //context.router.push(const AccountBudgetRoute());
               },
               label: 'Next',
               isLoadingMode: false,
@@ -383,6 +505,74 @@ class _AccountAwardPagesState extends State<AccountAwardPages> {
                   Radius.circular(Sizing.kBorderRadius * 7.r))),
         ),
       ],
+    );
+  }
+
+
+  
+  void _onUserSignUpCallback() async{
+    
+     
+                addFirstDefaultMilestone();
+                 List<AwardRecord> milestoneListAsMap = awardDataList;
+                          print(milestoneListAsMap);
+                          AwardFormParam awardFormParam=AwardFormParam(record: milestoneListAsMap);
+                
+    context.read<CreateAwardfInformationCubit>().createAwardInfo(awardFormParam: awardFormParam);
+  }
+
+      Widget _buildActionButton() {
+    return BlocConsumer<CreateAwardfInformationCubit,
+        BlocState<Failure<ExceptionMessage>, CompoundUserInfoModel>>(
+      listener: (context, state) {
+        state.maybeMap(
+          orElse: () => null,
+          success: (state) {
+            if (state.data.status=="success") {
+              // clear form inputs
+              _formKey.currentState!.reset();
+
+             context.router.push(const AccountBudgetRoute());
+            } else {
+              SnackBarUtil.snackbarError<String>(
+                context,
+                code: ExceptionCode.UNDEFINED,
+                message: "Something went wrong try again",
+              );
+            }
+          },
+          error: (state) {
+            SnackBarUtil.snackbarError<String>(
+              context,
+              code: state.failure.exception.code,
+              message: state.failure.exception.message.toString(),
+              onRefreshCallback: () => _onUserSignUpCallback(),
+            );
+          },
+        );
+      },
+      builder: (context, state) {
+        final isLoading = state is Loading<Failure<ExceptionMessage>, CompoundUserInfoModel>;
+
+        return Column(
+          children: [
+            CustomButton(
+              type: ButtonType.regularButton(
+                  onTap: () => _onUserSignUpCallback(),
+                   label: 'Next',
+                  isLoadingMode: isLoading,
+                  backgroundColor: CustomTypography.kPrimaryColor300,
+                  textColor: CustomTypography.kWhiteColor,
+                  borderRadius: BorderRadius.all(
+                      Radius.circular(Sizing.kBorderRadius * 7.r))),
+            ),
+             SizedBox(
+          height: Sizing.kHSpacing10,
+        ),
+       // _buildAuthModeSwitcherSection()
+          ],
+        );
+      },
     );
   }
 }

@@ -47,7 +47,14 @@ class _TabScreenState extends State<TabScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
+   // WidgetsBinding.instance.addObserver(this);
   }
+    @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+     getIt<GetAllUserDataFormCubit>().userAuthenticatedData();
+      
+    }
  void _onGetDashboardMetricsCallback() {
     final _authSnapshotCache = context.read<AuthSnapshotCache>();
 

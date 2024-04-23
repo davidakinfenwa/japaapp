@@ -40,7 +40,7 @@ class AccountBasicInfoPage extends StatefulWidget implements AutoRouteWrapper {
 
    @override
   Widget wrappedRoute(BuildContext context) {
-     final userInfo = context.read<AccountSnapshotCache>().userInfo;
+    
 
     return MultiBlocProvider(
       providers: [
@@ -89,16 +89,17 @@ class _AccountBasicInfoPageState extends State<AccountBasicInfoPage> {
     _countryResidenceTextFieldController = TextEditingController(text: userInfo.data.profile.countryOfResidence);
     _countryOriginTextFieldController = TextEditingController(text: userInfo.data.profile.countryOfOrigin);
     toDate=userInfo.data.profile.dateOfBirth.toString();
-    if (userInfo.data.profile.gender=="Male") {
+    setState(() {
+      if (userInfo.data.profile.gender=="male") {
       selectedGender=1;
       selectedGenderString="Male";
       
-    } else if(userInfo.data.profile.gender=="Female") {
+    } else if(userInfo.data.profile.gender=="female") {
       selectedGender=2;
       selectedGenderString="Female";
       
     }
-    else if(userInfo.data.profile.gender=="Others"){
+    else if(userInfo.data.profile.gender=="others"){
       selectedGender=3;
       selectedGenderString="Others";
     }
@@ -106,17 +107,19 @@ class _AccountBasicInfoPageState extends State<AccountBasicInfoPage> {
        selectedGender = -2;
    selectedGenderString = "";
     }
-    //validateStreams();
+    });
+  
+   
   }
 
-  // void validateStreams() {
-  //   countryOriginStreamController = StreamController<String>.broadcast();
-  //   _countryOriginTextFieldController.addListener(() {
-  //     countryOriginStreamController.sink
-  //         .add(_passwordTextFieldController.text.trim());
-  //     // validateInputs();
-  //   });
-  // }
+  //   @override
+  // void didChangeDependencies() {
+  //   super.didChangeDependencies();
+  //    getIt<GetAllUserDataFormCubit>().userAuthenticatedData();
+      
+  //   }
+  
+
 
   @override
   void dispose() {
@@ -176,18 +179,16 @@ class _AccountBasicInfoPageState extends State<AccountBasicInfoPage> {
     if (pickedFile != null) {
       setState(() {
         imageFile = pickedFile;
-        // getIt<UserProfileRemoteData>().updateUserProfileImage(
-        //                   context: context,
-        //                   imageFile: imageFile,
-        //                 );
+       
       });
     }
   }
      void _onUserSignUpCallback() async{
     KeyboardUtil.hideKeyboard(context);
-    //DateTime dateTime = DateTime.parse(toDate);
+    
     final basicInformationFormParams = BasicInformationFormParams(countryOfOrigin: _countryOriginTextFieldController.text, countryOfResidence: _countryResidenceTextFieldController.text, dateOfBirth: userDOB.toString(), gender: selectedGenderString, firstName: _firstNameTextFieldController.text, otherName: _otherNameTextFieldController.text, surname: _lastNameTextFieldController.text);
     context.read<CreateBasicInformationCubit>().createBasicInfo(basicInformationFormParams: basicInformationFormParams, image: imageFile);
+   
   }
 
 
@@ -202,27 +203,9 @@ class _AccountBasicInfoPageState extends State<AccountBasicInfoPage> {
   }
 
   Widget _buildSalutationSection() {
-    return CustomApbar(
+    return const CustomApbar(
       title: 'My Profile',
-      // otherWidget: Container(
-      //   padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
-      //   decoration: BoxDecoration(
-
-      //     color: CustomTypography.kPrimaryColor200,
-      //     borderRadius:
-      //         BorderRadius.all(Radius.circular(Sizing.kBorderRadius * 2.r)),
-      //   ),
-      //   child: Text(
-      //     'Edit',
-      //     style: Theme.of(context)
-      //         .textTheme
-      //         .titleSmall
-      //         ?.copyWith(color: CustomTypography.kWhiteColor, fontSize: 10.sp
-      //             //height: 0.9,
-      //             ),
-      //     textAlign: TextAlign.center,
-      //   ),
-      // ),
+   
     );
   }
 
@@ -252,7 +235,20 @@ class _AccountBasicInfoPageState extends State<AccountBasicInfoPage> {
                       )
                     
                     
-                    : Container(
+                    : context.read<AccountSnapshotCache>().userInfo.data.profile.image !=null && context.read<AccountSnapshotCache>().userInfo.data.profile.image.isNotEmpty?  
+                    Container(
+                        width: 250,
+                        height:250,
+                        decoration: ShapeDecoration(
+                          image:  DecorationImage(
+                            image: NetworkImage(context.read<AccountSnapshotCache>().userInfo.data.profile.image),
+                            fit: BoxFit.cover,
+                          ),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(Sizing.kBorderRadius*2.r)),
+                        ),
+                        
+                      ):Container(
                         width: 90,
                         height: 90,
                         decoration: ShapeDecoration(
@@ -834,6 +830,9 @@ class _AccountBasicInfoPageState extends State<AccountBasicInfoPage> {
             listener: (context, state) {
               state.maybeMap(
                 orElse: () => null,
+                success: (state) {
+            context.read<AccountSnapshotCache>().notifyAllListeners();
+          },
                 error: (state) {
                   if (_userInfo.data != CompoundUserInfoModel.empty()) {
                     SnackBarUtil.snackbarError(

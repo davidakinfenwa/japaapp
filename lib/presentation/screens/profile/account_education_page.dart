@@ -80,17 +80,28 @@ class _AccountEducationPagesState extends State<AccountEducationPages> {
   @override
   void initState() {
     super.initState();
-    _institutionTextFieldController = TextEditingController();
-    _majorTextFieldController = TextEditingController();
-    _gradeTextFieldController = TextEditingController();
-    _levelofEuducationTextController = TextEditingController();
-    _scalePointTextController = TextEditingController();
-       final userInfo = context.read<AccountSnapshotCache>().userInfo.data.education;
-        print(userInfo);
-      for (var i = 0; i < userInfo.length; i++) {
-      addNewEducationSection(i, userInfo[i]);
-    }
+    
+    
+       
   }
+
+   
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final userInfo = context.read<AccountSnapshotCache>().userInfo.data.education;
+        print(userInfo);
+      for (var i = 1; i < userInfo.length; i++) {
+      addNewEducationSection(i+1, userInfo[i]);
+    }
+    _institutionTextFieldController = TextEditingController(text: userInfo[0].institution);
+    _majorTextFieldController = TextEditingController(text: userInfo[0].major);
+    _gradeTextFieldController = TextEditingController(text: userInfo[0].grade);
+    _levelofEuducationTextController = TextEditingController(text: userInfo[0].levelOfEducation);
+    _scalePointTextController = TextEditingController(text: userInfo[0].scale);
+  }
+
+
 
   @override
   void dispose() {
@@ -101,6 +112,7 @@ class _AccountEducationPagesState extends State<AccountEducationPages> {
     _scalePointTextController.dispose();
     super.dispose();
   }
+  
 
   List<Widget> addMilestoneList = [];
   List<EducationData> educationDataList = [];
@@ -195,17 +207,17 @@ class _AccountEducationPagesState extends State<AccountEducationPages> {
     TextEditingController fromDateFieldController = TextEditingController(text: edu.fromDate.toString());
     TextEditingController toDateFieldController = TextEditingController(text: edu.toDate.toString());
 
- DateTime userDOB1 = DateTime.now();
- DateTime userDOB2 = DateTime.now();
-  String fromDateList = '';
-  String toDateList = '';
-    void _selectDateListe(String nav) async {
-    DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(1900),
-      lastDate: DateTime.now(),
-    );
+    DateTime userDOB1 = DateTime.now();
+    DateTime userDOB2 = DateTime.now();
+      String fromDateList = '';
+      String toDateList = '';
+        void _selectDateListe(String nav) async {
+        DateTime? picked = await showDatePicker(
+          context: context,
+          initialDate: DateTime.now(),
+          firstDate: DateTime(1900),
+          lastDate: DateTime.now(),
+        );
 
     if (nav == "fromD") {
       if (picked != null && picked != DateTime.now()) {
@@ -230,12 +242,7 @@ class _AccountEducationPagesState extends State<AccountEducationPages> {
       }
     }
   }
-   
-  
-    
-    
 
-  
  EducationData eduFormData =EducationData(levelEducation: levelofEuducationSelTextController.text, institution: institutionListTextFieldController.text, fromDate:userDOB1 , toDate: userDOB2, major: majorTextListFieldController.text, scale: scalePointListTextController.text, grade: gradeTextListFieldController.text, isStillInschool: false);
     addMilestoneList.add(Column(
       children: [
@@ -675,7 +682,7 @@ class _AccountEducationPagesState extends State<AccountEducationPages> {
             SizedBox(height: (Sizing.kSizingMultiple * 1.5).h),
             _buildEducationDurationTextField(),
             SizedBox(height: (Sizing.kSizingMultiple * 1.5).h),
-          _levelofEuducationTextController.text.isNotEmpty?  _buildMoreEduDetails():SizedBox()
+           _buildMoreEduDetails()
           ],
         ),
       ),
@@ -942,7 +949,7 @@ class _AccountEducationPagesState extends State<AccountEducationPages> {
               addNewEducationSection(addMilestoneList.length,Education.empty());
             });
           },
-          child: Row(
+          child: _levelofEuducationTextController.text.isNotEmpty? Row(
             crossAxisAlignment: CrossAxisAlignment.end,
             //mainAxisAlignment: MainAxisAlignment.end,
             children: [
@@ -965,7 +972,7 @@ class _AccountEducationPagesState extends State<AccountEducationPages> {
                 ),
               ),
             ],
-          ),
+          ):SizedBox(),
         ),
       ],
     );
@@ -994,10 +1001,9 @@ class _AccountEducationPagesState extends State<AccountEducationPages> {
   }
 
   void _onUserSignUpCallback() async{
-    //KeyboardUtil.hideKeyboard(context);
-    //DateTime dateTime = DateTime.parse(toDate);
+    
      addFirstDefaultMilestone();
-                 List<Map<String, dynamic>> milestoneListAsMap = educationDataList.map((milestone) => milestone.toJson()).toList();
+    List<Map<String, dynamic>> milestoneListAsMap = educationDataList.map((milestone) => milestone.toJson()).toList();
                           print(milestoneListAsMap);
     context.read<CreateEducationInformationCubit>().createEducationInfo(educationLevelModel: milestoneListAsMap);
   }

@@ -61,6 +61,7 @@ class CustomTypography {
   static final kSuccessColor400 = ColorUtil.colorFromHex('#1d5c3f');
   static final kSuccessColor500 = ColorUtil.colorFromHex('#195137');
 
+
   static final kErrorColor50 = ColorUtil.colorFromHex('#fce8e6');
   static final kErrorColor75 = ColorUtil.colorFromHex('#f4a296');
   static final kErrorColor100 = ColorUtil.colorFromHex('#f07b6b');

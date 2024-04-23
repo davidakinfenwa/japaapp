@@ -36,7 +36,7 @@ class CreateWorkInformationCubit extends Cubit<BlocState<Failure<ExceptionMessag
       (userInfoModel) {
         // cache snapshot
        
-          _snapshotCache.userInfor = userInfoModel;
+          _snapshotCache.workUserInfo = userInfoModel;
         
 
         return BlocState<Failure<ExceptionMessage>, CompoundUserInfoModel>.success(data: userInfoModel);

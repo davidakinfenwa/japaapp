@@ -339,10 +339,11 @@ class _MyBottomMaritalSheetState extends State<MyBottomMaritalSheet> {
 }
 
 class MyBottomAwardSheet extends StatefulWidget {
-  const MyBottomAwardSheet({super.key, required this.onItemSelected, this.nav});
+  const MyBottomAwardSheet({super.key, required this.onItemSelected, this.nav, this.state});
 
   final Function(String) onItemSelected;
   final String? nav;
+  final BlocState<Failure<ExceptionMessage>, ProfileDropDownModel>? state;
   @override
   State<MyBottomAwardSheet> createState() => _MyBottomAwardSheetState();
 }
@@ -350,6 +351,7 @@ class MyBottomAwardSheet extends StatefulWidget {
 class _MyBottomAwardSheetState extends State<MyBottomAwardSheet> {
   @override
   Widget build(BuildContext context) {
+    final _userInfo = context.watch<AccountSnapshotCache>().userDropdownInfo;
     final List<Map<String, dynamic>> items = [
       {"title": 'Award'},
       {"title": 'Book '},
@@ -387,7 +389,7 @@ class _MyBottomAwardSheetState extends State<MyBottomAwardSheet> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Text(
-                  widget.nav=="visa"?'Please select visa type': 'Please select your marital status',
+                  widget.nav=="visa"?'Please select visa type': 'Please select award type',
                   //style: AppTheme.inputText
                   style: Theme.of(context).textTheme.titleLarge?.copyWith(
                       color: CustomTypography.kBlackColor, fontSize: 20.sp, fontWeight: FontWeight.w700),
@@ -406,10 +408,10 @@ class _MyBottomAwardSheetState extends State<MyBottomAwardSheet> {
           ),
           Expanded(
             child: ListView.builder(
-              itemCount: widget.nav == "visa" ? visaType.length : items.length,
+              itemCount: visaType.length,
               itemBuilder: (BuildContext context, int index) {
                 final content =
-                    widget.nav == "visa" ? visaType[index] : items[index];
+                   visaType[index];
                 return InkWell(
                   onTap: () {
                     //this line is to fetch the Period[Monthly,weekly,daily]
@@ -432,6 +434,114 @@ class _MyBottomAwardSheetState extends State<MyBottomAwardSheet> {
                         padding: EdgeInsets.only(left: 10.0.w, top: 15.h),
                         child: Text(
                           content['title'],
+                          style:
+                              Theme.of(context).textTheme.titleLarge?.copyWith(
+                                    color: const Color(0xFF344053),
+                                    fontSize: 16,
+                                  ),
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+
+
+class MyBottomAwardMainSheet extends StatefulWidget {
+  const MyBottomAwardMainSheet({super.key, required this.onItemSelected, this.state});
+
+  final Function(String) onItemSelected;
+  final BlocState<Failure<ExceptionMessage>, ProfileDropDownModel>? state;
+  @override
+  State<MyBottomAwardMainSheet> createState() => _MyBottomAwardMainSheetState();
+}
+
+class _MyBottomAwardMainSheetState extends State<MyBottomAwardMainSheet> {
+  @override
+  Widget build(BuildContext context) {
+    final _userInfo = context.watch<AccountSnapshotCache>().userDropdownInfo;
+    final List<Map<String, dynamic>> items = [
+      {"title": 'Award'},
+      {"title": 'Book '},
+      {"title": 'Patent'},
+      {"title": 'Publications'},
+    ];
+
+   
+    return
+          Container(
+      height: 273.h,
+      decoration: BoxDecoration(
+        color: CustomTypography.kWhiteColor,
+        borderRadius: BorderRadius.only(topLeft: Radius.circular(Sizing.kBorderRadius*3.r),topRight: Radius.circular(Sizing.kBorderRadius*3.r)),
+        border: Border(
+            bottom: BorderSide(
+          width: 1.16.w, // Width of the border
+          color: CustomTypography.kWhiteColor,
+        )),
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Padding(
+            padding: EdgeInsets.only(top: Sizing.kSizingMultiple*2.h),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Text(
+                   'Please select award type',
+                  //style: AppTheme.inputText
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      color: CustomTypography.kBlackColor, fontSize: 20.sp, fontWeight: FontWeight.w700),
+                ),
+                // Padding(
+                //   padding: const EdgeInsets.only(right: 0, top: 10),
+                //   child: IconButton(
+                //     icon: Icon(Icons.close),
+                //     onPressed: () {
+                //       Navigator.of(context).pop();
+                //     },
+                //   ),
+                // ),
+              ],
+            ),
+          ),
+          Expanded(
+            child: ListView.builder(
+              itemCount: _userInfo.data.record.length,
+              itemBuilder: (BuildContext context, int index) {
+                final content =
+                    _userInfo.data.record[index];
+                return InkWell(
+                  onTap: () {
+                    //this line is to fetch the Period[Monthly,weekly,daily]
+                    widget.onItemSelected(content);
+
+                    Navigator.of(context).pop();
+                  },
+                  child: Padding(
+                    padding: EdgeInsets.fromLTRB(15.w, 16.h, 24.w, 0.h),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        border: Border(
+                            bottom: BorderSide(
+                          width: 1.w, // Width of the border
+                          color: const Color(0xFFB7C6CC),
+                        )),
+                      ),
+                      height: 48.h,
+                      child: Padding(
+                        padding: EdgeInsets.only(left: 10.0.w, top: 15.h),
+                        child: Text(
+                          content,
                           style:
                               Theme.of(context).textTheme.titleLarge?.copyWith(
                                     color: const Color(0xFF344053),
