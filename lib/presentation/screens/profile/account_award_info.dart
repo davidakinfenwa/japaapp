@@ -72,9 +72,16 @@ class _AccountAwardPagesState extends State<AccountAwardPages> {
     super.didChangeDependencies();
     final userInfo = context.read<AccountSnapshotCache>().userInfo.data.record;
         print(userInfo);
-      for (var i = 0; i < userInfo.length; i++) {
-      addNewAwardkSection(i, userInfo[i]);
+        if (userInfo.isNotEmpty) {
+            for (var i = 1; i < userInfo.length; i++) {
+      addNewAwardkSection(i+1, userInfo[i]);
+      _awwardTitleTextFieldController = TextEditingController(text: userInfo[0].title);
+    _awardTypeTextFieldController = TextEditingController(text: userInfo[0].type);
     }
+        } else {
+          
+        }
+    
   }
   @override
   void dispose() {
@@ -89,6 +96,7 @@ class _AccountAwardPagesState extends State<AccountAwardPages> {
     AwardRecord defaultMilestone = AwardRecord(type: _awardTypeTextFieldController.text,title: _awwardTitleTextFieldController.text,date: userDOB1);
     if (defaultMilestone.type.isNotEmpty) {
       awardDataList.insert(0, defaultMilestone);
+      
     } else {}
   }
 
@@ -113,7 +121,6 @@ class _AccountAwardPagesState extends State<AccountAwardPages> {
 
   void addNewAwardkSection(int index, RecordAward recordAward) {
   
-
     TextEditingController awardTypeListController = TextEditingController(text: recordAward.type.toString());
     TextEditingController awardTitleListTextFieldController = TextEditingController(text: recordAward.title.toString());
     TextEditingController toDateFieldController = TextEditingController(text: recordAward.date.toString());
@@ -139,8 +146,8 @@ class _AccountAwardPagesState extends State<AccountAwardPages> {
       }
     }
       AwardRecord awardRecord = AwardRecord(
-        type: _awardTypeTextFieldController.text,
-        title: _awwardTitleTextFieldController.text,
+        type: awardTypeListController.text,
+        title: awardTitleListTextFieldController.text,
         date: userDOB);
 
     addNewAwardList.add(Column(
@@ -511,12 +518,10 @@ class _AccountAwardPagesState extends State<AccountAwardPages> {
 
   
   void _onUserSignUpCallback() async{
-    
-     
-                addFirstDefaultMilestone();
-                 List<AwardRecord> milestoneListAsMap = awardDataList;
-                          print(milestoneListAsMap);
-                          AwardFormParam awardFormParam=AwardFormParam(record: milestoneListAsMap);
+addFirstDefaultMilestone();
+ List<AwardRecord> milestoneListAsMap = awardDataList;
+          AwardFormParam awardFormParam=AwardFormParam(record: milestoneListAsMap);
+           print(awardFormParam.toJson());
                 
     context.read<CreateAwardfInformationCubit>().createAwardInfo(awardFormParam: awardFormParam);
   }

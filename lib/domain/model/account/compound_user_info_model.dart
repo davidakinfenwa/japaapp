@@ -101,35 +101,35 @@ class UserData extends Equatable{
 
 class FamilyStructure {
     final List<Family> family;
-    final List<FamilyWork> work;
-    final List<FamilyEducation> education;
+    final List<FamilyWork> familywork;
+    final List<FamilyEducation> familyeducation;
 
     FamilyStructure({
         required this.family,
-        required this.work,
-        required this.education,
+        required this.familywork,
+        required this.familyeducation,
     });
 
     factory FamilyStructure.fromJson(Map<String, dynamic> json) => FamilyStructure(
         family: List<Family>.from(json["family"].map((x) => Family.fromJson(x))),
-        work: List<FamilyWork>.from(json["work"].map((x) => FamilyWork.fromJson(x))),
-        education: List<FamilyEducation>.from(json["education"].map((x) => FamilyEducation.fromJson(x))),
+        familywork: List<FamilyWork>.from(json["work"].map((x) => FamilyWork.fromJson(x))),
+        familyeducation: List<FamilyEducation>.from(json["education"].map((x) => FamilyEducation.fromJson(x))),
     );
 
     Map<String, dynamic> toJson() => {
         "family": List<dynamic>.from(family.map((x) => x.toJson())),
-        "work": List<dynamic>.from(work.map((x) => x.toJson())),
-        "education": List<dynamic>.from(education.map((x) => x.toJson())),
+        "work": List<dynamic>.from(familywork.map((x) => x.toJson())),
+        "education": List<dynamic>.from(familyeducation.map((x) => x.toJson())),
     };
 
     factory FamilyStructure.empty() {
-      return FamilyStructure(family: [], work: [], education: []);
+      return FamilyStructure(family: [], familywork: [], familyeducation: []);
     }
 }
 
 class Budget extends Equatable{
-  final String id;
-  final String userId;
+  final dynamic id;
+  final dynamic userId;
   final String budgetedAmount;
   final String isAnyAmount;
   final DateTime createdAt;

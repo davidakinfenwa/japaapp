@@ -52,7 +52,7 @@ class _AccountWorkPagesState extends State<AccountWorkPages> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   TextEditingController _companynameTextFieldController =  TextEditingController();
   TextEditingController _positionTextFieldController = TextEditingController();
-  TextEditingController _gradeTextFieldController = TextEditingController();
+  
   
   DateTime userDOB1 = DateTime.now();
   DateTime userDOB2 = DateTime.now();
@@ -64,7 +64,7 @@ class _AccountWorkPagesState extends State<AccountWorkPages> {
     super.initState();
     _companynameTextFieldController = TextEditingController();
     _positionTextFieldController = TextEditingController();
-    _gradeTextFieldController = TextEditingController();
+    
     
   }
   
@@ -73,16 +73,25 @@ class _AccountWorkPagesState extends State<AccountWorkPages> {
     super.didChangeDependencies();
     final userInfo = context.read<AccountSnapshotCache>().userInfo.data.work;
         print(userInfo);
-      for (var i = 0; i < userInfo.length; i++) {
-      addNewWorkSection(i, userInfo[i]);
+     
+    if (userInfo.isNotEmpty) {
+    for (var i = 1; i < userInfo.length; i++) {
+      addNewWorkSection(i+1, userInfo[i]);
     }
+      _companynameTextFieldController = TextEditingController(text: userInfo[0].companyName);
+    _positionTextFieldController = TextEditingController(text: userInfo[0].position);
+   
+  } else {
+    // Handle the case when userInfo is empty
+    print('userInfo is empty');
+  }
   }
   
   @override
   void dispose() {
     _companynameTextFieldController.dispose();
     _positionTextFieldController.dispose();
-    _gradeTextFieldController.dispose();
+    
     super.dispose();
   }
 

@@ -91,6 +91,8 @@ class _AccountEducationPagesState extends State<AccountEducationPages> {
     super.didChangeDependencies();
     final userInfo = context.read<AccountSnapshotCache>().userInfo.data.education;
         print(userInfo);
+        
+        if (userInfo.isNotEmpty) {
       for (var i = 1; i < userInfo.length; i++) {
       addNewEducationSection(i+1, userInfo[i]);
     }
@@ -99,6 +101,9 @@ class _AccountEducationPagesState extends State<AccountEducationPages> {
     _gradeTextFieldController = TextEditingController(text: userInfo[0].grade);
     _levelofEuducationTextController = TextEditingController(text: userInfo[0].levelOfEducation);
     _scalePointTextController = TextEditingController(text: userInfo[0].scale);
+        }else{
+          print('userInfo is empty');
+        }
   }
 
 

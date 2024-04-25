@@ -65,7 +65,7 @@ class _SignInPageState extends State<SignInPage> {
     void _onUserSignInCallback() async{
     KeyboardUtil.hideKeyboard(context);
 
-    //if (!_formKey.currentState!.validate()) return;
+    if (!_formKey.currentState!.validate()) return;
 
     final signInFromParams = SignInFromParams(email: _emailTextFieldController.text, password: _passwordTextFieldController.text);
     context.read<SigninFormCubit>().signin(signInFromParams: signInFromParams);
@@ -191,6 +191,7 @@ class _SignInPageState extends State<SignInPage> {
           obSecure: true,
           controller: _passwordTextFieldController,
           hint: 'Enter Password',
+          
           textInputType: TextInputType.visiblePassword,
           validate: (value) {
             return _passwordTextFieldController.text.isEmpty
@@ -237,7 +238,7 @@ class _SignInPageState extends State<SignInPage> {
               // clear form inputs
               _formKey.currentState!.reset();
 
-              context.router.replace(const TabRoute());
+              context.router.replaceAll([const TabRoute()]);
             } else {
               showCustomAlertDialog(context, subtitle: state.data.message, title: 'Error',backgroundColor: true,buttonText: "Dismiss",onTap: (){context.router.maybePop();},alertType: AlertType.warning);
               // SnackBarUtil.snackbarError<String>(

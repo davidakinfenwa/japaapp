@@ -26,7 +26,6 @@ import 'package:japaapp/presentation/widget/form_field.dart';
 import 'package:japaapp/presentation/widget/input_field_with_label.dart';
 import 'package:japaapp/presentation/widget/item_with_dropdown.dart';
 
-
 @RoutePage()
 class AccountFamilyPage extends StatefulWidget implements AutoRouteWrapper {
   const AccountFamilyPage({super.key});
@@ -34,24 +33,22 @@ class AccountFamilyPage extends StatefulWidget implements AutoRouteWrapper {
   @override
   State<AccountFamilyPage> createState() => _AccountFamilyPageState();
 
-       @override
+  @override
   Widget wrappedRoute(BuildContext context) {
-     //final userInfo = context.read<AccountSnapshotCache>().userInfo;
-      // context.read<AccountSnapshotCache>().userInfo.data.education;
-      
 
     return MultiBlocProvider(
       providers: [
-         BlocProvider<CreateFamilyInformationCubit>(
+        BlocProvider<CreateFamilyInformationCubit>(
           create: (context) => getIt<CreateFamilyInformationCubit>(),
         ),
         BlocProvider<CreateEducationInformationCubit>(
           create: (context) => getIt<CreateEducationInformationCubit>(),
         ),
-         BlocProvider<GetUserDropdownFormCubit>(
-          create: (context) => getIt<GetUserDropdownFormCubit>()..userDropdownData(),
+        BlocProvider<GetUserDropdownFormCubit>(
+          create: (context) =>
+              getIt<GetUserDropdownFormCubit>()..userDropdownData(),
         ),
-         BlocProvider<CreateWorkInformationCubit>(
+        BlocProvider<CreateWorkInformationCubit>(
           create: (context) => getIt<CreateWorkInformationCubit>(),
         ),
         // BlocProvider<CreateBasicInformationCubit>(
@@ -64,30 +61,29 @@ class AccountFamilyPage extends StatefulWidget implements AutoRouteWrapper {
 }
 
 class _AccountFamilyPageState extends State<AccountFamilyPage> {
-
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  
-  TextEditingController _institutionTextFieldController =TextEditingController();
+
+  TextEditingController _institutionTextFieldController = TextEditingController();
   TextEditingController _maritalTextController = TextEditingController();
   TextEditingController _majorTextFieldController = TextEditingController();
   TextEditingController _gradeTextFieldController = TextEditingController();
   TextEditingController _scalePointTextController = TextEditingController();
-  TextEditingController _levelofEuducationSelTextController =TextEditingController();
-  TextEditingController _spouseFirstNameTextFieldController =TextEditingController();
-  TextEditingController _spouseLastNameTextFieldController =TextEditingController();
-  TextEditingController _spouseNumberOfChildrenTextFieldController =TextEditingController();
-  TextEditingController _spouseOtherNameTextFieldController =TextEditingController();
-  TextEditingController _companynameTextFieldController = TextEditingController();
+  TextEditingController _levelofEuducationSelTextController =  TextEditingController();
+  TextEditingController _spouseFirstNameTextFieldController = TextEditingController();
+  TextEditingController _spouseLastNameTextFieldController = TextEditingController();
+  TextEditingController _spouseNumberOfChildrenTextFieldController = TextEditingController();
+  TextEditingController _spouseOtherNameTextFieldController = TextEditingController();
+  TextEditingController _companynameTextFieldController =TextEditingController();
   TextEditingController _positionTextFieldController = TextEditingController();
   // TextEditingController _gradeTextFieldController = TextEditingController();
 
   DateTime userDOBEdu1 = DateTime.now();
   DateTime userDOBEdu2 = DateTime.now();
-   DateTime userDOBWork1 = DateTime.now();
+  DateTime userDOBWork1 = DateTime.now();
   DateTime userDOBWork2 = DateTime.now();
   String fromDateEdu = '';
   String toDateEdu = '';
-   String fromDateWork = '';
+  String fromDateWork = '';
   String toDateWork = '';
 
   @override
@@ -99,31 +95,60 @@ class _AccountFamilyPageState extends State<AccountFamilyPage> {
     _maritalTextController = TextEditingController();
     _scalePointTextController = TextEditingController();
     _levelofEuducationSelTextController = TextEditingController();
-    _spouseFirstNameTextFieldController=TextEditingController();
-    _spouseLastNameTextFieldController=TextEditingController();
-    _spouseNumberOfChildrenTextFieldController=TextEditingController();
-    _spouseOtherNameTextFieldController=TextEditingController();
-    _companynameTextFieldController=TextEditingController();
-    _positionTextFieldController=TextEditingController();
-
-    
-    
+    _spouseFirstNameTextFieldController = TextEditingController();
+    _spouseLastNameTextFieldController = TextEditingController();
+    _spouseNumberOfChildrenTextFieldController = TextEditingController();
+    _spouseOtherNameTextFieldController = TextEditingController();
+    _companynameTextFieldController = TextEditingController();
+    _positionTextFieldController = TextEditingController();
   }
 
+   
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    //  final userInfo = context.read<AccountSnapshotCache>().userInfo.data;
-    //  print(userInfo);
-    //   for (var i = 0; i < userInfo.work.length; i++) {
-    //   addNewWorkSection(i, userInfo.work[i]);
-    // }
-
+    final userData=context.read<AccountSnapshotCache>().userInfo.data.familyStructure.family;
+    if (userData.isNotEmpty) {
+    _maritalTextController = TextEditingController(text: userData[0].maritalStatus);
+    _spouseFirstNameTextFieldController = TextEditingController(text: userData[0].firstName);
+    _spouseLastNameTextFieldController = TextEditingController(text: userData[0].surname);
+    _spouseNumberOfChildrenTextFieldController = TextEditingController(text: userData[0].numberOfChildren);
+    _spouseOtherNameTextFieldController = TextEditingController(text: userData[0].otherName);
+    } else {
       
-    //  print(userInfo);
-    //   for (var i = 0; i < userInfo.education.length; i++) {
-    //   addNewEducationSection(i, userInfo.education[i]);
-    // }
+    }
+    final userInfo = context.read<AccountSnapshotCache>().userInfo.data.familyStructure.familyeducation;
+        print(userInfo);
+        
+        if (userInfo.isNotEmpty) {
+      for (var i = 1; i < userInfo.length; i++) {
+      addNewEducationSection(i+1, userInfo[i]);
+    }
+    _institutionTextFieldController = TextEditingController(text: userInfo[0].institution);
+    _majorTextFieldController = TextEditingController(text: userInfo[0].major);
+    _gradeTextFieldController = TextEditingController(text: userInfo[0].grade);
+    _levelofEuducationSelTextController = TextEditingController(text: userInfo[0].levelOfEducation);
+    _scalePointTextController = TextEditingController(text: userInfo[0].scale);
+
+   }
+        else{
+          print('userInfo is empty');
+        }
+
+      final userInfoWork = context.read<AccountSnapshotCache>().userInfo.data.familyStructure.familywork;
+        print(userInfo);
+     
+    if (userInfoWork.isNotEmpty) {
+    for (var i = 1; i < userInfoWork.length; i++) {
+      addNewWorkSection(i+1, userInfoWork[i]);
+    }
+      _companynameTextFieldController = TextEditingController(text: userInfoWork[0].companyName);
+    _positionTextFieldController = TextEditingController(text: userInfoWork[0].position);
+   
+  } else {
+    // Handle the case when userInfo is empty
+    print('userInfo is empty');
+  }
   }
 
   @override
@@ -138,31 +163,41 @@ class _AccountFamilyPageState extends State<AccountFamilyPage> {
     _spouseLastNameTextFieldController.dispose();
     _spouseNumberOfChildrenTextFieldController.dispose();
     _spouseOtherNameTextFieldController.dispose();
-    _companynameTextFieldController.dispose(); 
-    _positionTextFieldController.dispose(); 
+    _companynameTextFieldController.dispose();
+    _positionTextFieldController.dispose();
     super.dispose();
   }
 
   List<Widget> addEducationList = [];
   List<EducationFamily> educationDataList = [];
   void addFirstDefaultEducation() {
-    EducationFamily defaultMilestone = EducationFamily(levelEducation: _levelofEuducationSelTextController.text, institution: _institutionTextFieldController.text, fromDate:userDOBEdu1 , toDate: userDOBEdu2, major: _majorTextFieldController.text, scale: _scalePointTextController.text, grade: _gradeTextFieldController.text, isStillInschool: false);;
+    EducationFamily defaultMilestone = EducationFamily(
+        levelEducation: _levelofEuducationSelTextController.text,
+        institution: _institutionTextFieldController.text,
+        fromDate: userDOBEdu1,
+        toDate: userDOBEdu2,
+        major: _majorTextFieldController.text,
+        scale: _scalePointTextController.text,
+        grade: _gradeTextFieldController.text,
+        isStillInschool: false);
+    ;
     if (defaultMilestone.levelEducation.isNotEmpty) {
-      educationDataList.insert(0,defaultMilestone);
-    } else {
-      
-    }
+      educationDataList.insert(0, defaultMilestone);
+    } else {}
   }
 
   List<Widget> addNewWorkList = [];
   List<WorkFamily> workDataList = [];
   void addFirstDefaultWork() {
-    WorkFamily defaultMilestone = WorkFamily(companyName: _companynameTextFieldController.text, position: _positionTextFieldController.text, dateFrom: userDOBWork1, dateTo: userDOBWork2, isCurrentWork: false);
+    WorkFamily defaultMilestone = WorkFamily(
+        companyName: _companynameTextFieldController.text,
+        position: _positionTextFieldController.text,
+        dateFrom: userDOBWork1,
+        dateTo: userDOBWork2,
+        isCurrentWork: false);
     if (defaultMilestone.companyName.isNotEmpty) {
-      workDataList.insert(0,defaultMilestone);
-    } else {
-      
-    }
+      workDataList.insert(0, defaultMilestone);
+    } else {}
   }
 
   Future<void> _selectDate(BuildContext context, String nav) async {
@@ -181,7 +216,7 @@ class _AccountFamilyPageState extends State<AccountFamilyPage> {
           fromDateEdu = formattedDate;
         });
       }
-    } else if(nav=="toDEdu") {
+    } else if (nav == "toDEdu") {
       if (picked != null && picked != DateTime.now()) {
         String formattedDate = DateFormat('MMM yyyy').format(picked);
         setState(() {
@@ -189,8 +224,7 @@ class _AccountFamilyPageState extends State<AccountFamilyPage> {
           toDateEdu = formattedDate;
         });
       }
-    }
-    else if(nav=="fromDWork") {
+    } else if (nav == "fromDWork") {
       if (picked != null && picked != DateTime.now()) {
         String formattedDate = DateFormat('MMM yyyy').format(picked);
         setState(() {
@@ -198,8 +232,7 @@ class _AccountFamilyPageState extends State<AccountFamilyPage> {
           fromDateWork = formattedDate;
         });
       }
-    }
-    else if(nav=="toDWork") {
+    } else if (nav == "toDWork") {
       if (picked != null && picked != DateTime.now()) {
         String formattedDate = DateFormat('MMM yyyy').format(picked);
         setState(() {
@@ -210,56 +243,60 @@ class _AccountFamilyPageState extends State<AccountFamilyPage> {
     }
   }
 
- 
+  void addNewEducationSection(int index, FamilyEducation edu) {
+    TextEditingController gradeTextListFieldController = TextEditingController(text: edu.grade);
+    TextEditingController institutionListTextFieldController = TextEditingController(text: edu.institution);
+    TextEditingController levelofEuducationSelTextController = TextEditingController(text: edu.levelOfEducation);
+    TextEditingController scalePointListTextController =TextEditingController(text: edu.scale);
+    TextEditingController majorTextListFieldController = TextEditingController(text: edu.major);
+    TextEditingController fromDateFieldController =  TextEditingController(text: edu.fromDate.toString());
+    TextEditingController toDateFieldController = TextEditingController(text: edu.toDate.toString());
 
- void addNewEducationSection(int index, Education edu) {
-  TextEditingController gradeTextListFieldController = TextEditingController(text:edu.grade);
-  TextEditingController institutionListTextFieldController = TextEditingController(text:edu.institution);
-  TextEditingController levelofEuducationSelTextController = TextEditingController(text:edu.levelOfEducation);
-  TextEditingController scalePointListTextController = TextEditingController(text: edu.scale);
-  TextEditingController majorTextListFieldController = TextEditingController(text: edu.major);
-  TextEditingController fromDateFieldController = TextEditingController(text: edu.fromDate.toString());
-  TextEditingController toDateFieldController = TextEditingController(text: edu.toDate.toString());
-
- DateTime userDOB1 = DateTime.now();
- DateTime userDOB2 = DateTime.now();
-  String fromDateList = '';
-  String toDateList = '';
+    DateTime userDOB1 = DateTime.now();
+    DateTime userDOB2 = DateTime.now();
+    String fromDateList = '';
+    String toDateList = '';
     void _selectDateListe(String nav) async {
-    DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(1900),
-      lastDate: DateTime.now(),
-    );
+      DateTime? picked = await showDatePicker(
+        context: context,
+        initialDate: DateTime.now(),
+        firstDate: DateTime(1900),
+        lastDate: DateTime.now(),
+      );
 
-    if (nav == "fromD") {
-      if (picked != null && picked != DateTime.now()) {
-        String formattedDate = DateFormat('MMM yyyy').format(picked);
-        setState(() {
-          userDOB1 = picked;
-          fromDateList = formattedDate;
-          fromDateFieldController.text=formattedDate;
-          print(fromDateList);
-           educationDataList[index].fromDate = userDOB1;
-        });
-      }
-    } else {
-      if (picked != null && picked != DateTime.now()) {
-        String formattedDate = DateFormat('MMM yyyy').format(picked);
-        setState(() {
-          userDOB2 = picked;
-          toDateList = formattedDate;
-          toDateFieldController.text=formattedDate;
-          educationDataList[index].toDate = userDOB2;
-        });
+      if (nav == "fromD") {
+        if (picked != null && picked != DateTime.now()) {
+          String formattedDate = DateFormat('MMM yyyy').format(picked);
+          setState(() {
+            userDOB1 = picked;
+            fromDateList = formattedDate;
+            fromDateFieldController.text = formattedDate;
+            print(fromDateList);
+            educationDataList[index].fromDate = userDOB1;
+          });
+        }
+      } else {
+        if (picked != null && picked != DateTime.now()) {
+          String formattedDate = DateFormat('MMM yyyy').format(picked);
+          setState(() {
+            userDOB2 = picked;
+            toDateList = formattedDate;
+            toDateFieldController.text = formattedDate;
+            educationDataList[index].toDate = userDOB2;
+          });
+        }
       }
     }
-  }
-   
 
-  
- EducationFamily eduFormData =EducationFamily(levelEducation: levelofEuducationSelTextController.text, institution: institutionListTextFieldController.text, fromDate:userDOB1 , toDate: userDOB2, major: majorTextListFieldController.text, scale: scalePointListTextController.text, grade: gradeTextListFieldController.text, isStillInschool: false);
+    EducationFamily eduFormData = EducationFamily(
+        levelEducation: levelofEuducationSelTextController.text,
+        institution: institutionListTextFieldController.text,
+        fromDate: userDOB1,
+        toDate: userDOB2,
+        major: majorTextListFieldController.text,
+        scale: scalePointListTextController.text,
+        grade: gradeTextListFieldController.text,
+        isStillInschool: false);
     addEducationList.add(Column(
       children: [
         const SizedBox(height: 10),
@@ -270,7 +307,6 @@ class _AccountFamilyPageState extends State<AccountFamilyPage> {
               if (index >= 0 && index < educationDataList.length) {
                 educationDataList.removeAt(index);
               }
-
             });
           },
           child: Row(
@@ -290,71 +326,71 @@ class _AccountFamilyPageState extends State<AccountFamilyPage> {
           ),
         ),
         const SizedBox(height: 10),
-       BlocConsumer<GetUserDropdownFormCubit,
-        BlocState<Failure<ExceptionMessage>, ProfileDropDownModel>>(
-      listener: (context, state) {
-        state.maybeMap(
-          orElse: () => null,
-          success: (state) {
-            context.read<AccountSnapshotCache>().notifyAllListeners();
+        BlocConsumer<GetUserDropdownFormCubit,
+            BlocState<Failure<ExceptionMessage>, ProfileDropDownModel>>(
+          listener: (context, state) {
+            state.maybeMap(
+              orElse: () => null,
+              success: (state) {
+                context.read<AccountSnapshotCache>().notifyAllListeners();
+              },
+            );
           },
-        );
-      },
-      builder: (context, state) {
-        return   ItemWithDropDown(
-        title: "Level of education",
-        suffixIcon: 'assets/images/dropdown.png',
-        hintText: "Select Educational Level",
-        
-        bottomSheet: MyBottomSheet(
-         
-            onItemSelected: (String value) {
-          // Assign the value to the desired controller
-          levelofEuducationSelTextController.text = value;
-          setState(() {
-              if (index >= 0 && index < educationDataList.length) {
-                educationDataList[index].levelEducation = value.toString();
-              }
-            });
-        },state: state),
-        controller: levelofEuducationSelTextController);
-  
-      },
-    ),
+          builder: (context, state) {
+            return ItemWithDropDown(
+                title: "Level of education",
+                suffixIcon: 'assets/images/dropdown.png',
+                hintText: "Select Educational Level",
+                bottomSheet: MyBottomSheet(
+                    onItemSelected: (String value) {
+                      // Assign the value to the desired controller
+                      levelofEuducationSelTextController.text = value;
+                      setState(() {
+                        if (index >= 0 && index < educationDataList.length) {
+                          educationDataList[index].levelEducation =
+                              value.toString();
+                        }
+                      });
+                    },
+                    state: state),
+                controller: levelofEuducationSelTextController);
+          },
+        ),
         SizedBox(height: (Sizing.kSizingMultiple * 1.5).h),
-          
-     InputFieldWithLabel(
-        hintText: "Name of institution",
-        title: "Institution",
-        validateText: "institution is required",
-        controller: institutionListTextFieldController,
-        textType: TextInputType.text,
-        onChanged: (value){
-          setState(() {
+
+        InputFieldWithLabel(
+          hintText: "Name of institution",
+          title: "Institution",
+          validateText: "institution is required",
+          controller: institutionListTextFieldController,
+          textType: TextInputType.text,
+          onChanged: (value) {
+            setState(() {
               if (index >= 0 && index < educationDataList.length) {
                 educationDataList[index].institution = value.toString();
               }
             });
-        },
+          },
         ),
-  
+
         SizedBox(height: (Sizing.kSizingMultiple * 1.5).h),
 
-  InputFieldWithLabel(
-        hintText: "Whats your major",
-        title: "Major",
-        validateText: "Major is required",
-        controller: majorTextListFieldController,
-        textType: TextInputType.text,
-          onChanged: (value){
-          setState(() {
+        InputFieldWithLabel(
+          hintText: "Whats your major",
+          title: "Major",
+          validateText: "Major is required",
+          controller: majorTextListFieldController,
+          textType: TextInputType.text,
+          onChanged: (value) {
+            setState(() {
               if (index >= 0 && index < educationDataList.length) {
                 educationDataList[index].major = value.toString();
               }
             });
-        },),
-  
-      //  _buildMajorTextField(),
+          },
+        ),
+
+        //  _buildMajorTextField(),
         SizedBox(height: (Sizing.kSizingMultiple * 1.5).h),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -368,11 +404,11 @@ class _AccountFamilyPageState extends State<AccountFamilyPage> {
                       MyBottomSheetScalePoint(onItemSelected: (String value) {
                     // Assign the value to the desired controller
                     scalePointListTextController.text = value;
-                     setState(() {
-              if (index >= 0 && index < educationDataList.length) {
-                educationDataList[index].scale = value.toString();
-              }
-            });
+                    setState(() {
+                      if (index >= 0 && index < educationDataList.length) {
+                        educationDataList[index].scale = value.toString();
+                      }
+                    });
                   }),
                   controller: scalePointListTextController),
             ),
@@ -396,10 +432,10 @@ class _AccountFamilyPageState extends State<AccountFamilyPage> {
                   controller: gradeTextListFieldController,
                   textInputType: TextInputType.number,
                   hint: 'Grade point',
-                  onChanged: (value){
-                       if (index >= 0 && index < educationDataList.length) {
-                        educationDataList[index].grade = value.toString();
-              }
+                  onChanged: (value) {
+                    if (index >= 0 && index < educationDataList.length) {
+                      educationDataList[index].grade = value.toString();
+                    }
                   },
                   validate: (value) {
                     return _gradeTextFieldController.text.isEmpty
@@ -413,158 +449,156 @@ class _AccountFamilyPageState extends State<AccountFamilyPage> {
         ),
         SizedBox(height: (Sizing.kSizingMultiple * 1.5).h),
         Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              "From",
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w500,
-                    color: CustomTypography.kGreyColorlabel,
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "From",
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w500,
+                        color: CustomTypography.kGreyColorlabel,
+                      ),
+                ),
+                SizedBox(
+                  height: Sizing.kHSpacing8 / 2,
+                ),
+                InkWell(
+                  onTap: () {
+                    setState(() {});
+                  },
+                  child: SizedBox(
+                    width: MediaQuery.sizeOf(context).width * 0.40.w,
+                    child: FormFieldInput(
+                      suffixIcon: Image.asset(
+                        'assets/images/datee.png',
+                        width: 24,
+                        height: 24,
+                      ),
+                      readOnly: true,
+                      hint: "MM/YYYY",
+                      controller: fromDateFieldController,
+                      onChanged: (value) {
+                        print(DateTime.parse(value.toString()));
+                        if (index >= 0 && index < educationDataList.length) {
+                          educationDataList[index].fromDate =
+                              DateTime.parse(value.toString());
+                        }
+                      },
+                      onTap: () {
+                        _selectDateListe("fromD");
+                      },
+                      // onTapData: ,
+                    ),
                   ),
+                ),
+              ],
             ),
-            SizedBox(
-              height: Sizing.kHSpacing8 / 2,
-            ),
-            InkWell(
-              onTap: () {
-                setState(() {});
-                
-              },
-              child:   SizedBox(
-                width: MediaQuery.sizeOf(context).width * 0.40.w,
-                child: 
-                FormFieldInput(
-                          suffixIcon:  Image.asset(
-                          'assets/images/datee.png',
-                          width: 24,
-                          height: 24,
-                        ),
-                          readOnly: true,
-                          hint: "MM/YYYY",
-                          controller:fromDateFieldController,
-                          onChanged: (value){
-                            print(DateTime.parse(value.toString()));
-                if (index >= 0 && index < educationDataList.length) {
-                  educationDataList[index].fromDate = DateTime.parse(value.toString());
-                }
-                          },
-                          onTap: () {
-                            _selectDateListe( "fromD");
-                          },
-                          // onTapData: ,
-                        ),
-              ),
-            ),
-            
-          ],
-        ),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              "To",
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w500,
-                    color: CustomTypography.kGreyColorlabel,
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "To",
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w500,
+                        color: CustomTypography.kGreyColorlabel,
+                      ),
+                ),
+                SizedBox(
+                  height: Sizing.kHSpacing8 / 2,
+                ),
+                InkWell(
+                  onTap: () {
+                    setState(() {});
+                  },
+                  child: SizedBox(
+                    width: MediaQuery.sizeOf(context).width * 0.40.w,
+                    child: FormFieldInput(
+                      suffixIcon: Image.asset(
+                        'assets/images/datee.png',
+                        width: 24,
+                        height: 24,
+                      ),
+                      readOnly: true,
+                      hint: "MM/YYYY",
+                      controller: toDateFieldController,
+                      onChanged: (value) {
+                        print(DateTime.parse(value.toString()));
+                        if (index >= 0 && index < educationDataList.length) {
+                          educationDataList[index].toDate =
+                              DateTime.parse(value.toString());
+                        }
+                      },
+                      onTap: () {
+                        _selectDateListe("toD");
+                      },
+                      // onTapData: ,
+                    ),
                   ),
-            ),
-            SizedBox(
-              height: Sizing.kHSpacing8 / 2,
-            ),
-            InkWell(
-              onTap: () {
-                setState(() {});
-                
-              },
-              child:  SizedBox(
-                width: MediaQuery.sizeOf(context).width * 0.40.w,
-                child: 
-                FormFieldInput(
-                          suffixIcon:  Image.asset(
-                          'assets/images/datee.png',
-                          width: 24,
-                          height: 24,
-                        ),
-                          readOnly: true,
-                          hint: "MM/YYYY",
-                          controller:toDateFieldController,
-                          onChanged: (value){
-                            print(DateTime.parse(value.toString()));
-                if (index >= 0 && index < educationDataList.length) {
-                  educationDataList[index].toDate = DateTime.parse(value.toString());
-                }
-                          },
-                          onTap: () {
-                            _selectDateListe( "toD");
-                          },
-                          // onTapData: ,
-                        ),
-              ),
-              
-           
+                ),
+              ],
             ),
           ],
         ),
-      ],
-    ),
         SizedBox(height: (Sizing.kSizingMultiple * 1.5).h),
       ],
     ));
     educationDataList.add(eduFormData);
   }
 
-
-
 //-------------THIS IS TO ADD NEW WORK LIST -------------------------//
 
-void addNewWorkSection(int index, WorkUser workUser) {
+  void addNewWorkSection(int index, FamilyWork workUser) {
     //  WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
     //   setState(() {});
     // });
-  TextEditingController _companynameListTextFieldController =  TextEditingController(text: workUser.companyName);
-  TextEditingController _positionListTextFieldController = TextEditingController(text:  workUser.position);
-   TextEditingController fromDateFieldController = TextEditingController(text: workUser.dateFrom.toString());
+    TextEditingController _companynameListTextFieldController = TextEditingController(text: workUser.companyName);
+    TextEditingController _positionListTextFieldController =TextEditingController(text: workUser.position);
+    TextEditingController fromDateFieldController = TextEditingController(text: workUser.dateFrom.toString());
     TextEditingController toDateFieldController = TextEditingController(text: workUser.dateTo.toString());
- DateTime userDOB1 = DateTime.now();
- DateTime userDOB2 = DateTime.now();
-  String fromDateList = '';
-  String toDateList = '';
+    DateTime userDOB1 = DateTime.now();
+    DateTime userDOB2 = DateTime.now();
+    String fromDateList = '';
+    String toDateList = '';
     void _selectDateListe(String nav) async {
-    DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(1900),
-      lastDate: DateTime.now(),
-    );
+      DateTime? picked = await showDatePicker(
+        context: context,
+        initialDate: DateTime.now(),
+        firstDate: DateTime(1900),
+        lastDate: DateTime.now(),
+      );
 
-    if (nav == "fromD") {
-      if (picked != null && picked != DateTime.now()) {
-        String formattedDate = DateFormat('MMM yyyy').format(picked);
-        setState(() {
-          userDOB1 = picked;
-          fromDateList = formattedDate;
-          fromDateFieldController.text=formattedDate;
-          print(fromDateList);
-           workDataList[index].dateFrom = userDOB1;
-        });
-      }
-    } else {
-      if (picked != null && picked != DateTime.now()) {
-        String formattedDate = DateFormat('MMM yyyy').format(picked);
-        setState(() {
-          userDOB2 = picked;
-          toDateList = formattedDate;
-          toDateFieldController.text=formattedDate;
-          workDataList[index].dateTo = userDOB2;
-        });
+      if (nav == "fromD") {
+        if (picked != null && picked != DateTime.now()) {
+          String formattedDate = DateFormat('MMM yyyy').format(picked);
+          setState(() {
+            userDOB1 = picked;
+            fromDateList = formattedDate;
+            fromDateFieldController.text = formattedDate;
+            print(fromDateList);
+            workDataList[index].dateFrom = userDOB1;
+          });
+        }
+      } else {
+        if (picked != null && picked != DateTime.now()) {
+          String formattedDate = DateFormat('MMM yyyy').format(picked);
+          setState(() {
+            userDOB2 = picked;
+            toDateList = formattedDate;
+            toDateFieldController.text = formattedDate;
+            workDataList[index].dateTo = userDOB2;
+          });
+        }
       }
     }
-  }
-   WorkFamily workData = WorkFamily(companyName: _companynameListTextFieldController.text, position: _positionListTextFieldController.text, dateFrom: userDOB1, dateTo: userDOB2, isCurrentWork: false);
-  
+
+    WorkFamily workData = WorkFamily(
+        companyName: _companynameListTextFieldController.text,
+        position: _positionListTextFieldController.text,
+        dateFrom: userDOB1,
+        dateTo: userDOB2,
+        isCurrentWork: false);
 
     addNewWorkList.add(Column(
       children: [
@@ -600,139 +634,132 @@ void addNewWorkSection(int index, WorkUser workUser) {
         ),
         const SizedBox(height: 10),
         InputFieldWithLabel(
-        hintText: "Name of Company",
-        title: "Company",
-        validateText: "company name is required",
-        controller: _companynameListTextFieldController,
-        textType: TextInputType.text,
-        onChanged: (value){
-           setState(() {
-              if (index >= 0 && index < workDataList.length) {
-                workDataList[index].companyName = value.toString();
-              }
-            });
-        }),
+            hintText: "Name of Company",
+            title: "Company",
+            validateText: "company name is required",
+            controller: _companynameListTextFieldController,
+            textType: TextInputType.text,
+            onChanged: (value) {
+              setState(() {
+                if (index >= 0 && index < workDataList.length) {
+                  workDataList[index].companyName = value.toString();
+                }
+              });
+            }),
         SizedBox(height: (Sizing.kSizingMultiple * 1.5).h),
-       InputFieldWithLabel(
-        hintText: "what is your position in the Company",
-        title: "Position",
-        validateText: "position is required",
-        controller: _positionListTextFieldController,
-        textType: TextInputType.text,
-        onChanged: (value){
-           setState(() {
+        InputFieldWithLabel(
+          hintText: "what is your position in the Company",
+          title: "Position",
+          validateText: "position is required",
+          controller: _positionListTextFieldController,
+          textType: TextInputType.text,
+          onChanged: (value) {
+            setState(() {
               if (index >= 0 && index < workDataList.length) {
                 workDataList[index].position = value.toString();
               }
             });
-        },),
+          },
+        ),
         SizedBox(height: (Sizing.kSizingMultiple * 1.5).h),
-                Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              "From",
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w500,
-                    color: CustomTypography.kGreyColorlabel,
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "From",
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w500,
+                        color: CustomTypography.kGreyColorlabel,
+                      ),
+                ),
+                SizedBox(
+                  height: Sizing.kHSpacing8 / 2,
+                ),
+                InkWell(
+                  onTap: () {
+                    setState(() {});
+                  },
+                  child: SizedBox(
+                    width: MediaQuery.sizeOf(context).width * 0.40.w,
+                    child: FormFieldInput(
+                      suffixIcon: Image.asset(
+                        'assets/images/datee.png',
+                        width: 24,
+                        height: 24,
+                      ),
+                      readOnly: true,
+                      hint: "MM/YYYY",
+                      controller: fromDateFieldController,
+                      onChanged: (value) {
+                        print(DateTime.parse(value.toString()));
+                        if (index >= 0 && index < workDataList.length) {
+                          workDataList[index].dateFrom =
+                              DateTime.parse(value.toString());
+                        }
+                      },
+                      onTap: () {
+                        _selectDateListe("fromD");
+                      },
+                      // onTapData: ,
+                    ),
                   ),
+                ),
+              ],
             ),
-            SizedBox(
-              height: Sizing.kHSpacing8 / 2,
-            ),
-            InkWell(
-              onTap: () {
-                setState(() {});
-                
-              },
-              child:   SizedBox(
-                width: MediaQuery.sizeOf(context).width * 0.40.w,
-                child: 
-                FormFieldInput(
-                          suffixIcon:  Image.asset(
-                          'assets/images/datee.png',
-                          width: 24,
-                          height: 24,
-                        ),
-                          readOnly: true,
-                          hint: "MM/YYYY",
-                          controller:fromDateFieldController,
-                          onChanged: (value){
-                            print(DateTime.parse(value.toString()));
-                          if (index >= 0 && index < workDataList.length) {
-                            workDataList[index].dateFrom = DateTime.parse(value.toString());
-                          }
-                          },
-                          onTap: () {
-                            _selectDateListe( "fromD");
-                          },
-                          // onTapData: ,
-                        ),
-              ),
-          
-      
-              ),
-            
-          ],
-        ),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              "To",
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w500,
-                    color: CustomTypography.kGreyColorlabel,
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "To",
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w500,
+                        color: CustomTypography.kGreyColorlabel,
+                      ),
+                ),
+                SizedBox(
+                  height: Sizing.kHSpacing8 / 2,
+                ),
+                InkWell(
+                  onTap: () {
+                    setState(() {});
+                  },
+                  child: SizedBox(
+                    width: MediaQuery.sizeOf(context).width * 0.40.w,
+                    child: FormFieldInput(
+                      suffixIcon: Image.asset(
+                        'assets/images/datee.png',
+                        width: 24,
+                        height: 24,
+                      ),
+                      readOnly: true,
+                      hint: "MM/YYYY",
+                      controller: toDateFieldController,
+                      onChanged: (value) {
+                        print(DateTime.parse(value.toString()));
+                        if (index >= 0 && index < workDataList.length) {
+                          workDataList[index].dateTo =
+                              DateTime.parse(value.toString());
+                        }
+                      },
+                      onTap: () {
+                        _selectDateListe("toD");
+                      },
+                      // onTapData: ,
+                    ),
                   ),
-            ),
-            SizedBox(
-              height: Sizing.kHSpacing8 / 2,
-            ),
-            InkWell(
-              onTap: () {
-                setState(() {});
-                
-              },
-              child:  SizedBox(
-                width: MediaQuery.sizeOf(context).width * 0.40.w,
-                child: 
-                FormFieldInput(
-                          suffixIcon:  Image.asset(
-                          'assets/images/datee.png',
-                          width: 24,
-                          height: 24,
-                        ),
-                          readOnly: true,
-                          hint: "MM/YYYY",
-                          controller:toDateFieldController,
-                          onChanged: (value){
-                            print(DateTime.parse(value.toString()));
-                if (index >= 0 && index < workDataList.length) {
-                  workDataList[index].dateTo = DateTime.parse(value.toString());
-                }
-                          },
-                          onTap: () {
-                            _selectDateListe( "toD");
-                          },
-                          // onTapData: ,
-                        ),
-              ),
-              
-           
+                ),
+              ],
             ),
           ],
         ),
-      ],
-    ),
         SizedBox(height: (Sizing.kSizingMultiple * 1.5).h),
       ],
     ));
-   workDataList.add(workData);
+    workDataList.add(workData);
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -755,14 +782,15 @@ void addNewWorkSection(int index, WorkUser workUser) {
                     children: [
                       SingleChildScrollView(
                         physics: const BouncingScrollPhysics(),
-
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             SizedBox(height: (Sizing.kSizingMultiple).h),
                             _buildMarriedStatusTextField(),
                             SizedBox(height: (Sizing.kSizingMultiple).h),
-                           _maritalTextController.text!="Single"? _buildFormSection():SizedBox(),
+                            _maritalTextController.text != "Single"
+                                ? _buildFormSection()
+                                : SizedBox(),
                             SizedBox(height: (Sizing.kSizingMultiple * 4).h),
                             _buildActionButton(),
                           ],
@@ -803,21 +831,19 @@ void addNewWorkSection(int index, WorkUser workUser) {
       child: SingleChildScrollView(
         child: Column(
           children: [
-             //SizedBox(height: (Sizing.kSizingMultiple).h),
+            //SizedBox(height: (Sizing.kSizingMultiple).h),
             _buildSpouseBasicInfoSection(),
             SizedBox(height: (Sizing.kSizingMultiple * 1.5).h),
             _buildSpouseEducationSection(),
             SizedBox(height: (Sizing.kSizingMultiple * 1.5).h),
             _buildWorkFormSection()
-
           ],
         ),
       ),
     );
   }
 
-
-    Widget _buildSpouseBasicInfoSection() {
+  Widget _buildSpouseBasicInfoSection() {
     return Column(
       children: [
         _buildSpouseFirstNameTextField(),
@@ -827,36 +853,37 @@ void addNewWorkSection(int index, WorkUser workUser) {
         _buildSpouseOtherNameTextField(),
         SizedBox(height: (Sizing.kSizingMultiple * 1.5).h),
         _buildNoOfChildrenTextField(),
-       
       ],
     );
   }
 
-  Widget _buildSpouseEducationSection(){
-     return Column(
+  Widget _buildSpouseEducationSection() {
+    return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-       children: [
-            Text(
-         "Spouse: Educational History ",
+      children: [
+        Text(
+          "Spouse: Educational History ",
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
                 fontWeight: FontWeight.w700,
                 color: Color(0xFF191D23),
               ),
         ),
-         SizedBox(height: (Sizing.kSizingMultiple * 1.5).h),
+        SizedBox(height: (Sizing.kSizingMultiple * 1.5).h),
         _buildLevelofEducationTextField(),
-         SizedBox(height: (Sizing.kSizingMultiple * 1.5).h),
-         _buildInstitutionTextField(),
-         SizedBox(height: (Sizing.kSizingMultiple * 1.5).h),
-         _buildMajorTextField(),
-         SizedBox(height: (Sizing.kSizingMultiple * 1.5).h),
-         _buildEducationGradeTextField(),
-         SizedBox(height: (Sizing.kSizingMultiple * 1.5).h),
-         _buildEducationDurationTextField(),
-         SizedBox(height: (Sizing.kSizingMultiple * 1.5).h),
-        _levelofEuducationSelTextController.text.isNotEmpty?  _buildMoreEduDetails():SizedBox()
-       ],
-     );
+        SizedBox(height: (Sizing.kSizingMultiple * 1.5).h),
+        _buildInstitutionTextField(),
+        SizedBox(height: (Sizing.kSizingMultiple * 1.5).h),
+        _buildMajorTextField(),
+        SizedBox(height: (Sizing.kSizingMultiple * 1.5).h),
+        _buildEducationGradeTextField(),
+        SizedBox(height: (Sizing.kSizingMultiple * 1.5).h),
+        _buildEducationDurationTextField(),
+        SizedBox(height: (Sizing.kSizingMultiple * 1.5).h),
+        _levelofEuducationSelTextController.text.isNotEmpty
+            ? _buildMoreEduDetails()
+            : SizedBox()
+      ],
+    );
   }
 
   Widget _buildMarriedStatusTextField() {
@@ -864,58 +891,51 @@ void addNewWorkSection(int index, WorkUser workUser) {
         title: "Relationship Type",
         suffixIcon: 'assets/images/dropdown.png',
         hintText: "Select family",
-       
-        bottomSheet: MyBottomMaritalSheet( 
-                onItemSelected: (String value) {
-                  // Assign the value to the desired controller
-                  setState(() {
-                    
-                  _maritalTextController.text = value;
-                  });
-                }),
+        bottomSheet: MyBottomMaritalSheet(onItemSelected: (String value) {
+          // Assign the value to the desired controller
+          setState(() {
+            _maritalTextController.text = value;
+          });
+        }),
         controller: _maritalTextController);
   }
 
- Widget _buildSpouseFirstNameTextField() {
+  Widget _buildSpouseFirstNameTextField() {
     return InputFieldWithLabel(
         hintText: "Enter spouse first name",
         title: "Spouse first name",
         validateText: "first name is required",
         controller: _spouseFirstNameTextFieldController,
         textType: TextInputType.text);
-
   }
-  
-   Widget _buildSpouseLastNameTextField() {
+
+  Widget _buildSpouseLastNameTextField() {
     return InputFieldWithLabel(
         hintText: "Enter last name",
         title: "Spouse last name",
         validateText: "last name is required",
         controller: _spouseLastNameTextFieldController,
         textType: TextInputType.text);
-
   }
 
-   Widget _buildSpouseOtherNameTextField() {
+  Widget _buildSpouseOtherNameTextField() {
     return InputFieldWithLabel(
         hintText: "Enter other names",
         title: "Spouse other names",
         validateText: "other is required",
         controller: _spouseOtherNameTextFieldController,
         textType: TextInputType.text);
-
   }
 
-   Widget _buildNoOfChildrenTextField() {
+  Widget _buildNoOfChildrenTextField() {
     return InputFieldWithLabel(
         hintText: "Enter no of children",
         title: "Number of children",
         validateText: "children is required",
         controller: _spouseNumberOfChildrenTextFieldController,
         textType: TextInputType.number);
-
   }
-  
+
   Widget _buildLevelofEducationTextField() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {});
     return BlocConsumer<GetUserDropdownFormCubit,
@@ -925,39 +945,32 @@ void addNewWorkSection(int index, WorkUser workUser) {
           orElse: () => null,
           success: (state) {
             setState(() {
-              
-            context.read<AccountSnapshotCache>().notifyAllListeners();
+              context.read<AccountSnapshotCache>().notifyAllListeners();
             });
           },
         );
       },
       builder: (context, state) {
-        return   ItemWithDropDown(
-        title: "Level of education",
-        suffixIcon: 'assets/images/dropdown.png',
-        hintText: "Select Educational Level",
-        
-        bottomSheet: MyBottomSheet(
-            // providerData:
-            //     Provider.of<AccountPageProvider>(context, listen: false)
-            //         .educationType,
-            onItemSelected: (String value) {
-          // Assign the value to the desired controller
-          setState(() {
-            
-          _levelofEuducationSelTextController.text = value;
-          });
-        },state: state),
-        controller: _levelofEuducationSelTextController);
-        
-        
-       // _buildAccountOverviewSection(state: state);
+        return ItemWithDropDown(
+            title: "Level of education",
+            suffixIcon: 'assets/images/dropdown.png',
+            hintText: "Select Educational Level",
+            bottomSheet: MyBottomSheet(
+                // providerData:
+                //     Provider.of<AccountPageProvider>(context, listen: false)
+                //         .educationType,
+                onItemSelected: (String value) {
+                  // Assign the value to the desired controller
+                  setState(() {
+                    _levelofEuducationSelTextController.text = value;
+                  });
+                },
+                state: state),
+            controller: _levelofEuducationSelTextController);
+
+        // _buildAccountOverviewSection(state: state);
       },
     );
-
-    
-    
-  
   }
 
   Widget _buildInstitutionTextField() {
@@ -967,17 +980,15 @@ void addNewWorkSection(int index, WorkUser workUser) {
         validateText: "institution is required",
         controller: _institutionTextFieldController,
         textType: TextInputType.text);
-
   }
 
   Widget _buildMajorTextField() {
-    return   InputFieldWithLabel(
+    return InputFieldWithLabel(
         hintText: "Whats your major",
         title: "Major",
         validateText: "Major is required",
         controller: _majorTextFieldController,
         textType: TextInputType.text);
-
   }
 
   Widget _buildEducationGradeTextField() {
@@ -1055,7 +1066,7 @@ void addNewWorkSection(int index, WorkUser workUser) {
                 padding: EdgeInsets.all(10.dm),
                 decoration: BoxDecoration(
                   //color: Colors.red,
-                   color: CustomTypography.kBottomNavColor,
+                  color: CustomTypography.kBottomNavColor,
                   //color: const Color(0xFFF4F4F4),
                   borderRadius: BorderRadius.circular(4.r),
                   border: Border.all(
@@ -1122,7 +1133,7 @@ void addNewWorkSection(int index, WorkUser workUser) {
                 width: MediaQuery.sizeOf(context).width * 0.45.w,
                 padding: EdgeInsets.all(10.dm),
                 decoration: BoxDecoration(
-                   color: CustomTypography.kBottomNavColor,
+                  color: CustomTypography.kBottomNavColor,
                   //color: const Color(0xFFF4F4F4),
                   borderRadius: BorderRadius.circular(4.r),
                   border: Border.all(
@@ -1174,7 +1185,8 @@ void addNewWorkSection(int index, WorkUser workUser) {
         InkWell(
           onTap: () {
             setState(() {
-              addNewEducationSection(addEducationList.length,Education.empty());
+              addNewEducationSection(
+                  addEducationList.length, FamilyEducation.empty());
             });
           },
           child: Row(
@@ -1207,14 +1219,12 @@ void addNewWorkSection(int index, WorkUser workUser) {
     );
   }
 
-
-
   Widget _buildWorkFormSection() {
     return Column(
-      crossAxisAlignment:CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-          Text(
-         "Spouse: Work History ",
+        Text(
+          "Spouse: Work History ",
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
                 fontWeight: FontWeight.w700,
                 color: Color(0xFF191D23),
@@ -1251,7 +1261,7 @@ void addNewWorkSection(int index, WorkUser workUser) {
   }
 
   Widget _buildWorkDurationTextField() {
-     return Row(
+    return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Column(
@@ -1276,7 +1286,7 @@ void addNewWorkSection(int index, WorkUser workUser) {
                 width: MediaQuery.sizeOf(context).width * 0.40.w,
                 padding: EdgeInsets.all(10.dm),
                 decoration: BoxDecoration(
-                   color: CustomTypography.kBottomNavColor,
+                  color: CustomTypography.kBottomNavColor,
                   //color: Colors.red,
                   //color: const Color(0xFFF4F4F4),
                   borderRadius: BorderRadius.circular(4.r),
@@ -1344,7 +1354,7 @@ void addNewWorkSection(int index, WorkUser workUser) {
                 width: MediaQuery.sizeOf(context).width * 0.45.w,
                 padding: EdgeInsets.all(10.dm),
                 decoration: BoxDecoration(
-                   color: CustomTypography.kBottomNavColor,
+                  color: CustomTypography.kBottomNavColor,
                   //color: const Color(0xFFF4F4F4),
                   borderRadius: BorderRadius.circular(4.r),
                   border: Border.all(
@@ -1396,7 +1406,7 @@ void addNewWorkSection(int index, WorkUser workUser) {
         InkWell(
           onTap: () {
             setState(() {
-              addNewWorkSection(addNewWorkList.length,WorkUser.empty());
+              addNewWorkSection(addNewWorkList.length, FamilyWork.empty());
             });
           },
           child: Row(
@@ -1435,14 +1445,21 @@ void addNewWorkSection(int index, WorkUser workUser) {
         CustomButton(
           type: ButtonType.regularButton(
               onTap: () {
-                 addFirstDefaultEducation();
-                 addFirstDefaultWork();
-                 List<WorkFamily> milestoneWork = workDataList;
-                 List<EducationFamily> milestoneEducation = educationDataList;
+                addFirstDefaultEducation();
+                addFirstDefaultWork();
+                List<WorkFamily> milestoneWork = workDataList;
+                List<EducationFamily> milestoneEducation = educationDataList;
 
-                 FamilyProfileFormModel modleData= FamilyProfileFormModel( maritalStatus: _maritalTextController.text, firstName: _spouseFirstNameTextFieldController.text, surname: _spouseLastNameTextFieldController.text, otherName: _spouseOtherNameTextFieldController.text, numberOfChildren: _spouseOtherNameTextFieldController.text,  work: milestoneWork, education: milestoneEducation);
-                          print(modleData);
-                          //print(milestoneWork);
+                FamilyProfileFormModel modleData = FamilyProfileFormModel(
+                    maritalStatus: _maritalTextController.text,
+                    firstName: _spouseFirstNameTextFieldController.text,
+                    surname: _spouseLastNameTextFieldController.text,
+                    otherName: _spouseOtherNameTextFieldController.text,
+                    numberOfChildren: _spouseOtherNameTextFieldController.text,
+                    work: milestoneWork,
+                    education: milestoneEducation);
+                print(modleData);
+                //print(milestoneWork);
                 // context.router.push(const AccountAwardRoutes());
               },
               label: 'Next',
@@ -1456,32 +1473,38 @@ void addNewWorkSection(int index, WorkUser workUser) {
     );
   }
 
+  void _onUserSignUpCallback() async {
+    addFirstDefaultEducation();
+    addFirstDefaultWork();
+    List<WorkFamily> milestoneWork = workDataList;
+    List<EducationFamily> milestoneEducation = educationDataList;
 
-
-   void _onUserSignUpCallback() async{
+    FamilyProfileFormModel modleData = FamilyProfileFormModel(
+        maritalStatus: _maritalTextController.text,
+        firstName: _spouseFirstNameTextFieldController.text,
+        surname: _spouseLastNameTextFieldController.text,
+        otherName: _spouseOtherNameTextFieldController.text,
+        numberOfChildren: _spouseNumberOfChildrenTextFieldController.text,
+        work: milestoneWork,
+        education: milestoneEducation);
     
-     addFirstDefaultEducation();
-                 addFirstDefaultWork();
-                 List<WorkFamily> milestoneWork = workDataList;
-                 List<EducationFamily> milestoneEducation = educationDataList;
-
-                 FamilyProfileFormModel modleData= FamilyProfileFormModel( maritalStatus: _maritalTextController.text, firstName: _spouseFirstNameTextFieldController.text, surname: _spouseLastNameTextFieldController.text, otherName: _spouseOtherNameTextFieldController.text, numberOfChildren: _spouseNumberOfChildrenTextFieldController.text,  work: milestoneWork, education: milestoneEducation);
-                          print(modleData);
-    context.read<CreateFamilyInformationCubit>().createFamilyInfo(familyProfileFormModel: modleData);
+    context
+        .read<CreateFamilyInformationCubit>()
+        .createFamilyInfo(familyProfileFormModel: modleData);
   }
 
-      Widget _buildActionButton() {
+  Widget _buildActionButton() {
     return BlocConsumer<CreateFamilyInformationCubit,
         BlocState<Failure<ExceptionMessage>, CompoundUserInfoModel>>(
       listener: (context, state) {
         state.maybeMap(
           orElse: () => null,
           success: (state) {
-            if (state.data.status=="success") {
+            if (state.data.status == "success") {
               // clear form inputs
               _formKey.currentState!.reset();
 
-             context.router.push(const AccountAwardRoutes());
+              context.router.push(const AccountAwardRoutes());
             } else {
               SnackBarUtil.snackbarError<String>(
                 context,
@@ -1509,17 +1532,17 @@ void addNewWorkSection(int index, WorkUser workUser) {
             CustomButton(
               type: ButtonType.regularButton(
                   onTap: () => _onUserSignUpCallback(),
-                   label: 'Next',
+                  label: 'Next',
                   isLoadingMode: isLoading,
                   backgroundColor: CustomTypography.kPrimaryColor300,
                   textColor: CustomTypography.kWhiteColor,
                   borderRadius: BorderRadius.all(
                       Radius.circular(Sizing.kBorderRadius * 7.r))),
             ),
-             SizedBox(
-          height: Sizing.kHSpacing10,
-        ),
-       // _buildAuthModeSwitcherSection()
+            SizedBox(
+              height: Sizing.kHSpacing10,
+            ),
+            // _buildAuthModeSwitcherSection()
           ],
         );
       },

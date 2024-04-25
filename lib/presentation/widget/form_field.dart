@@ -1085,91 +1085,87 @@ class _FormFieldInputWithLabelState extends State<FormFieldInputWithLabel> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 44.h,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(Sizing.kBorderRadius),
-        color: CustomTypography.kBottomNavColor,
-      ),
-      child: TextFormField(
-        readOnly: widget.readOnly,
-        cursorColor: CustomTypography.kPrimaryColor500,
-        style: Theme.of(context)
-            .textTheme
-            .titleSmall!
-            .copyWith(color: const Color(0xff344054)),
-        controller: widget.controller,
-        keyboardType: widget.textInputType,
-        textAlignVertical: TextAlignVertical.center,
-        enabled: widget.enable,
-        decoration: InputDecoration(
-          prefixIcon: widget.prefixIcon,
-          //hintText: widget.hint,
-          //labelStyle: TextStyle(color: Colors.red),
-          label: Text(
-            widget.hint.toString(),
-            style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                fontWeight: FontWeight.w500,
-                color: CustomTypography.kGreyColorlabel,
-                fontSize: 13.0.sp),
-          ),
-          suffixStyle: TextStyle(fontSize: 10.sp),
-          suffixIconConstraints:
-              const BoxConstraints(minHeight: 24, minWidth: 24),
-          suffixIcon: Padding(
-              padding: const EdgeInsets.only(right: 10, top: 0, bottom: 0),
-              child: widget.obSecure == true
-                  ? InkWell(
-                      onTap: () {
-                        setState(() {
-                          setSecure();
-                        });
-                      },
-                      child: switch (secure) {
-                        true => SvgPicture.asset(
-                            'assets/svg/view_off.svg',
-                            color: Colors.black,
-                          ),
-                        _ => SvgPicture.asset(
-                            'assets/svg/eye1.svg',
-                            color: Colors.black,
-                          )
-                      })
-                  : widget.suffixIcon),
-
-          hintStyle: Theme.of(context).textTheme.labelSmall?.copyWith(
+    return TextFormField(
+      
+      obscureText: secure,
+      readOnly: widget.readOnly,
+      cursorColor: CustomTypography.kPrimaryColor500,
+      style: Theme.of(context)
+          .textTheme
+          .titleSmall!
+          .copyWith(color: const Color(0xff344054)),
+      controller: widget.controller,
+      keyboardType: widget.textInputType,
+      textAlignVertical: TextAlignVertical.center,
+      enabled: widget.enable,
+      decoration: InputDecoration(
+        contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 12.0),
+        prefixIcon: widget.prefixIcon,
+        //hintText: widget.hint,
+        //labelStyle: TextStyle(color: Colors.red),
+        label: Text(
+          widget.hint.toString(),
+          style: Theme.of(context).textTheme.labelSmall?.copyWith(
               fontWeight: FontWeight.w500,
               color: CustomTypography.kGreyColorlabel,
               fontSize: 13.0.sp),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(Sizing.kBorderRadius),
-            borderSide: BorderSide(
-                color: CustomTypography.kGreyColorBorderSide, width: 1),
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(Sizing.kBorderRadius),
-            borderSide: BorderSide(
-                color: CustomTypography.kGreyColorBorderSide, width: 1),
-          ),
-          focusedBorder: OutlineInputBorder(
-            gapPadding: 0.0,
-            borderRadius: BorderRadius.circular(Sizing.kBorderRadius),
-            borderSide:
-                BorderSide(color: CustomTypography.kGreyColor70, width: 1.5),
-          ),
         ),
-        onTap: () {
-          widget.onTap != null ? widget.onTap!() : () {};
-        },
-        onChanged: (value) {
-          setState(() {
-            widget.isFocused = value.isNotEmpty;
-          });
-          print(widget.isFocused);
-          widget.onChanged?.call(value);
-        },
-        validator: widget.validate,
+        suffixStyle: TextStyle(fontSize: 10.sp),
+        suffixIconConstraints:
+            const BoxConstraints(minHeight: 24, minWidth: 24),
+        suffixIcon: Padding(
+            padding: const EdgeInsets.only(right: 10, top: 0, bottom: 0),
+            child: widget.obSecure == true
+                ? InkWell(
+                    onTap: () {
+                      setState(() {
+                        setSecure();
+                      });
+                    },
+                    child: switch (secure) {
+                      true => SvgPicture.asset(
+                          'assets/svg/view_off.svg',
+                          color: Colors.black,
+                        ),
+                      _ => SvgPicture.asset(
+                          'assets/svg/eye1.svg',
+                          color: Colors.black,
+                        )
+                    })
+                : widget.suffixIcon),
+    
+        hintStyle: Theme.of(context).textTheme.labelSmall?.copyWith(
+            fontWeight: FontWeight.w500,
+            color: CustomTypography.kGreyColorlabel,
+            fontSize: 13.0.sp),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(Sizing.kBorderRadius),
+          borderSide: BorderSide(
+              color: CustomTypography.kGreyColorBorderSide, width: 1),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(Sizing.kBorderRadius),
+          borderSide: BorderSide(
+              color: CustomTypography.kGreyColorBorderSide, width: 1),
+        ),
+        focusedBorder: OutlineInputBorder(
+          gapPadding: 0.0,
+          borderRadius: BorderRadius.circular(Sizing.kBorderRadius),
+          borderSide:
+              BorderSide(color: CustomTypography.kGreyColor70, width: 1.5),
+        ),
       ),
+      onTap: () {
+        widget.onTap != null ? widget.onTap!() : () {};
+      },
+      onChanged: (value) {
+        setState(() {
+          widget.isFocused = value.isNotEmpty;
+        });
+        print(widget.isFocused);
+        widget.onChanged?.call(value);
+      },
+      validator: widget.validate,
     );
   }
 

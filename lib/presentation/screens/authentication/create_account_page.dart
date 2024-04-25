@@ -19,6 +19,7 @@ import 'package:japaapp/core/util/width_constraints.dart';
 import 'package:japaapp/data/local_data/local_storage.dart';
 import 'package:japaapp/domain/form_params/auth/signup_form_params.dart';
 import 'package:japaapp/domain/model/models.dart';
+import 'package:japaapp/presentation/shared/alert_dialog.dart';
 import 'package:japaapp/presentation/shared/custom_button.dart';
 import 'package:japaapp/presentation/widget/back_button.dart';
 import 'package:japaapp/presentation/widget/form_field.dart';
@@ -285,9 +286,10 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
           height: Sizing.kSizingMultiple,
         ),
         FormFieldInputWithLabel(
+          obSecure: true,
           controller: _passwordTextFieldController,
           hint: 'Enter Password',
-          textInputType: TextInputType.emailAddress,
+          textInputType: TextInputType.visiblePassword,
           validate: (value) {
             return _passwordTextFieldController.text.isEmpty
                 ? 'Password is required!'
@@ -306,9 +308,10 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
           height: Sizing.kSizingMultiple,
         ),
         FormFieldInputWithLabel(
+          obSecure: true,
           controller: _comfirmPasswordTextFieldController,
           hint: 'Enter confirm password',
-          textInputType: TextInputType.emailAddress,
+          textInputType: TextInputType.visiblePassword,
           validate: (value) {
             return _comfirmPasswordTextFieldController.text.isEmpty
                 ? 'Confirm password is required!'
@@ -356,20 +359,22 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
 
              context.router.replace(const TabRoute());
             } else {
-              SnackBarUtil.snackbarError<String>(
-                context,
-                code: ExceptionCode.UNDEFINED,
-                message: state.data.message,
-              );
+              showCustomAlertDialog(context, subtitle: state.data.message, title: 'Error',backgroundColor: true,buttonText: "Dismiss",onTap: (){context.router.maybePop();},alertType: AlertType.warning);
+              // SnackBarUtil.snackbarError<String>(
+              //   context,
+              //   code: ExceptionCode.UNDEFINED,
+              //   message: state.data.message,
+              // );
             }
           },
           error: (state) {
-            SnackBarUtil.snackbarError<String>(
-              context,
-              code: state.failure.exception.code,
-              message: state.failure.exception.message.toString(),
-              onRefreshCallback: () => _onUserSignUpCallback(),
-            );
+            showCustomAlertDialog(context, subtitle: state.failure.exception.message.toString(), title: 'Error',backgroundColor: true,buttonText: "Dismiss",onTap: (){context.router.maybePop();},alertType: AlertType.warning);
+            // SnackBarUtil.snackbarError<String>(
+            //   context,
+            //   code: state.failure.exception.code,
+            //   message: state.failure.exception.message.toString(),
+            //   onRefreshCallback: () => _onUserSignUpCallback(),
+            // );
           },
         );
       },

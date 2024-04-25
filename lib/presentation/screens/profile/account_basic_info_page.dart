@@ -237,16 +237,56 @@ class _AccountBasicInfoPageState extends State<AccountBasicInfoPage> {
                     
                     : context.read<AccountSnapshotCache>().userInfo.data.profile.image !=null && context.read<AccountSnapshotCache>().userInfo.data.profile.image.isNotEmpty?  
                     Container(
-                        width: 250,
+                      width: 250,
                         height:250,
-                        decoration: ShapeDecoration(
-                          image:  DecorationImage(
-                            image: NetworkImage(context.read<AccountSnapshotCache>().userInfo.data.profile.image),
-                            fit: BoxFit.cover,
-                          ),
+                             decoration: ShapeDecoration(
+                              //color: Colors.red,
+                          // image:  DecorationImage(
+                          //   image: NetworkImage(context.read<AccountSnapshotCache>().userInfo.data.profile.image),
+                          //   fit: BoxFit.cover,
+                          // ),
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(Sizing.kBorderRadius*2.r)),
                         ),
+                    child:  ClipRRect(
+                      borderRadius: BorderRadius.circular(Sizing.kBorderRadius*2.r),
+                      child: Image.network(
+                        width: 250,
+                          height:250,
+                                        context.read<AccountSnapshotCache>().userInfo.data.profile.image,
+                           
+                        fit: BoxFit.cover,
+                      loadingBuilder: (BuildContext context, Widget child,
+                          ImageChunkEvent? loadingProgress) {
+                        if (loadingProgress == null) {
+                          return child;
+                        } else {
+                          return Center(
+                            child: CircularProgressIndicator(
+                              color: CustomTypography.kPrimaryColor300,
+                              strokeWidth: 2,
+                              value: loadingProgress.expectedTotalBytes != null
+                                  ? loadingProgress.cumulativeBytesLoaded /
+                                      (loadingProgress.expectedTotalBytes ?? 1)
+                                  : null,
+                            ),
+                          );
+                        }
+                      },
+                                        ),
+                    ),
+                   
+                  //  Container(
+                  //       width: 250,
+                  //       height:250,
+                  //       decoration: ShapeDecoration(
+                  //         image:  DecorationImage(
+                  //           image: NetworkImage(context.read<AccountSnapshotCache>().userInfo.data.profile.image),
+                  //           fit: BoxFit.cover,
+                  //         ),
+                  //         shape: RoundedRectangleBorder(
+                  //             borderRadius: BorderRadius.circular(Sizing.kBorderRadius*2.r)),
+                  //       ),
                         
                       ):Container(
                         width: 90,

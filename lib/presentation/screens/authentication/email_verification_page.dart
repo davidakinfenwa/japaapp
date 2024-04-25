@@ -67,7 +67,7 @@ class _EmailVerificationPageState extends State<EmailVerificationPage> {
    void _onUserEmailRegisatrationCallback() {
     KeyboardUtil.hideKeyboard(context);
 
-    //if (!_formKey.currentState!.validate()) return;
+    if (!_formKey.currentState!.validate()) return;
 
     final emailRegistrationFromParams = EmailValidationFromParams(
       confirmEmail: _emailTwoTextFieldController.text,
