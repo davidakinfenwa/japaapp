@@ -101,7 +101,6 @@ flutter:
     - assets/images/
     - assets/logo/
     - assets/svg/
-    - assets/images/profile/
     - assets/images/cons/
     - assets/lottie/
   # An image asset can refer to one or more resolution-specific "variants", see
