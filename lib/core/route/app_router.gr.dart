@@ -18,7 +18,7 @@ abstract class _$AppRouter extends RootStackRouter {
     AccountAwardRoutes.name: (routeData) {
       return AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: const AccountAwardPages(),
+        child: WrappedRoute(child: const AccountAwardPages()),
       );
     },
     AccountBasicInfoRoute.name: (routeData) {
@@ -30,7 +30,7 @@ abstract class _$AppRouter extends RootStackRouter {
     AccountBudgetRoute.name: (routeData) {
       return AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: const AccountBudgetPage(),
+        child: WrappedRoute(child: const AccountBudgetPage()),
       );
     },
     AccountEducationRoutes.name: (routeData) {
@@ -79,6 +79,16 @@ abstract class _$AppRouter extends RootStackRouter {
         child: const FirstScreenOndoard(),
       );
     },
+    IntendingMigrantRoute.name: (routeData) {
+      final args = routeData.argsAs<IntendingMigrantRouteArgs>();
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: IntendingMigrantScreen(
+          key: args.key,
+          nav: args.nav,
+        ),
+      );
+    },
     JoureyCompareDestinationRoute.name: (routeData) {
       return AutoRoutePage<dynamic>(
         routeData: routeData,
@@ -88,7 +98,7 @@ abstract class _$AppRouter extends RootStackRouter {
     JourneyCountryPredictedRoute.name: (routeData) {
       return AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: const JourneyCountryPredictedPage(),
+        child: WrappedRoute(child: const JourneyCountryPredictedPage()),
       );
     },
     JourneyLandingRoute.name: (routeData) {
@@ -100,7 +110,7 @@ abstract class _$AppRouter extends RootStackRouter {
     JourneySelectionRoute.name: (routeData) {
       return AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: const JourneySelectionPage(),
+        child: WrappedRoute(child: const JourneySelectionPage()),
       );
     },
     JourneyVisaPredictedRoute.name: (routeData) {
@@ -112,7 +122,7 @@ abstract class _$AppRouter extends RootStackRouter {
     JourneyVisaTypeSelectionRoute.name: (routeData) {
       return AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: const JourneyVisaTypeSelectionPage(),
+        child: WrappedRoute(child: const JourneyVisaTypeSelectionPage()),
       );
     },
     LandingRoute.name: (routeData) {
@@ -342,6 +352,44 @@ class FirstRouteOndoard extends PageRouteInfo<void> {
   static const String name = 'FirstRouteOndoard';
 
   static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
+/// [IntendingMigrantScreen]
+class IntendingMigrantRoute extends PageRouteInfo<IntendingMigrantRouteArgs> {
+  IntendingMigrantRoute({
+    Key? key,
+    required String nav,
+    List<PageRouteInfo>? children,
+  }) : super(
+          IntendingMigrantRoute.name,
+          args: IntendingMigrantRouteArgs(
+            key: key,
+            nav: nav,
+          ),
+          initialChildren: children,
+        );
+
+  static const String name = 'IntendingMigrantRoute';
+
+  static const PageInfo<IntendingMigrantRouteArgs> page =
+      PageInfo<IntendingMigrantRouteArgs>(name);
+}
+
+class IntendingMigrantRouteArgs {
+  const IntendingMigrantRouteArgs({
+    this.key,
+    required this.nav,
+  });
+
+  final Key? key;
+
+  final String nav;
+
+  @override
+  String toString() {
+    return 'IntendingMigrantRouteArgs{key: $key, nav: $nav}';
+  }
 }
 
 /// generated route for

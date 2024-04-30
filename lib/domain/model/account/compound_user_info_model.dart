@@ -189,8 +189,8 @@ class Education extends Equatable  {
     final dynamic userId;
     final String levelOfEducation;
     final String institution;
-    final DateTime fromDate;
-    final DateTime toDate;
+    final String fromDate;
+    final String toDate;
     final dynamic major;
     final dynamic scale;
     final dynamic grade;
@@ -218,8 +218,8 @@ class Education extends Equatable  {
         userId: json["user_id"],
         levelOfEducation: json["level_of_education"],
         institution: json["institution"],
-        fromDate: DateTime.parse(json["from_date"]),
-        toDate: DateTime.parse(json["to_date"]),
+        fromDate: json["from_date"],
+        toDate: json["to_date"],
         major: json["major"],
         scale: json["scale"],
         grade: json["grade"],
@@ -233,8 +233,8 @@ class Education extends Equatable  {
         "user_id": userId,
         "level_of_education": levelOfEducation,
         "institution": institution,
-        "from_date": "${fromDate.year.toString().padLeft(4, '0')}-${fromDate.month.toString().padLeft(2, '0')}-${fromDate.day.toString().padLeft(2, '0')}",
-        "to_date": "${toDate.year.toString().padLeft(4, '0')}-${toDate.month.toString().padLeft(2, '0')}-${toDate.day.toString().padLeft(2, '0')}",
+        "from_date": fromDate,
+        "to_date": toDate,
         "major": major,
         "scale": scale,
         "grade": grade,
@@ -250,7 +250,7 @@ class Education extends Equatable  {
     return 'Education{id: $id, userId: $userId, levelOfEducation: $levelOfEducation, institution: $institution, fromDate: $fromDate, toDate: $toDate, major: $major, scale: $scale, grade: $grade, isStillInschool: $isStillInschool, createdAt: $createdAt, updatedAt: $updatedAt}';
   }
   factory Education.empty(){
-    return Education(id: "", userId: "", levelOfEducation: "", institution: "", fromDate: DateTime.now(), toDate: DateTime.now(), major: "", scale: "", grade: "", isStillInschool: "0", createdAt: DateTime.now(), updatedAt: DateTime.now());
+    return Education(id: "", userId: "", levelOfEducation: "", institution: "", fromDate: "", toDate: "", major: "", scale: "", grade: "", isStillInschool: "0", createdAt: DateTime.now(), updatedAt: DateTime.now());
   }
 }
 
@@ -263,8 +263,8 @@ class FamilyEducation extends Equatable  {
     final dynamic userId;
     final String levelOfEducation;
     final String institution;
-    final DateTime fromDate;
-    final DateTime toDate;
+    final String fromDate;
+    final String toDate;
     final dynamic major;
     final dynamic scale;
     final dynamic grade;
@@ -294,8 +294,8 @@ class FamilyEducation extends Equatable  {
         userId: json["user_id"],
         levelOfEducation: json["level_of_education"],
         institution: json["institution"],
-        fromDate: DateTime.parse(json["from_date"]),
-        toDate: DateTime.parse(json["to_date"]),
+        fromDate:json["from_date"],
+        toDate:json["to_date"],
         major: json["major"],
         scale: json["scale"],
         grade: json["grade"],
@@ -310,8 +310,8 @@ class FamilyEducation extends Equatable  {
         "user_id": userId,
         "level_of_education": levelOfEducation,
         "institution": institution,
-        "from_date": "${fromDate.year.toString().padLeft(4, '0')}-${fromDate.month.toString().padLeft(2, '0')}-${fromDate.day.toString().padLeft(2, '0')}",
-        "to_date": "${toDate.year.toString().padLeft(4, '0')}-${toDate.month.toString().padLeft(2, '0')}-${toDate.day.toString().padLeft(2, '0')}",
+        "from_date":fromDate,
+        "to_date": toDate,
         "major": major,
         "scale": scale,
         "grade": grade,
@@ -327,7 +327,7 @@ class FamilyEducation extends Equatable  {
     return 'FamilyEducation{id: $id, userId: $userId, levelOfEducation: $levelOfEducation, institution: $institution, fromDate: $fromDate, toDate: $toDate, major: $major, scale: $scale, grade: $grade, isStillInschool: $isStillInschool, createdAt: $createdAt, updatedAt: $updatedAt}';
   }
   factory FamilyEducation.empty(){
-    return FamilyEducation(id: "", userId: "", levelOfEducation: "", institution: "", fromDate: DateTime.now(), toDate: DateTime.now(), major: "", scale: "", grade: "", isStillInschool: "0", createdAt: DateTime.now(), updatedAt: DateTime.now(),familyStructureId: "");
+    return FamilyEducation(id: "", userId: "", levelOfEducation: "", institution: "", fromDate: "", toDate: "", major: "", scale: "", grade: "", isStillInschool: "0", createdAt: DateTime.now(), updatedAt: DateTime.now(),familyStructureId: "");
   }
 }
 
@@ -453,7 +453,7 @@ class RecordAward extends Equatable {
   final dynamic userId;
   final String type;
   final String title;
-  final DateTime date;
+  final String date;
   final DateTime createdAt;
   final DateTime updatedAt;
 
@@ -475,7 +475,7 @@ class RecordAward extends Equatable {
     userId: json["user_id"],
     type: json["type"],
     title: json["title"],
-    date: DateTime.parse(json["date"]),
+    date: json["date"],
     createdAt: DateTime.parse(json["created_at"]),
     updatedAt: DateTime.parse(json["updated_at"]),
   );
@@ -485,7 +485,7 @@ class RecordAward extends Equatable {
     "user_id": userId,
     "type": type,
     "title": title,
-    "date": "${date.year.toString().padLeft(4, '0')}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}",
+    "date": date,
     "created_at": createdAt.toIso8601String(),
     "updated_at": updatedAt.toIso8601String(),
   };
@@ -495,7 +495,7 @@ class RecordAward extends Equatable {
     return 'Record{id: $id, userId: $userId, type: $type, title: $title, date: $date, createdAt: $createdAt, updatedAt: $updatedAt}';
   }
   factory RecordAward.empty(){
-    return RecordAward(id: "", userId: "", type: "", title: "", date: DateTime.now(), createdAt: DateTime.now(), updatedAt: DateTime.now());
+    return RecordAward(id: "", userId: "", type: "", title: "", date: "", createdAt: DateTime.now(), updatedAt: DateTime.now());
   }
 }
 
@@ -596,8 +596,8 @@ class WorkUser extends Equatable {
   final dynamic userId;
   final String companyName;
   final String position;
-  final DateTime dateFrom;
-  final DateTime dateTo;
+  final String dateFrom;
+  final String dateTo;
   final dynamic isCurrentWork;
   final DateTime createdAt;
   final DateTime updatedAt;
@@ -622,8 +622,8 @@ class WorkUser extends Equatable {
     userId: json["user_id"],
     companyName: json["company_name"],
     position: json["position"],
-    dateFrom: DateTime.parse(json["date_from"]),
-    dateTo: DateTime.parse(json["date_to"]),
+    dateFrom: json["date_from"],
+    dateTo: json["date_to"],
     isCurrentWork: json["is_current_work"],
     createdAt: DateTime.parse(json["created_at"]),
     updatedAt: DateTime.parse(json["updated_at"]),
@@ -634,8 +634,8 @@ class WorkUser extends Equatable {
     "user_id": userId,
     "company_name": companyName,
     "position": position,
-    "date_from": "${dateFrom.year.toString().padLeft(4, '0')}-${dateFrom.month.toString().padLeft(2, '0')}-${dateFrom.day.toString().padLeft(2, '0')}",
-    "date_to": "${dateTo.year.toString().padLeft(4, '0')}-${dateTo.month.toString().padLeft(2, '0')}-${dateTo.day.toString().padLeft(2, '0')}",
+    "date_from": dateFrom,
+    "date_to": dateTo,
     "is_current_work": isCurrentWork,
     "created_at": createdAt.toIso8601String(),
     "updated_at": updatedAt.toIso8601String(),
@@ -646,7 +646,7 @@ class WorkUser extends Equatable {
     return 'Work{id: $id, userId: $userId, companyName: $companyName, position: $position, dateFrom: $dateFrom, dateTo: $dateTo, isCurrentWork: $isCurrentWork, createdAt: $createdAt, updatedAt: $updatedAt}';
   }
   factory WorkUser.empty(){
-    return WorkUser(id: "", userId: "", companyName: "", position: "", dateFrom: DateTime.now(), dateTo: DateTime.now(), isCurrentWork: "", createdAt: DateTime.now(), updatedAt: DateTime.now());
+    return WorkUser(id: "", userId: "", companyName: "", position: "", dateFrom:"", dateTo: "", isCurrentWork: "", createdAt: DateTime.now(), updatedAt: DateTime.now());
   }
 }
 
@@ -660,8 +660,8 @@ class FamilyWork extends Equatable {
   final dynamic userId;
   final String companyName;
   final String position;
-  final DateTime dateFrom;
-  final DateTime dateTo;
+  final String dateFrom;
+  final String dateTo;
   final dynamic isCurrentWork;
   final DateTime createdAt;
   final DateTime updatedAt;
@@ -688,8 +688,8 @@ class FamilyWork extends Equatable {
     userId: json["user_id"],
     companyName: json["company_name"],
     position: json["position"],
-    dateFrom: DateTime.parse(json["date_from"]),
-    dateTo: DateTime.parse(json["date_to"]),
+    dateFrom: json["date_from"],
+    dateTo: json["date_to"],
     isCurrentWork: json["is_current_work"],
     createdAt: DateTime.parse(json["created_at"]),
     updatedAt: DateTime.parse(json["updated_at"]),
@@ -700,8 +700,8 @@ class FamilyWork extends Equatable {
     "user_id": userId,
     "company_name": companyName,
     "position": position,
-    "date_from": "${dateFrom.year.toString().padLeft(4, '0')}-${dateFrom.month.toString().padLeft(2, '0')}-${dateFrom.day.toString().padLeft(2, '0')}",
-    "date_to": "${dateTo.year.toString().padLeft(4, '0')}-${dateTo.month.toString().padLeft(2, '0')}-${dateTo.day.toString().padLeft(2, '0')}",
+    "date_from": dateFrom,
+    "date_to": dateTo,
     "is_current_work": isCurrentWork,
     "created_at": createdAt.toIso8601String(),
     "updated_at": updatedAt.toIso8601String(),
@@ -712,7 +712,7 @@ class FamilyWork extends Equatable {
     return 'FamilyWork{id: $id, userId: $userId, companyName: $companyName, position: $position, dateFrom: $dateFrom, dateTo: $dateTo, isCurrentWork: $isCurrentWork, createdAt: $createdAt, updatedAt: $updatedAt}';
   }
   factory FamilyWork.empty(){
-    return FamilyWork(id: "", userId: "", companyName: "", position: "", dateFrom: DateTime.now(), dateTo: DateTime.now(), isCurrentWork: "", createdAt: DateTime.now(), updatedAt: DateTime.now(),familyStructureId: "");
+    return FamilyWork(id: "", userId: "", companyName: "", position: "", dateFrom:"", dateTo: "", isCurrentWork: "", createdAt: DateTime.now(), updatedAt: DateTime.now(),familyStructureId: "");
   }
 }
 

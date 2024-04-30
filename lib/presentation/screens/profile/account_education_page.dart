@@ -41,10 +41,7 @@ class AccountEducationPages extends StatefulWidget implements AutoRouteWrapper {
   State<AccountEducationPages> createState() => _AccountEducationPagesState();
      @override
   Widget wrappedRoute(BuildContext context) {
-     //final userInfo = context.read<AccountSnapshotCache>().userInfo;
-      // context.read<AccountSnapshotCache>().userInfo.data.education;
-      
-
+    
     return MultiBlocProvider(
       providers: [
         BlocProvider<CreateEducationInformationCubit>(
@@ -53,9 +50,7 @@ class AccountEducationPages extends StatefulWidget implements AutoRouteWrapper {
          BlocProvider<GetUserDropdownFormCubit>(
           create: (context) => getIt<GetUserDropdownFormCubit>()..userDropdownData(),
         ),
-        // BlocProvider<CreateBasicInformationCubit>(
-        //   create: (context) => getIt<CreateBasicInformationCubit>(),
-        // ),
+      
       ],
       child: this,
     );
@@ -68,23 +63,27 @@ class _AccountEducationPagesState extends State<AccountEducationPages> {
   TextEditingController _institutionTextFieldController = TextEditingController();
   TextEditingController _majorTextFieldController = TextEditingController();
   TextEditingController _gradeTextFieldController = TextEditingController();
-  TextEditingController _levelofEuducationTextController =
-      TextEditingController();
+  TextEditingController _levelofEuducationTextController =TextEditingController();
   TextEditingController _scalePointTextController = TextEditingController();
+  TextEditingController _fromDateController = TextEditingController();
+  TextEditingController _toDateController = TextEditingController();
 
-  DateTime userDOB1 = DateTime.now();
-  DateTime userDOB2 = DateTime.now();
-  String fromDate = '';
-  String toDate = '';
+ 
 
   @override
   void initState() {
     super.initState();
+    _institutionTextFieldController = TextEditingController();
+   _majorTextFieldController = TextEditingController();
+   _gradeTextFieldController = TextEditingController();
+   _levelofEuducationTextController =TextEditingController();
+   _scalePointTextController = TextEditingController();
+   _fromDateController = TextEditingController();
+   _toDateController = TextEditingController();
     
-    
-       
   }
-
+ List<Widget> addMilestoneList = [];
+  List<EducationData> educationDataList = [];
    
   @override
   void didChangeDependencies() {
@@ -101,6 +100,11 @@ class _AccountEducationPagesState extends State<AccountEducationPages> {
     _gradeTextFieldController = TextEditingController(text: userInfo[0].grade);
     _levelofEuducationTextController = TextEditingController(text: userInfo[0].levelOfEducation);
     _scalePointTextController = TextEditingController(text: userInfo[0].scale);
+    //_fromDateController=TextEditingController(text: DateFormat('MMM yyyy').format(userInfo[0].fromDate));
+    _fromDateController=TextEditingController(text:userInfo[0].fromDate);
+    _toDateController=TextEditingController(text: userInfo[0].toDate);
+
+    
         }else{
           print('userInfo is empty');
         }
@@ -115,14 +119,16 @@ class _AccountEducationPagesState extends State<AccountEducationPages> {
     _gradeTextFieldController.dispose();
     _levelofEuducationTextController.dispose();
     _scalePointTextController.dispose();
+    _toDateController.dispose();
+    _fromDateController.dispose();
     super.dispose();
   }
   
 
-  List<Widget> addMilestoneList = [];
-  List<EducationData> educationDataList = [];
+ 
   void addFirstDefaultMilestone() {
-    EducationData defaultMilestone = EducationData(levelEducation: _levelofEuducationTextController.text, institution: _institutionTextFieldController.text, fromDate:userDOB1 , toDate: userDOB2, major: _majorTextFieldController.text, scale: _scalePointTextController.text, grade: _gradeTextFieldController.text, isStillInschool: false);;
+   
+    EducationData defaultMilestone = EducationData(levelEducation: _levelofEuducationTextController.text, institution: _institutionTextFieldController.text, fromDate:_fromDateController.text , toDate: _toDateController.text, major: _majorTextFieldController.text, scale: _scalePointTextController.text, grade: _gradeTextFieldController.text, isStillInschool: false);;
     if (defaultMilestone.levelEducation.isNotEmpty) {
       educationDataList.insert(0,defaultMilestone);
     } else {
@@ -183,18 +189,20 @@ class _AccountEducationPagesState extends State<AccountEducationPages> {
 
     if (nav == "fromD") {
       if (picked != null && picked != DateTime.now()) {
-        String formattedDate = DateFormat('MMM yyyy').format(picked);
+        String formattedDate = DateFormat('yyyy-MM-dd').format(picked);
         setState(() {
-          userDOB1 = picked;
-          fromDate = formattedDate;
+          
+          _fromDateController.text=formattedDate;
+         
         });
       }
     } else {
       if (picked != null && picked != DateTime.now()) {
-        String formattedDate = DateFormat('MMM yyyy').format(picked);
+        String formattedDate = DateFormat('yyyy-MM-dd').format(picked);
         setState(() {
-          userDOB2 = picked;
-          toDate = formattedDate;
+          
+          _toDateController.text=formattedDate;
+          
         });
       }
     }
@@ -209,14 +217,10 @@ class _AccountEducationPagesState extends State<AccountEducationPages> {
     TextEditingController levelofEuducationSelTextController = TextEditingController(text:edu.levelOfEducation);
     TextEditingController scalePointListTextController = TextEditingController(text: edu.scale);
     TextEditingController majorTextListFieldController = TextEditingController(text: edu.major);
-    TextEditingController fromDateFieldController = TextEditingController(text: edu.fromDate.toString());
-    TextEditingController toDateFieldController = TextEditingController(text: edu.toDate.toString());
+    TextEditingController fromDateFieldController = TextEditingController(text: edu.fromDate);
+    TextEditingController toDateFieldController = TextEditingController(text: edu.toDate);
 
-    DateTime userDOB1 = DateTime.now();
-    DateTime userDOB2 = DateTime.now();
-      String fromDateList = '';
-      String toDateList = '';
-        void _selectDateListe(String nav) async {
+       Future<void> _selectDateListe(String nav) async {
         DateTime? picked = await showDatePicker(
           context: context,
           initialDate: DateTime.now(),
@@ -226,29 +230,27 @@ class _AccountEducationPagesState extends State<AccountEducationPages> {
 
     if (nav == "fromD") {
       if (picked != null && picked != DateTime.now()) {
-        String formattedDate = DateFormat('MMM yyyy').format(picked);
+        String formattedDate = DateFormat('yyyy-MM-dd').format(picked);
         setState(() {
-          userDOB1 = picked;
-          fromDateList = formattedDate;
-          fromDateFieldController.text=formattedDate;
-          print(fromDateList);
-           educationDataList[index].fromDate = userDOB1;
+          fromDateFieldController.text=  formattedDate;
+          educationDataList[index].fromDate = formattedDate;
         });
       }
     } else {
       if (picked != null && picked != DateTime.now()) {
-        String formattedDate = DateFormat('MMM yyyy').format(picked);
+        String formattedDate = DateFormat('yyyy-MM-dd').format(picked);
         setState(() {
-          userDOB2 = picked;
-          toDateList = formattedDate;
           toDateFieldController.text=formattedDate;
-          educationDataList[index].toDate = userDOB2;
+          educationDataList[index].toDate = formattedDate;
         });
       }
     }
   }
 
- EducationData eduFormData =EducationData(levelEducation: levelofEuducationSelTextController.text, institution: institutionListTextFieldController.text, fromDate:userDOB1 , toDate: userDOB2, major: majorTextListFieldController.text, scale: scalePointListTextController.text, grade: gradeTextListFieldController.text, isStillInschool: false);
+
+EducationData eduFormData =EducationData(levelEducation: levelofEuducationSelTextController.text, institution: institutionListTextFieldController.text, fromDate:fromDateFieldController.text , toDate: toDateFieldController.text, major: majorTextListFieldController.text, scale: scalePointListTextController.text, grade: gradeTextListFieldController.text, isStillInschool: false);
+
+
     addMilestoneList.add(Column(
       children: [
         const SizedBox(height: 10),
@@ -257,7 +259,7 @@ class _AccountEducationPagesState extends State<AccountEducationPages> {
             setState(() {
               addMilestoneList.removeAt(index);
               if (index >= 0 && index < educationDataList.length) {
-                educationDataList.removeAt(index);
+                educationDataList.removeAt(index).toJson();
               }
 
             });
@@ -435,10 +437,11 @@ class _AccountEducationPagesState extends State<AccountEducationPages> {
                           hint: "MM/YYYY",
                           controller:fromDateFieldController,
                           onChanged: (value){
-                            print(DateTime.parse(value.toString()));
-                if (index >= 0 && index < educationDataList.length) {
-                  educationDataList[index].fromDate = DateTime.parse(value.toString());
-                }
+        //String formattedDate = DateFormat('yyyy-MM-dd').parse(value);
+
+                // if (index >= 0 && index < educationDataList.length) {
+                //   educationDataList[index].fromDate = value.toString();
+                // }
                           },
                           onTap: () {
                             _selectDateListe( "fromD");
@@ -446,8 +449,6 @@ class _AccountEducationPagesState extends State<AccountEducationPages> {
                           // onTapData: ,
                         ),
               ),
-            
-              
       
               ),
             
@@ -484,10 +485,11 @@ class _AccountEducationPagesState extends State<AccountEducationPages> {
                           hint: "MM/YYYY",
                           controller:toDateFieldController,
                           onChanged: (value){
-                            print(DateTime.parse(value.toString()));
-                if (index >= 0 && index < educationDataList.length) {
-                  educationDataList[index].toDate = DateTime.parse(value.toString());
-                }
+                //             print("this is the date picker heheheheh  ${DateTime.parse(value.toString())}");
+                // if (index >= 0 && index < educationDataList.length) {
+                //   String formattedDate = DateFormat('yyyy-MM-dd').format(value);
+                //   educationDataList[index].toDate = value.toString();
+                // }
                           },
                           onTap: () {
                             _selectDateListe( "toD");
@@ -505,7 +507,7 @@ class _AccountEducationPagesState extends State<AccountEducationPages> {
         SizedBox(height: (Sizing.kSizingMultiple * 1.5).h),
       ],
     ));
-    educationDataList.add(eduFormData);
+   educationDataList.add(eduFormData);
   }
 
   @override
@@ -577,7 +579,6 @@ class _AccountEducationPagesState extends State<AccountEducationPages> {
               builder: (BuildContext context) {
                 return StatefulBuilder(builder: (context,changer){
                   return Dialog(
-                  
                   surfaceTintColor: Colors.transparent,
                   elevation: 0,
                   backgroundColor: Colors.white,
@@ -806,7 +807,7 @@ class _AccountEducationPagesState extends State<AccountEducationPages> {
   }
 
   Widget _buildEducationDurationTextField() {
-    return Row(
+    return  Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Column(
@@ -825,50 +826,32 @@ class _AccountEducationPagesState extends State<AccountEducationPages> {
             InkWell(
               onTap: () {
                 setState(() {});
-                _selectDate(context, "fromD");
+                
               },
-              child: Container(
+              child:   SizedBox(
                 width: MediaQuery.sizeOf(context).width * 0.40.w,
-                padding: EdgeInsets.all(10.dm),
-                decoration: BoxDecoration(
-                  
-                  color: CustomTypography.kBottomNavColor,
-                  //color: const Color(0xFFF4F4F4),
-                  borderRadius: BorderRadius.circular(4.r),
-                  border: Border.all(
-                    width: 1.w, // Width of the border
-                    color: const Color(0xFFB7C6CC),
-                  ),
-                ),
-                height: 44.h,
-                child: Padding(
-                  padding: EdgeInsets.only(left: 0.0.w, right: 0.w),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      //THE CHECKING FOR EMPTY STATE IS REVERS HERE
-                      Text(
-                        fromDate.isEmpty ? 'MM/YYYY' : fromDate,
-                        style: fromDate.isEmpty
-                            ? Theme.of(context).textTheme.labelSmall?.copyWith(
-                                fontWeight: FontWeight.w500,
-                                color: CustomTypography.kGreyColorlabel,
-                                fontSize: 13.0.sp)
-                            : Theme.of(context)
-                                .textTheme
-                                .titleSmall!
-                                .copyWith(color: const Color(0xff344054)),
-                      ),
-                      Image.asset(
-                        'assets/images/datee.png',
-                        width: 24,
-                        height: 24,
-                      ),
-                    ],
-                  ),
-                ),
+                child: 
+                FormFieldInput(
+                          suffixIcon:  Image.asset(
+                          'assets/images/datee.png',
+                          width: 24,
+                          height: 24,
+                        ),
+                          readOnly: true,
+                          hint: "MM/YYYY",
+                          controller:_fromDateController,
+                          onChanged: (value){
+                          
+                          },
+                          onTap: () {
+                            _selectDate( context,"fromD");
+                          },
+                          // onTapData: ,
+                        ),
               ),
-            ),
+      
+              ),
+            
           ],
         ),
         Column(
@@ -887,53 +870,30 @@ class _AccountEducationPagesState extends State<AccountEducationPages> {
             InkWell(
               onTap: () {
                 setState(() {});
-                // showModalBottomSheet(
-                //   context: context,
-                //   builder: (context) {
-                //     return const MyBottomSheet();
-                //   },
-                // );
-                _selectDate(context, "toD");
+                
               },
-              child: Container(
-                width: MediaQuery.sizeOf(context).width * 0.45.w,
-                padding: EdgeInsets.all(10.dm),
-                decoration: BoxDecoration(
-                  //color: const Color(0xFFF4F4F4),
-                   color: CustomTypography.kBottomNavColor,
-                  borderRadius: BorderRadius.circular(4.r),
-                  border: Border.all(
-                    width: 1.w, // Width of the border
-                    color: const Color(0xFFB7C6CC),
-                  ),
-                ),
-                height: 44.h,
-                child: Padding(
-                  padding: EdgeInsets.only(left: 0.0.w, right: 0.w),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        toDate.isEmpty ? 'MM/YYYY' : toDate,
-                        style: toDate.isEmpty
-                            ? Theme.of(context).textTheme.labelSmall?.copyWith(
-                                fontWeight: FontWeight.w500,
-                                color: CustomTypography.kGreyColorlabel,
-                                fontSize: 13.0.sp)
-                            : Theme.of(context)
-                                .textTheme
-                                .titleSmall!
-                                .copyWith(color: const Color(0xff344054)),
-                      ),
-                      Image.asset(
-                        'assets/images/datee.png',
-                        width: 24,
-                        height: 24,
-                      ),
-                    ],
-                  ),
-                ),
+              child:  SizedBox(
+                width: MediaQuery.sizeOf(context).width * 0.40.w,
+                child: 
+                FormFieldInput(
+                          suffixIcon:  Image.asset(
+                          'assets/images/datee.png',
+                          width: 24,
+                          height: 24,
+                        ),
+                          readOnly: true,
+                          hint: "MM/YYYY",
+                          controller:_toDateController,
+                          onChanged: (value){
+                           
+                          },
+                          onTap: () {
+                            _selectDate(context, "toD");
+                          },
+                          // onTapData: ,
+                        ),
               ),
+              
             ),
           ],
         ),
@@ -1010,6 +970,7 @@ class _AccountEducationPagesState extends State<AccountEducationPages> {
      addFirstDefaultMilestone();
     List<Map<String, dynamic>> milestoneListAsMap = educationDataList.map((milestone) => milestone.toJson()).toList();
                           print(milestoneListAsMap);
+                          
     context.read<CreateEducationInformationCubit>().createEducationInfo(educationLevelModel: milestoneListAsMap);
   }
 

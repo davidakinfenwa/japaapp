@@ -145,7 +145,7 @@ class _JourneyCountryPredictedPageState
     return SizedBox(
       width: MediaQuery.sizeOf(context).width * 0.8.w,
       child: Text(
-        'Based on your profile,',
+        'Based on your profile, the selected country is,',
         textAlign: TextAlign.center,
         style: Theme.of(context).textTheme.titleMedium?.copyWith(
               //color: Colors.black,

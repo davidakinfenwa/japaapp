@@ -20,6 +20,7 @@ class Endpoints {
   //Journey
   static const String countryPrediction = 'profile/analyse';
   static const String visaPrediction = 'profile/visa-recommendation';
+  static const String intendingMigrant = 'profile/intending-migrant-myprocess';
   
 
   

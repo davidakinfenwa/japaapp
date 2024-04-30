@@ -1,11 +1,15 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:auto_route/auto_route.dart';
+import 'package:country_picker/country_picker.dart';
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 import 'package:japaapp/business/blocs/auth_blocs/signup_form_cubit/signup_form_cubit.dart';
 import 'package:japaapp/business/blocs/bloc_state.dart';
 import 'package:japaapp/core/constants.dart';
@@ -14,7 +18,7 @@ import 'package:japaapp/core/exceptions/exceptions.dart';
 import 'package:japaapp/core/route/app_router.dart';
 import 'package:japaapp/core/theme/custom_typography.dart';
 import 'package:japaapp/core/util/keyboard_util.dart';
-import 'package:japaapp/core/util/snackbar_util.dart';
+
 import 'package:japaapp/core/util/width_constraints.dart';
 import 'package:japaapp/data/local_data/local_storage.dart';
 import 'package:japaapp/domain/form_params/auth/signup_form_params.dart';
@@ -23,6 +27,7 @@ import 'package:japaapp/presentation/shared/alert_dialog.dart';
 import 'package:japaapp/presentation/shared/custom_button.dart';
 import 'package:japaapp/presentation/widget/back_button.dart';
 import 'package:japaapp/presentation/widget/form_field.dart';
+import 'package:http/http.dart' as http;
 
 @RoutePage()
 class CreateAccountPage extends StatefulWidget implements AutoRouteWrapper {
@@ -38,24 +43,32 @@ class CreateAccountPage extends StatefulWidget implements AutoRouteWrapper {
       child: this,
     );
   }
-
-
-  
-
 }
 
 class _CreateAccountPageState extends State<CreateAccountPage> {
-  TextEditingController _comfirmPasswordTextFieldController = TextEditingController();
+  TextEditingController _comfirmPasswordTextFieldController =
+      TextEditingController();
   TextEditingController _firstNameTextFieldController = TextEditingController();
   TextEditingController _otherNameTextFieldController = TextEditingController();
   TextEditingController _lastNameTextFieldController = TextEditingController();
   TextEditingController _passwordTextFieldController = TextEditingController();
-  TextEditingController _phoneNumerTextFieldController =TextEditingController();
+  TextEditingController _phoneNumerTextFieldController =
+      TextEditingController();
   late StreamController<String> phoneNumberStreamController;
   dynamic completePhoneNumber;
   String countryDialCode = '';
   String phonenumber = '';
   String sign = '+';
+
+  //Country country = CountryParser.parseCountryCode("NG");
+  Country? country;
+  Future<String> fetchCountryCode()async{
+final response=await http.get(Uri.parse("http://ip-api.com/json"));
+print(response);
+final result=json.decode(response.body);
+final countryCode=result["countryCode"];
+return countryCode;
+  }
 
   TapGestureRecognizer _tapRecognizer = TapGestureRecognizer();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -70,6 +83,11 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
     _phoneNumerTextFieldController = TextEditingController();
     _tapRecognizer = TapGestureRecognizer()..onTap = _handlePress;
     validateStreams();
+    fetchCountryCode().then((countrycode) {
+      setState(() {
+        country=CountryParser.parseCountryCode(countrycode);
+      });
+    } );
   }
 
   void _handlePress() {
@@ -80,7 +98,8 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
   void validateStreams() {
     phoneNumberStreamController = StreamController<String>.broadcast();
     _passwordTextFieldController.addListener(() {
-      phoneNumberStreamController.sink.add(_passwordTextFieldController.text.trim());
+      phoneNumberStreamController.sink
+          .add(_passwordTextFieldController.text.trim());
       // validateInputs();
     });
   }
@@ -96,20 +115,51 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
     super.dispose();
   }
 
-  void _onUserSignUpCallback() async{
+  void _onUserSignUpCallback() async {
     KeyboardUtil.hideKeyboard(context);
     final userId = await TokenService().retrieveUserId();
     //if (!_formKey.currentState!.validate()) return;
 
-    final signUpFromParams = SignUpFromParams(id: userId.toString(), firstName: _firstNameTextFieldController.text, otherName: _otherNameTextFieldController.text, lastName: _lastNameTextFieldController.text, phoneNumber: _phoneNumerTextFieldController.text, password: _passwordTextFieldController.text, confirmPassword: _comfirmPasswordTextFieldController.text);
+    final signUpFromParams = SignUpFromParams(
+        id: userId.toString(),
+        firstName: _firstNameTextFieldController.text,
+        otherName: _otherNameTextFieldController.text,
+        lastName: _lastNameTextFieldController.text,
+        phoneNumber: _phoneNumerTextFieldController.text,
+        password: _passwordTextFieldController.text,
+        confirmPassword: _comfirmPasswordTextFieldController.text);
     context.read<SignupFormCubit>().signup(signUpFromParams: signUpFromParams);
+  }
+
+  void showPicker(){
+    showCountryPicker(context: context, 
+    //favorite: ['IN'],
+    //exclude: ['GH'],
+    countryListTheme: CountryListThemeData(
+      
+      bottomSheetHeight: 600,
+      borderRadius: BorderRadius.circular(Sizing.kBorderRadius*2),
+      textStyle: TextStyle(color: Colors.black),
+      searchTextStyle: TextStyle(color: Colors.black),
+      inputDecoration: InputDecoration(
+        prefixIcon: Icon(Icons.search),
+        hintText: "Search your country here...",
+        
+      )
+      
+    ),
+    onSelect: (country){
+      setState(() {
+        this.country=country;
+      });
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child:  WidthConstraint(context).withHorizontalSymmetricalPadding(
+        child: WidthConstraint(context).withHorizontalSymmetricalPadding(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -119,18 +169,21 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                     Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            SizedBox(height: (Sizing.kSizingMultiple * 4).h),
-                            _buildTopSection(),
-                            SizedBox(height: (Sizing.kSizingMultiple).h),
-                            _buildFormSection(),
-                            SizedBox(  height:(MediaQuery.sizeOf(context).height * 0.05).h),
-                            _buildActionButton(),
-                            SizedBox( height:(MediaQuery.sizeOf(context).height * 0.1).h),
-                          ],
-                        
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(height: (Sizing.kSizingMultiple * 4).h),
+                          _buildTopSection(),
+                          SizedBox(height: (Sizing.kSizingMultiple).h),
+                          _buildFormSection(),
+                          SizedBox(
+                              height:
+                                  (MediaQuery.sizeOf(context).height * 0.05).h),
+                          _buildActionButton(),
+                          SizedBox(
+                              height:
+                                  (MediaQuery.sizeOf(context).height * 0.1).h),
+                        ],
                       ),
                     ],
                   ),
@@ -151,9 +204,9 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
           child: Text(
             "Create an Account",
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontSize: 25.sp,
-                fontWeight: FontWeight.w700,
-                height: 0.75.h,
+                  fontSize: 25.sp,
+                  fontWeight: FontWeight.w700,
+                  height: 0.75.h,
                 ),
           ),
         ),
@@ -254,24 +307,88 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
         const SizedBox(
           height: Sizing.kSizingMultiple,
         ),
-        StreamBuilder(
-          stream: phoneNumberStreamController.stream,
-          builder: (context, snapshot) {
-            return PhoneNumberInputField(
-              hintText: 'Phone Number',
-              controller: _phoneNumerTextFieldController,
-              placeholder: 'Enter phone',
-              onChanged: (val) {
-                completePhoneNumber = val.completeNumber;
-                phonenumber = val.number;
-                print(phonenumber);
-              },
-              onCountryChanged: (val) {
-                countryDialCode = val.fullCountryCode;
-                //_phoneNumerTextFieldController.text = sign + countryDialCode + phonenumber;
-                print(val.name);
-              },
-            );
+        // StreamBuilder(
+        //   stream: phoneNumberStreamController.stream,
+        //   builder: (context, snapshot) {
+        //     return PhoneNumberInputField(
+        //       hintText: ' Enter Phone Number',
+        //       controller: _phoneNumerTextFieldController,
+        //       placeholder: 'Enter phone',
+        //       onChanged: (val) {
+        //         completePhoneNumber = val.completeNumber;
+        //         phonenumber = val.number;
+        //         print(phonenumber);
+        //       },
+        //       onCountryChanged: (val) {
+        //         countryDialCode = val.fullCountryCode;
+        //         //_phoneNumerTextFieldController.text = sign + countryDialCode + phonenumber;
+        //         print(val.name);
+        //       },
+        //     );
+        //   },
+        // ),
+       country == null ? CircularProgressIndicator() :TextFormField(
+          cursorColor: CustomTypography.kPrimaryColor500,
+          style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                color: const Color(0xff344054),
+              ),
+          controller: _phoneNumerTextFieldController,
+          keyboardType: TextInputType.number,
+          textAlignVertical: TextAlignVertical.center,
+          //enabled: widget.enable,
+
+          decoration: InputDecoration(
+             label: Text(
+          "Enter phone number",
+          style: Theme.of(context).textTheme.labelSmall?.copyWith(
+              fontWeight: FontWeight.w500,
+              color: CustomTypography.kGreyColorlabel,
+              fontSize: 13.0.sp),
+        ),
+            // prefix: Padding(
+            //   padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+            //   child: SvgPicture.asset("assets/svg/downarrow.svg"),
+            // ),
+            // prefixIconConstraints:
+            //     const BoxConstraints(minHeight: 24, minWidth: 24),
+            prefixIcon: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: showPicker ,
+                child: Container(
+                 //color: Colors.red,
+                  padding:EdgeInsets.symmetric(vertical: 18.0, horizontal: 12.0),
+              height: 55,
+              width: 80,
+              //alignment: Alignment.center,
+              child: Text(
+                "${country?.flagEmoji} +${country?.phoneCode}",
+                style: TextStyle(color: Colors.black),
+              ),
+            )),
+           
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(Sizing.kBorderRadius),
+          borderSide: BorderSide(
+              color: CustomTypography.kGreyColorBorderSide, width: 1),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(Sizing.kBorderRadius),
+          borderSide: BorderSide(
+              color: CustomTypography.kGreyColorBorderSide, width: 1),
+        ),
+        focusedBorder: OutlineInputBorder(
+          gapPadding: 0.0,
+          borderRadius: BorderRadius.circular(Sizing.kBorderRadius),
+          borderSide:
+              BorderSide(color: CustomTypography.kGreyColor70, width: 1.5),
+        ),
+            contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 12.0),
+          ),
+        
+          validator: (value) {
+            return _phoneNumerTextFieldController.text.isEmpty
+                ? 'phone number is required!'
+                : null;
           },
         ),
       ],
@@ -345,21 +462,26 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
     );
   }
 
-  
-    Widget _buildActionButton() {
+  Widget _buildActionButton() {
     return BlocConsumer<SignupFormCubit,
         BlocState<Failure<ExceptionMessage>, UserInfoModel>>(
       listener: (context, state) {
         state.maybeMap(
           orElse: () => null,
           success: (state) {
-            if (state.data.status=="success") {
+            if (state.data.status == "success") {
               // clear form inputs
               _formKey.currentState!.reset();
 
-             context.router.replace(const TabRoute());
+              context.router.replace(const TabRoute());
             } else {
-              showCustomAlertDialog(context, subtitle: state.data.message, title: 'Error',backgroundColor: true,buttonText: "Dismiss",onTap: (){context.router.maybePop();},alertType: AlertType.warning);
+              showCustomAlertDialog(context,
+                  subtitle: state.data.message,
+                  title: 'Error',
+                  backgroundColor: true,
+                  buttonText: "Dismiss", onTap: () {
+                context.router.maybePop();
+              }, alertType: AlertType.warning);
               // SnackBarUtil.snackbarError<String>(
               //   context,
               //   code: ExceptionCode.UNDEFINED,
@@ -368,7 +490,13 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
             }
           },
           error: (state) {
-            showCustomAlertDialog(context, subtitle: state.failure.exception.message.toString(), title: 'Error',backgroundColor: true,buttonText: "Dismiss",onTap: (){context.router.maybePop();},alertType: AlertType.warning);
+            showCustomAlertDialog(context,
+                subtitle: state.failure.exception.message.toString(),
+                title: 'Error',
+                backgroundColor: true,
+                buttonText: "Dismiss", onTap: () {
+              context.router.maybePop();
+            }, alertType: AlertType.warning);
             // SnackBarUtil.snackbarError<String>(
             //   context,
             //   code: state.failure.exception.code,
@@ -387,17 +515,17 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
             CustomButton(
               type: ButtonType.regularButton(
                   onTap: () => _onUserSignUpCallback(),
-                   label: 'Creat Account',
+                  label: 'Creat Account',
                   isLoadingMode: isLoading,
                   backgroundColor: CustomTypography.kPrimaryColor300,
                   textColor: CustomTypography.kWhiteColor,
                   borderRadius: BorderRadius.all(
                       Radius.circular(Sizing.kBorderRadius * 7.r))),
             ),
-             SizedBox(
-          height: Sizing.kHSpacing10,
-        ),
-        _buildAuthModeSwitcherSection()
+            SizedBox(
+              height: Sizing.kHSpacing10,
+            ),
+            _buildAuthModeSwitcherSection()
           ],
         );
       },

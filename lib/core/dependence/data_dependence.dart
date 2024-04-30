@@ -13,6 +13,7 @@ import 'package:japaapp/business/blocs/auth_blocs/resend_otp_code_form_cubit/res
 import 'package:japaapp/business/blocs/auth_blocs/signin_form_cubit/signin_form_cubit.dart';
 import 'package:japaapp/business/blocs/auth_blocs/signup_form_cubit/signup_form_cubit.dart';
 import 'package:japaapp/business/blocs/journey/country_prediction_form_cubit.dart';
+import 'package:japaapp/business/blocs/journey/intending_migrant_form_cubit.dart';
 import 'package:japaapp/business/blocs/journey/visa_prediction_form_cubit.dart';
 import 'package:japaapp/business/snapshot_cache/journey_snapshot_cache.dart';
 import 'package:japaapp/business/snapshot_cache/snapshot_cache.dart';
@@ -43,6 +44,7 @@ void authDependenciesInit(GetIt getIt) {
   getIt.registerFactory<CountryPredictionCubit>(() => CountryPredictionCubit( repository: getIt(), snapshotCache: getIt()));
   getIt.registerFactory<VisaPredictionCubit>(() => VisaPredictionCubit( repository: getIt(), snapshotCache: getIt()));
   getIt.registerFactory<CreateBudgetInformationCubit>(() => CreateBudgetInformationCubit( repository: getIt(), snapshotCache: getIt()));
+  getIt.registerFactory<IntendingMigrantCubit>(() => IntendingMigrantCubit( repository: getIt(), snapshotCache: getIt()));
 
 
 

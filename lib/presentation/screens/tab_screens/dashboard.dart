@@ -42,8 +42,7 @@ class _DashboardTabState extends State<DashboardTab> {
     //  final _isLoadingState =
     //     state is Loading<Failure<ExceptionMessage>, AccountBalance>;
 
-    final userProfile =
-        context.watch<AuthSnapshotCache>().userInfo;
+    final userProfile = context.watch<AuthSnapshotCache>().userInfo;
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -921,7 +920,7 @@ class _DashboardTabState extends State<DashboardTab> {
                     SizedBox(height: (Sizing.kSizingMultiple).h),
                     _buildIntroSection(),
                     SizedBox(height: (Sizing.kSizingMultiple * 2).h),
-                    _buildActionButton(),
+                    //_buildActionButton(),
                     SizedBox(height: (Sizing.kSizingMultiple * 4).h),
                     _buildCommunitySection(),
                     //SizedBox(height: (Sizing.kSizingMultiple * 4).h),
@@ -941,4 +940,6 @@ class _DashboardTabState extends State<DashboardTab> {
       ),
     );
   }
+
+  
 }

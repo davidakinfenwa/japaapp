@@ -1,30 +1,52 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:japaapp/business/blocs/bloc_state.dart';
+import 'package:japaapp/business/blocs/journey/intending_migrant_form_cubit.dart';
 import 'package:japaapp/business/snapshot/tabscreen_provider.dart';
+import 'package:japaapp/business/snapshot_cache/journey_snapshot_cache.dart';
 import 'package:japaapp/core/constants.dart';
+import 'package:japaapp/core/dependence/dependence.dart';
+import 'package:japaapp/core/exceptions/exceptions.dart';
 import 'package:japaapp/core/route/app_router.dart';
 
 import 'package:japaapp/core/theme/custom_typography.dart';
 import 'package:japaapp/core/util/width_constraints.dart';
+import 'package:japaapp/domain/model/journey/intending_migrant_model.dart';
+import 'package:japaapp/presentation/shared/alert_dialog.dart';
 import 'package:japaapp/presentation/shared/custom_button.dart';
-import 'package:japaapp/presentation/widget/back_button.dart';
+
 
 import 'package:japaapp/presentation/widget/custom_app_bar.dart';
 import 'package:provider/provider.dart';
 
 @RoutePage()
-class MyProcessTabScreen extends StatefulWidget {
-  const MyProcessTabScreen({super.key, required this.nav});
+class IntendingMigrantScreen extends StatefulWidget implements AutoRouteWrapper {
+  const IntendingMigrantScreen({super.key, required this.nav});
   final String nav;
 
   @override
-  State<MyProcessTabScreen> createState() => _MyProcessTabScreenState();
+  State<IntendingMigrantScreen> createState() => _IntendingMigrantScreenState();
+    @override
+  Widget wrappedRoute(BuildContext context) {
+    
+    return MultiBlocProvider(
+      providers: [
+         BlocProvider<IntendingMigrantCubit>(
+          create: (context) => getIt<IntendingMigrantCubit>()..intendingMigrant(),
+        ),
+     
+      ],
+      child: this,
+    );
+  }
 }
 
-class _MyProcessTabScreenState extends State<MyProcessTabScreen> {
+class _IntendingMigrantScreenState extends State<IntendingMigrantScreen> {
   int selectedIteminList = -1;
     int selectedMeansOfPayment = -2;
   // List<int> selectedItemsData = [];
@@ -42,7 +64,17 @@ class _MyProcessTabScreenState extends State<MyProcessTabScreen> {
   void initState() {
     super.initState();
     selectedItemsData = List.filled(items.length, false, growable: true);
+    // widget.nav=="home"? getIt<IntendingMigrantCubit>().intendingMigrant():"";
+    widget.nav=="home"? LoadingData.showCustomDialog(context):"";
   }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+     widget.nav=="home"? LoadingData.showCustomDialog(context):"";
+   
+  }
+  
 
   List<String> selectedTitles = [];
   
@@ -50,168 +82,21 @@ class _MyProcessTabScreenState extends State<MyProcessTabScreen> {
   @override
   Widget build(BuildContext context) {
     var bottomNavCProvider = Provider.of<TabScreenNotifier>(context);
-    return Scaffold(
-      // backgroundColor: Colors.white,
-      body:Stack(
-        children: [
-          _buildBackground(),
-          Stack(
-            children: [
-              Column(
-                // mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  SizedBox(height: (Sizing.kSizingMultiple * 6).h),
-                  WidthConstraint(context).withHorizontalSymmetricalPadding(
-                      child: CustomBackButton(
-                    onTapExit: () {
-                       bottomNavCProvider.pageIndex = 0;
-                      context.router.push(const TabRoute());
-                    },
-                  ))
-                ],
-              ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SingleChildScrollView(
-                    child: WidthConstraint(context)
-                        .withHorizontalSymmetricalPadding(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          SizedBox(height: (Sizing.kSizingMultiple * 4).h),
-                          _buildTopSection(),
-                          SizedBox(height: (Sizing.kSizingMultiple).h),
-                          _buildMigrantStatusField(
-                              status: "yes",
-                              title: "Intending Migrant",
-                              label:
-                                  "This is for you if you plan to leave your current country of residence.",
-                              callback: () {
-                                setState(() {
-                                  selectedMeansOfPayment = 1;
-                                  Future.delayed(Durations.short3).then(
-                                      (value) => context.router
-                                          .push( IntendingMigrantRoute(nav: "home")));
-                                });
-                              }),
-                          SizedBox(height: (Sizing.kSizingMultiple).h),
-                          _buildMigrantStatusField(
-                              status: "no",
-                              title: "New Migrant",
-                              label:
-                                  "This is for you if you have just arrived your new country.",
-                              callback: () {
-                                setState(() {
-                                  selectedMeansOfPayment = 2;
-                                  bottomNavCProvider.pageIndex = 1;
-                                  context.router.push( IntendingMigrantRoute(nav: "newMigrant"));
-                                });
-                              }),
-                          SizedBox(
-                              height:
-                                  (MediaQuery.sizeOf(context).height * 0.1).h),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-
-
-    Widget _buildTopSection() {
-    return Column(
-      children: [
-        SizedBox(
-          width: MediaQuery.sizeOf(context).width * 0.75.w,
-          child: Text(
-            "I am an/a ",
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontSize: 25.sp,
-                fontWeight: FontWeight.w700,
-                height: 0.75.h,
-                color: const Color(0xff344054)),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildMigrantStatusField(
-      {required String status,
-      required String title,
-      required String label,
-      required VoidCallback callback}) {
-    return GestureDetector(
-      onTap: () {
-        callback();
-
-        print(selectedMeansOfPayment);
+    return WillPopScope(
+      onWillPop: ()async{
+        bottomNavCProvider.pageIndex=0;
+        context.router.replaceAll([TabRoute()]);
+        return true;
       },
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-              padding: EdgeInsets.all(2.h),
-              child: Center(
-                  child: SvgPicture.asset(
-                (selectedMeansOfPayment == 1 && status == "yes")
-                    ? "assets/svg/mcheck.svg"
-                    : (selectedMeansOfPayment == 2 && status == "no")
-                        ? "assets/svg/mcheck.svg"
-                        : "assets/svg/muncheck.svg",
-                // height: 30.h,
-                // width: 30,
-              ))),
-          SizedBox(
-            width: Sizing.kSizingMultiple.h,
-          ),
-          Expanded(
-            child:
-                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  SizedBox(
-                    width: 180.w,
-                    child: Text(title,
-                        style: Theme.of(context)
-                            .textTheme
-                            .titleMedium
-                            ?.copyWith(
-                                color: Color(0xFF344054),
-                                fontSize: 16.sp,
-                                fontWeight: FontWeight.w700),
-                        overflow: TextOverflow.ellipsis),
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 4.h,
-              ),
-              Text(label,
-                  style: Theme.of(context)
-                      .textTheme
-                      .titleSmall
-                      ?.copyWith(fontWeight: FontWeight.w500)),
-              SizedBox(
-                width: 3.w,
-              ),
-            ]),
-          ),
-        ],
+      child: Scaffold(
+        // backgroundColor: Colors.white,
+        body:_buildProcessforSectionForIntendingOrNewMigrant()
       ),
     );
   }
-  
+
+
+
 
 Widget _buildProcessforSectionForIntendingOrNewMigrant(){
   return  Stack(
@@ -272,15 +157,54 @@ Widget _buildBackground() {
   }
 
   Widget _buildSalutationSection() {
-    return const CustomApbar(
+    var bottomNavCProvider = Provider.of<TabScreenNotifier>(context);
+    return  CustomApbar(
       title: 'My Process',
+      onTapExit: (){
+        bottomNavCProvider.pageIndex=0;
+        context.router.replaceAll([TabRoute()]);
+      },
     );
   }
 
   Widget _buildIntendedImmigrantSection() {
-    return Column(
-        children: List.generate(6, (index) {
-      return Padding(
+    return BlocConsumer<IntendingMigrantCubit,
+        BlocState<Failure<ExceptionMessage>, IntendingMigrantProcessModel>>(
+      listener: (context, state) {
+        state.maybeMap(
+          orElse: () => null,
+          success: (state) {
+            if (state.data.status=="success") {
+              // clear form inputs
+             // _formKey.currentState!.reset();
+             BotToast.cleanAll();
+            
+            } else {
+              BotToast.cleanAll();
+            }
+          },
+          error: (state) {
+            BotToast.cleanAll();
+              showCustomAlertDialog(context, subtitle: state.failure.exception.message.toString(), title: 'Error',backgroundColor: true,buttonText: "Dismiss",onTap: (){context.router.maybePop();},alertType: AlertType.warning);
+
+          },
+        );
+      },
+      builder: (context, state) {
+         BotToast.cleanAll();
+        final isLoading = state is Loading<Failure<ExceptionMessage>,   IntendingMigrantProcessModel>;
+        final _checkList = context.watch<JourneySnapshotCache>().intendingMigrantProcessModel;
+
+        return   Column(
+        children: List.generate(_checkList.data.length, (index) {
+          if (_checkList.data.isEmpty) {
+            return Center(child: 
+            Text("No Data Found",
+            style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                          color: const Color(0xFF344054),
+                       fontWeight: FontWeight.w500),),);
+          } else {
+              return Padding(
         padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
         child: Row(
           //mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -311,7 +235,7 @@ Widget _buildBackground() {
                   SizedBox(
                     width: MediaQuery.sizeOf(context).width * 0.65.w,
                     child: Text(
-                      "Task 1 and a description of the task that should be carried out.",
+                      _checkList.data[index].task,
                       style: Theme.of(context).textTheme.titleSmall?.copyWith(
                           // color: Colors.black,
                           color: const Color(0xFF344054),
@@ -406,7 +330,18 @@ Widget _buildBackground() {
           ],
         ),
       );
-    }));
+          }
+
+    
+    }
+    
+    )) ;
+      },
+    );
+    
+    
+    
+   
   }
 
 
@@ -666,75 +601,3 @@ Widget _buildBackground() {
   }
 }
 
-class CustomPopover extends StatelessWidget {
-  final Widget child;
-  final Widget popoverContent;
-
-  const CustomPopover({
-    Key? key,
-    required this.child,
-    required this.popoverContent,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        _showPopover(context);
-      },
-      child: child,
-    );
-  }
-
-  void _showPopover(BuildContext context) {
-    final RenderBox renderBox = context.findRenderObject() as RenderBox;
-    final offset = renderBox.localToGlobal(Offset.zero);
-    final size = renderBox.size;
-
-    final double width = size.width;
-    final double height = size.height;
-
-    final double screenWidth = MediaQuery.of(context).size.width;
-
-    final popoverWidth = screenWidth * 0.5; // Adjust popover width as needed
-
-    final overlay = OverlayEntry(
-      builder: (context) => Positioned(
-        left: offset.dx + width / 2 - popoverWidth / 2,
-        top: offset.dy + height + 10,
-        child: Material(
-          child: Container(
-            width: popoverWidth,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(8.0),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
-                  spreadRadius: 2,
-                  blurRadius: 4,
-                  offset: const Offset(0, 2),
-                ),
-              ],
-            ),
-            child: popoverContent,
-          ),
-        ),
-      ),
-    );
-
-    Overlay.of(context).insert(overlay);
-
-    // Close the popover when tapping outside
-    Future.delayed(Duration.zero, () {
-      GestureDetector(
-        onTap: () => overlay.remove(),
-        child: Container(
-          color: Colors.transparent,
-          width: screenWidth,
-          height: MediaQuery.of(context).size.height,
-        ),
-      );
-    });
-  }
-}
