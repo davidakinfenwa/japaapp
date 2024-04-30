@@ -4,10 +4,8 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 
-import 'package:http/http.dart' as http;
 import 'package:japaapp/core/exceptions/exceptions.dart';
 import 'package:japaapp/core/network/network.dart';
-import 'package:japaapp/data/local_data/local_storage.dart';
 import 'package:japaapp/domain/form_params/form_params.dart';
 
 
@@ -186,7 +184,7 @@ class Services {
         cancelToken: cancelToken,
         onSendProgress: onSendProgress,
         onReceiveProgress: onReceiveProgress,
-      );
+      ).timeout(Duration(seconds: 60));
       return response;
    } on DioException catch (e) {
 
