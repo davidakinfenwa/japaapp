@@ -11,11 +11,23 @@ class IntendingMigrantProcessModel {
         required this.data,
     });
 
-    factory IntendingMigrantProcessModel.fromJson(Map<String, dynamic> json) => IntendingMigrantProcessModel(
-        status: json["status"],
-        message: json["message"],
-        data: List<Datum>.from(json["data"].map((x) => Datum.fromJson(x))),
+   factory IntendingMigrantProcessModel.fromJson(Map<String, dynamic> json) {
+    List<Datum> dataList = [];
+
+    // Check if the "data" field is a list
+    if (json["data"] is List) {
+      dataList = List<Datum>.from(json["data"].map((x) => Datum.fromJson(x)));
+    } else if (json["data"] is Map) {
+      // Handle case where "data" field is a map
+      dataList.add(Datum.fromJson(json["data"]));
+    }
+
+      return IntendingMigrantProcessModel(
+      status: json["status"],
+      message: json["message"],
+      data: dataList,
     );
+  }
 
     Map<String, dynamic> toJson() => {
         "status": status,

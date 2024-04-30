@@ -64,37 +64,40 @@ class _JourneyVisaPredictedPageState extends State<JourneyVisaPredictedPage> {
                       _buildGoodFitText(),
                       SizedBox(
                           height: (MediaQuery.sizeOf(context).height * 0.2).h),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Padding(
-                            padding:
-                                EdgeInsets.only(bottom: Sizing.kHSpacing10.h),
-                            
-                                    child: Column(
-                              children: [
-                                _buildActionButton(),
-                                _buildOtherActionButton("Compare destinations",
-                                    () {
-                                  showModalBottomSheet(
-                                    context: context,
-                                    builder: (context) {
-                                      return const MyBottomCountryCompareSheet();
-                                    },
-                                  );
-                                }),
-                                _buildOtherActionButton("Rerun assessment", () {}),
-                              ],
-                            ),
-                          )
-                        ],
-                      ),
+                     
                     ],
                   ),
                 ),
               ),
             ],
           ),
+            WidthConstraint(context).withHorizontalSymmetricalPadding(
+             child: Column(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Padding(
+                              padding:
+                                  EdgeInsets.only(bottom: Sizing.kHSpacing10.h),
+                              
+                                      child: Column(
+                                children: [
+                                  _buildActionButton(),
+                                  _buildOtherActionButton("Compare destinations",
+                                      () {
+                                    showModalBottomSheet(
+                                      context: context,
+                                      builder: (context) {
+                                        return const MyBottomCountryCompareSheet();
+                                      },
+                                    );
+                                  }),
+                                  _buildOtherActionButton("Rerun assessment", () {}),
+                                ],
+                              ),
+                            )
+                          ],
+                        ),
+           ),
         ],
       ),
     );

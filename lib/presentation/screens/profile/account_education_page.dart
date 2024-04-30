@@ -103,6 +103,7 @@ class _AccountEducationPagesState extends State<AccountEducationPages> {
     //_fromDateController=TextEditingController(text: DateFormat('MMM yyyy').format(userInfo[0].fromDate));
     _fromDateController=TextEditingController(text:userInfo[0].fromDate);
     _toDateController=TextEditingController(text: userInfo[0].toDate);
+    print("thos is th e-------------------- ${addMilestoneList.length}");
 
     
         }else{
@@ -211,6 +212,8 @@ class _AccountEducationPagesState extends State<AccountEducationPages> {
 
 
   void addNewEducationSection(int index, Education edu) {
+    print("thos is th e222-------------------- ${addMilestoneList.length}");
+
 
     TextEditingController gradeTextListFieldController = TextEditingController(text:edu.grade);
     TextEditingController institutionListTextFieldController = TextEditingController(text:edu.institution);
@@ -257,6 +260,8 @@ EducationData eduFormData =EducationData(levelEducation: levelofEuducationSelTex
         InkWell(
           onTap: () {
             setState(() {
+              print("this is the clicked index  $index");
+              print("this is the addMilestoneList ${addMilestoneList.indexed}");
               addMilestoneList.removeAt(index);
               if (index >= 0 && index < educationDataList.length) {
                 educationDataList.removeAt(index).toJson();

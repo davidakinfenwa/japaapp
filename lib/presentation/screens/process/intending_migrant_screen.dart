@@ -71,7 +71,7 @@ class _IntendingMigrantScreenState extends State<IntendingMigrantScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-     //widget.nav=="home"? LoadingData.showCustomDialog(context):"";
+    // widget.nav=="home"? LoadingData.showCustomDialog(context):"";
    
   }
   
@@ -84,6 +84,7 @@ class _IntendingMigrantScreenState extends State<IntendingMigrantScreen> {
     var bottomNavCProvider = Provider.of<TabScreenNotifier>(context);
     return WillPopScope(
       onWillPop: ()async{
+        BotToast.cleanAll();
         bottomNavCProvider.pageIndex=0;
         context.router.replaceAll([TabRoute()]);
         return true;
@@ -123,12 +124,11 @@ Widget _buildProcessforSectionForIntendingOrNewMigrant(){
                             widget.nav == "home"
                                 ? _buildIntendedImmigrantSection()
                                 : _buildNewImmigrantInNeeedSection(),
-                            SizedBox(height: (Sizing.kSizingMultiple).h),
-                            _buildWhatEverToggle(),
-                            SizedBox(height: (Sizing.kSizingMultiple * 4).h),
-                           widget.nav == "home"
-                                ? _buildActionButton()
-                                : _buildActionContinueButton(),
+              
+                          //   SizedBox(height: (Sizing.kSizingMultiple * 4).h),
+                          //  widget.nav == "home"
+                          //       ? _buildActionButton()
+                          //       : _buildActionContinueButton(),
                             SizedBox(height: (Sizing.kSizingMultiple).h),
                             widget.nav == "home"? const SizedBox(): _buildNotice()
                           ],
@@ -161,6 +161,7 @@ Widget _buildBackground() {
     return  CustomApbar(
       title: 'My Process',
       onTapExit: (){
+         BotToast.cleanAll();
         bottomNavCProvider.pageIndex=0;
         context.router.replaceAll([TabRoute()]);
       },
@@ -191,21 +192,29 @@ Widget _buildBackground() {
         );
       },
       builder: (context, state) {
-         BotToast.cleanAll();
+        // BotToast.cleanAll();
         final isLoading = state is Loading<Failure<ExceptionMessage>,   IntendingMigrantProcessModel>;
         final _checkList = context.watch<JourneySnapshotCache>().intendingMigrantProcessModel;
 
         return   Column(
-        children: List.generate(_checkList.data.length, (index) {
-          if (_checkList.data.isEmpty) {
-            return Center(child: 
-            Text("No Data Found",
-            style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                          color: const Color(0xFF344054),
-                       fontWeight: FontWeight.w500),),);
+        children:[
+           ListView.builder(
+            physics: BouncingScrollPhysics(),
+            shrinkWrap: true,
+         itemCount: _checkList.data.length > 1 ? _checkList.data.length - 1 : 0, 
+         itemBuilder:  (context, index) {
+          if (_checkList.data.isEmpty ) {
+            return Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Center(child: 
+              Text("No Data Found",
+              style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                            color: const Color(0xFF344054),
+                         fontWeight: FontWeight.w500),),),
+            );
           } else {
               return Padding(
-        padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
+        padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
         child: Row(
           //mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -213,7 +222,7 @@ Widget _buildBackground() {
             InkWell(
               onTap: () {
                 setState(() {
-                  selectedIteminList = index;
+                  selectedIteminList = index ;
                 });
               },
               child: Row(
@@ -335,7 +344,10 @@ Widget _buildBackground() {
     
     }
     
-    )) ;
+    ),
+     SizedBox(height: (Sizing.kSizingMultiple * 4).h),
+  _checkList.data.length > 1?   _buildActionButton():SizedBox()
+    ]) ;
       },
     );
     
@@ -389,9 +401,6 @@ Widget _buildBackground() {
     );
   }
 
-  Widget _buildWhatEverToggle() {
-    return const SizedBox();
-  }
 
   Widget _buildActionButton() {
     return Column(
@@ -535,6 +544,8 @@ Widget _buildBackground() {
                 }),
           ]),
         ),
+         SizedBox(height: (Sizing.kSizingMultiple * 4).h),
+     _buildActionContinueButton()
       ],
     );
   }

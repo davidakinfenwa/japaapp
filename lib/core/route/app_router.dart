@@ -17,7 +17,7 @@ class AppRouter extends _$AppRouter {
         /// routes go here
         AutoRoute(page: SplashRoute.page,initial: true ),
         AutoRoute(page: StartRoute.page),
-        CustomRoute(page: TabRoute.page,transitionsBuilder: TransitionsBuilders.noTransition, durationInMilliseconds: 600),
+        AutoRoute(page: TabRoute.page),
         CustomRoute(page: LandingRoute.page,transitionsBuilder: TransitionsBuilders.slideLeftWithFade, durationInMilliseconds: 600),
         CustomRoute(page: SignInRoute.page,path: '/login',transitionsBuilder: TransitionsBuilders.slideLeftWithFade, durationInMilliseconds: 600),
         CustomRoute(page: EmailVerificationRoute.page,transitionsBuilder: TransitionsBuilders.slideLeftWithFade, durationInMilliseconds: 600),
