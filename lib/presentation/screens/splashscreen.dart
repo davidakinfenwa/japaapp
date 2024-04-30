@@ -5,6 +5,7 @@ import 'package:japaapp/core/constants.dart';
 import 'package:japaapp/core/route/app_router.dart';
 import 'package:japaapp/core/theme/custom_typography.dart';
 import 'package:japaapp/presentation/shared/response_indicators/loading_indicator.dart';
+import 'package:lottie/lottie.dart';
 
 
 @RoutePage()
@@ -23,40 +24,35 @@ class SplashScreen extends StatefulWidget  {
   @override
   State<SplashScreen> createState() => _SplashScreenState();
   
-  // @override
-  // Widget wrappedRoute(BuildContext context) {
-  //   // TODO: implement wrappedRoute
-  //   throw UnimplementedError();
-  // }
+
 }
 
 class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
    
-    Future.delayed(const Duration(seconds: Sizing.kSplashScreenDelay));
+    Future.delayed(const Duration(seconds: Sizing.kSplashScreenDelay)).then((value) {
+
     context.router.replaceAll([const StartRoute()]);
+    });
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: CustomTypography.kPrimaryColor200,
+        backgroundColor: CustomTypography.kWhiteColor,
         body: Column(
           children: [
             Expanded(
               child: Center(
-                child: Image.asset(
-                  'assets/logo/ytask.png',
-                  width: (Sizing.kSizingMultiple * 30).w,
-                ),
+                child: Lottie.asset('assets/lottie/logo.json')
               ),
             ),
             
-            LoadingIndicator(
-              type: LoadingIndicatorType.linearProgressIndicator(),
-            ),
+            // LoadingIndicator(
+            //   type: LoadingIndicatorType.linearProgressIndicator(),
+            // ),
           ],
         ));
   }

@@ -19,8 +19,8 @@ class EducationLevelModel {
 class EducationData {
      String levelEducation;
      String institution;
-     DateTime fromDate;
-     DateTime toDate;
+     String fromDate;
+     String toDate;
      dynamic major;
      dynamic scale;
      dynamic grade;
@@ -40,8 +40,8 @@ class EducationData {
     factory EducationData.fromJson(Map<String, dynamic> json) => EducationData(
         levelEducation: json["level_education"],
         institution: json["institution"],
-        fromDate: DateTime.parse(json["from_date"]),
-        toDate: DateTime.parse(json["to_date"]),
+        fromDate: json["from_date"],
+        toDate: json["to_date"],
         major: json["major"],
         scale: json["scale"],
         grade: json["grade"],
@@ -51,8 +51,8 @@ class EducationData {
     Map<String, dynamic> toJson() => {
         "level_education": levelEducation,
         "institution": institution,
-        "from_date": "${fromDate.year.toString().padLeft(4, '0')}-${fromDate.month.toString().padLeft(2, '0')}-${fromDate.day.toString().padLeft(2, '0')}",
-        "to_date": "${toDate.year.toString().padLeft(4, '0')}-${toDate.month.toString().padLeft(2, '0')}-${toDate.day.toString().padLeft(2, '0')}",
+        "from_date": fromDate,
+        "to_date": toDate,
         "major": major,
         "scale": scale,
         "grade": grade,
@@ -60,6 +60,6 @@ class EducationData {
     };
 
     factory EducationData.empty(){
-      return EducationData(levelEducation: "", institution: "", fromDate: DateTime.now(), toDate: DateTime.now(), major: "", scale: "", grade: "", isStillInschool: false);
+      return EducationData(levelEducation: "", institution: "", fromDate: "", toDate: "", major: "", scale: "", grade: "", isStillInschool: false);
     }
 }

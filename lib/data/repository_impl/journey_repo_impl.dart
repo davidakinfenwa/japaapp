@@ -7,6 +7,7 @@ import 'package:japaapp/core/network/network.dart';
 import 'package:japaapp/data/remote_data/journey_remote_data.dart';
 import 'package:japaapp/domain/form_params/journey/visa_selection_form_params.dart';
 import 'package:japaapp/domain/model/journey/country_prediction_model.dart';
+import 'package:japaapp/domain/model/journey/intending_migrant_model.dart';
 import 'package:japaapp/domain/repositories/journey_repository.dart';
 
 class JourneyRepoImp implements JoruneyRepository{
@@ -36,6 +37,21 @@ class JourneyRepoImp implements JoruneyRepository{
      if ((await _networkInfo.isConnected)) {
       try {
         final userInfoModel = await _remoteDataSource.visaPrediction(visaSelectionFormParams: visaSelectionFormParams);
+        return right(userInfoModel);
+      } on ExceptionType<ExceptionMessage> catch (e) {
+        return left(Failure.serverFailure(exception: e));
+      }
+    } else {
+      return left(const Failure.serverFailure(
+          exception: ExceptionMessages.NO_INTERNET_CONNECTION));
+    }
+  }
+
+  @override
+  Future<Either<Failure<ExceptionMessage>, IntendingMigrantProcessModel>> intendingMigrantProcess() async {
+     if ((await _networkInfo.isConnected)) {
+      try {
+        final userInfoModel = await _remoteDataSource.intendingMigrantProcess();
         return right(userInfoModel);
       } on ExceptionType<ExceptionMessage> catch (e) {
         return left(Failure.serverFailure(exception: e));

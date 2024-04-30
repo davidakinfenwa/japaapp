@@ -21,7 +21,7 @@ class _StartScreenState extends State<StartScreen> {
   int _currentPage = 0;
 
   List<Widget> pageList = [
-    const FirstScreenOndoard(),
+   
     const SecondScreenOnboard(),
     const ThirdScreenOnboard(),
     const FourthScreenOncoard(),
@@ -29,19 +29,26 @@ class _StartScreenState extends State<StartScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: CustomTypography.kSecondaryColor200,
+      backgroundColor: CustomTypography.kWhiteColor,
       body: Stack(
         children: [
-          PageView.builder(
-            controller: _controller,
-            itemCount: pageList.length,
-            onPageChanged: (value) => setState(() {
-              _currentPage = value;
-            }),
-            itemBuilder: (context, index) {
-              // ignore: avoid_unnecessary_containers
-              return pageList[index];
-            },
+          Align(
+            alignment: Alignment.center,
+            child: SizedBox(
+              height: MediaQuery.sizeOf(context).height * 0.5.h,
+                width: MediaQuery.sizeOf(context).width,
+              child: PageView.builder(
+                controller: _controller,
+                itemCount: pageList.length,
+                onPageChanged: (value) => setState(() {
+                  _currentPage = value;
+                }),
+                itemBuilder: (context, index) {
+                  // ignore: avoid_unnecessary_containers
+                  return pageList[index];
+                },
+              ),
+            ),
           ),
           Positioned(
               bottom: 0,
@@ -121,7 +128,7 @@ class _StartScreenState extends State<StartScreen> {
               SizedBox(
                 width: Sizing.kWSpacing10,
               ),
-              _currentPage < 3
+              _currentPage < 2
                   ? ElevatedButton(
                       onPressed: () {
                         _controller.nextPage(

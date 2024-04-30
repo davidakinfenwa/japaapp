@@ -41,10 +41,10 @@ class BottomMainNav extends StatelessWidget {
                   : "assets/svg/homenotfill.svg",
               color: value.pageIndex == 0
                   ? CustomTypography.kPrimaryColor200
-                  : CustomTypography.kTabNotFill,
+                  : CustomTypography.kGreyColor80,
               svgColor: value.pageIndex == 0
                   ? CustomTypography.kPrimaryColor200
-                  : CustomTypography.kTabNotFill,
+                  : CustomTypography.kGreyColor80,
             ),
             BottomNavWidget(
               onTap: () {
@@ -58,10 +58,10 @@ class BottomMainNav extends StatelessWidget {
                   : "assets/svg/chat.svg",
               color: value.pageIndex == 1
                 ? CustomTypography.kPrimaryColor200
-                  : CustomTypography.kTabNotFill,
+                  : CustomTypography.kGreyColor80,
               svgColor: value.pageIndex == 1
                   ? CustomTypography.kPrimaryColor200
-                  : CustomTypography.kTabNotFill,
+                  : CustomTypography.kGreyColor80,
             ),
   
 
@@ -75,10 +75,10 @@ class BottomMainNav extends StatelessWidget {
                   : "assets/svg/globe.svg",
               color: value.pageIndex == 2
                ? CustomTypography.kPrimaryColor200
-                  : CustomTypography.kTabNotFill,
+                  : CustomTypography.kGreyColor80,
               svgColor: value.pageIndex == 2
                   ? CustomTypography.kPrimaryColor200
-                  : CustomTypography.kTabNotFill,
+                  : CustomTypography.kGreyColor80,
             ),
             BottomNavWidget(
               onTap: () {
@@ -90,10 +90,10 @@ class BottomMainNav extends StatelessWidget {
                   : "assets/svg/account.svg",
               color: value.pageIndex == 3
                   ? CustomTypography.kPrimaryColor200
-                  : CustomTypography.kTabNotFill,
+                  : CustomTypography.kGreyColor80,
               svgColor: value.pageIndex == 3
                   ? CustomTypography.kPrimaryColor200
-                  : CustomTypography.kTabNotFill,
+                  : CustomTypography.kGreyColor80,
             ),
           ]),
         ),

@@ -75,16 +75,13 @@ class _AccountFamilyPageState extends State<AccountFamilyPage> {
   TextEditingController _spouseOtherNameTextFieldController = TextEditingController();
   TextEditingController _companynameTextFieldController =TextEditingController();
   TextEditingController _positionTextFieldController = TextEditingController();
+    TextEditingController _fromDateController = TextEditingController();
+  TextEditingController _toDateController = TextEditingController();
+   TextEditingController _fromDateWorkController = TextEditingController();
+  TextEditingController _toDateWorkController = TextEditingController();
   // TextEditingController _gradeTextFieldController = TextEditingController();
 
-  DateTime userDOBEdu1 = DateTime.now();
-  DateTime userDOBEdu2 = DateTime.now();
-  DateTime userDOBWork1 = DateTime.now();
-  DateTime userDOBWork2 = DateTime.now();
-  String fromDateEdu = '';
-  String toDateEdu = '';
-  String fromDateWork = '';
-  String toDateWork = '';
+
 
   @override
   void initState() {
@@ -101,6 +98,10 @@ class _AccountFamilyPageState extends State<AccountFamilyPage> {
     _spouseOtherNameTextFieldController = TextEditingController();
     _companynameTextFieldController = TextEditingController();
     _positionTextFieldController = TextEditingController();
+     _fromDateController = TextEditingController();
+   _toDateController = TextEditingController();
+     _fromDateWorkController = TextEditingController();
+   _toDateWorkController = TextEditingController();
   }
 
    
@@ -114,6 +115,7 @@ class _AccountFamilyPageState extends State<AccountFamilyPage> {
     _spouseLastNameTextFieldController = TextEditingController(text: userData[0].surname);
     _spouseNumberOfChildrenTextFieldController = TextEditingController(text: userData[0].numberOfChildren);
     _spouseOtherNameTextFieldController = TextEditingController(text: userData[0].otherName);
+
     } else {
       
     }
@@ -129,6 +131,8 @@ class _AccountFamilyPageState extends State<AccountFamilyPage> {
     _gradeTextFieldController = TextEditingController(text: userInfo[0].grade);
     _levelofEuducationSelTextController = TextEditingController(text: userInfo[0].levelOfEducation);
     _scalePointTextController = TextEditingController(text: userInfo[0].scale);
+     _fromDateController=TextEditingController(text:userInfo[0].fromDate);
+    _toDateController=TextEditingController(text: userInfo[0].toDate);
 
    }
         else{
@@ -144,6 +148,8 @@ class _AccountFamilyPageState extends State<AccountFamilyPage> {
     }
       _companynameTextFieldController = TextEditingController(text: userInfoWork[0].companyName);
     _positionTextFieldController = TextEditingController(text: userInfoWork[0].position);
+     _fromDateWorkController = TextEditingController(text:userInfoWork[0].dateFrom);
+   _toDateWorkController = TextEditingController(text:userInfoWork[0].dateTo);
    
   } else {
     // Handle the case when userInfo is empty
@@ -165,22 +171,27 @@ class _AccountFamilyPageState extends State<AccountFamilyPage> {
     _spouseOtherNameTextFieldController.dispose();
     _companynameTextFieldController.dispose();
     _positionTextFieldController.dispose();
+    _fromDateController.dispose();
+    _fromDateWorkController.dispose();
+    _toDateController.dispose();
+    _toDateWorkController.dispose();
     super.dispose();
   }
 
   List<Widget> addEducationList = [];
   List<EducationFamily> educationDataList = [];
   void addFirstDefaultEducation() {
+    
     EducationFamily defaultMilestone = EducationFamily(
         levelEducation: _levelofEuducationSelTextController.text,
         institution: _institutionTextFieldController.text,
-        fromDate: userDOBEdu1,
-        toDate: userDOBEdu2,
+        fromDate: _fromDateController.text,
+        toDate: _toDateController.text,
         major: _majorTextFieldController.text,
         scale: _scalePointTextController.text,
         grade: _gradeTextFieldController.text,
         isStillInschool: false);
-    ;
+  
     if (defaultMilestone.levelEducation.isNotEmpty) {
       educationDataList.insert(0, defaultMilestone);
     } else {}
@@ -189,11 +200,13 @@ class _AccountFamilyPageState extends State<AccountFamilyPage> {
   List<Widget> addNewWorkList = [];
   List<WorkFamily> workDataList = [];
   void addFirstDefaultWork() {
+     DateTime date1 = DateFormat('yyyy-MM-dd').parse(_fromDateWorkController.text);
+    DateTime date2 = DateFormat('yyyy-MM-dd').parse(_toDateWorkController.text);
     WorkFamily defaultMilestone = WorkFamily(
         companyName: _companynameTextFieldController.text,
         position: _positionTextFieldController.text,
-        dateFrom: userDOBWork1,
-        dateTo: userDOBWork2,
+        dateFrom: _fromDateWorkController.text,
+        dateTo: _toDateWorkController.text,
         isCurrentWork: false);
     if (defaultMilestone.companyName.isNotEmpty) {
       workDataList.insert(0, defaultMilestone);
@@ -210,34 +223,31 @@ class _AccountFamilyPageState extends State<AccountFamilyPage> {
 
     if (nav == "fromDEdu") {
       if (picked != null && picked != DateTime.now()) {
-        String formattedDate = DateFormat('MMM yyyy').format(picked);
+        String formattedDate = DateFormat('yyyy-MM-dd').format(picked);
         setState(() {
-          userDOBEdu1 = picked;
-          fromDateEdu = formattedDate;
+          _fromDateController.text=formattedDate;
         });
       }
     } else if (nav == "toDEdu") {
       if (picked != null && picked != DateTime.now()) {
-        String formattedDate = DateFormat('MMM yyyy').format(picked);
+        String formattedDate = DateFormat('yyyy-MM-dd').format(picked);
         setState(() {
-          userDOBEdu2 = picked;
-          toDateEdu = formattedDate;
+          _toDateController.text=formattedDate;
         });
       }
     } else if (nav == "fromDWork") {
       if (picked != null && picked != DateTime.now()) {
-        String formattedDate = DateFormat('MMM yyyy').format(picked);
+        String formattedDate = DateFormat('yyyy-MM-dd').format(picked);
         setState(() {
-          userDOBWork1 = picked;
-          fromDateWork = formattedDate;
+         _fromDateWorkController.text=formattedDate;
         });
       }
     } else if (nav == "toDWork") {
       if (picked != null && picked != DateTime.now()) {
-        String formattedDate = DateFormat('MMM yyyy').format(picked);
+        String formattedDate = DateFormat('yyyy-MM-dd').format(picked);
         setState(() {
-          userDOBWork2 = picked;
-          toDateWork = formattedDate;
+                 _toDateWorkController.text=formattedDate;
+
         });
       }
     }
@@ -252,11 +262,8 @@ class _AccountFamilyPageState extends State<AccountFamilyPage> {
     TextEditingController fromDateFieldController =  TextEditingController(text: edu.fromDate.toString());
     TextEditingController toDateFieldController = TextEditingController(text: edu.toDate.toString());
 
-    DateTime userDOB1 = DateTime.now();
-    DateTime userDOB2 = DateTime.now();
-    String fromDateList = '';
-    String toDateList = '';
-    void _selectDateListe(String nav) async {
+
+   Future<void> _selectDateListe(String nav) async {
       DateTime? picked = await showDatePicker(
         context: context,
         initialDate: DateTime.now(),
@@ -266,33 +273,31 @@ class _AccountFamilyPageState extends State<AccountFamilyPage> {
 
       if (nav == "fromD") {
         if (picked != null && picked != DateTime.now()) {
-          String formattedDate = DateFormat('MMM yyyy').format(picked);
+          String formattedDate = DateFormat('yyyy-MM-dd').format(picked);
           setState(() {
-            userDOB1 = picked;
-            fromDateList = formattedDate;
+            
             fromDateFieldController.text = formattedDate;
-            print(fromDateList);
-            educationDataList[index].fromDate = userDOB1;
+            
+            educationDataList[index].fromDate = formattedDate;
           });
         }
       } else {
         if (picked != null && picked != DateTime.now()) {
-          String formattedDate = DateFormat('MMM yyyy').format(picked);
+          String formattedDate = DateFormat('yyyy-MM-dd').format(picked);
           setState(() {
-            userDOB2 = picked;
-            toDateList = formattedDate;
+            
             toDateFieldController.text = formattedDate;
-            educationDataList[index].toDate = userDOB2;
+            educationDataList[index].toDate = formattedDate;
           });
         }
       }
     }
-
+   
     EducationFamily eduFormData = EducationFamily(
         levelEducation: levelofEuducationSelTextController.text,
         institution: institutionListTextFieldController.text,
-        fromDate: userDOB1,
-        toDate: userDOB2,
+        fromDate: fromDateFieldController.text,
+        toDate: toDateFieldController.text,
         major: majorTextListFieldController.text,
         scale: scalePointListTextController.text,
         grade: gradeTextListFieldController.text,
@@ -480,11 +485,11 @@ class _AccountFamilyPageState extends State<AccountFamilyPage> {
                       hint: "MM/YYYY",
                       controller: fromDateFieldController,
                       onChanged: (value) {
-                        print(DateTime.parse(value.toString()));
-                        if (index >= 0 && index < educationDataList.length) {
-                          educationDataList[index].fromDate =
-                              DateTime.parse(value.toString());
-                        }
+                        // print(DateTime.parse(value.toString()));
+                        // if (index >= 0 && index < educationDataList.length) {
+                        //   educationDataList[index].fromDate =
+                        //       DateTime.parse(value.toString());
+                        // }
                       },
                       onTap: () {
                         _selectDateListe("fromD");
@@ -524,11 +529,11 @@ class _AccountFamilyPageState extends State<AccountFamilyPage> {
                       hint: "MM/YYYY",
                       controller: toDateFieldController,
                       onChanged: (value) {
-                        print(DateTime.parse(value.toString()));
-                        if (index >= 0 && index < educationDataList.length) {
-                          educationDataList[index].toDate =
-                              DateTime.parse(value.toString());
-                        }
+                        // print(DateTime.parse(value.toString()));
+                        // if (index >= 0 && index < educationDataList.length) {
+                        //   educationDataList[index].toDate =
+                        //       DateTime.parse(value.toString());
+                        // }
                       },
                       onTap: () {
                         _selectDateListe("toD");
@@ -557,10 +562,7 @@ class _AccountFamilyPageState extends State<AccountFamilyPage> {
     TextEditingController _positionListTextFieldController =TextEditingController(text: workUser.position);
     TextEditingController fromDateFieldController = TextEditingController(text: workUser.dateFrom.toString());
     TextEditingController toDateFieldController = TextEditingController(text: workUser.dateTo.toString());
-    DateTime userDOB1 = DateTime.now();
-    DateTime userDOB2 = DateTime.now();
-    String fromDateList = '';
-    String toDateList = '';
+  
     void _selectDateListe(String nav) async {
       DateTime? picked = await showDatePicker(
         context: context,
@@ -571,33 +573,34 @@ class _AccountFamilyPageState extends State<AccountFamilyPage> {
 
       if (nav == "fromD") {
         if (picked != null && picked != DateTime.now()) {
-          String formattedDate = DateFormat('MMM yyyy').format(picked);
+          String formattedDate = DateFormat('yyyy-MM-dd').format(picked);
           setState(() {
-            userDOB1 = picked;
-            fromDateList = formattedDate;
+          
             fromDateFieldController.text = formattedDate;
-            print(fromDateList);
-            workDataList[index].dateFrom = userDOB1;
+           
+            workDataList[index].dateFrom = formattedDate;
           });
         }
       } else {
         if (picked != null && picked != DateTime.now()) {
-          String formattedDate = DateFormat('MMM yyyy').format(picked);
+          String formattedDate = DateFormat('yyyy-MM-dd').format(picked);
           setState(() {
-            userDOB2 = picked;
-            toDateList = formattedDate;
+          
             toDateFieldController.text = formattedDate;
-            workDataList[index].dateTo = userDOB2;
+            workDataList[index].dateTo = formattedDate;
           });
         }
       }
     }
+    
+     DateTime date1 = DateFormat('yyyy-MM-dd').parse(fromDateFieldController.text);
+    DateTime date2 = DateFormat('yyyy-MM-dd').parse(toDateFieldController.text);
 
     WorkFamily workData = WorkFamily(
         companyName: _companynameListTextFieldController.text,
         position: _positionListTextFieldController.text,
-        dateFrom: userDOB1,
-        dateTo: userDOB2,
+        dateFrom: fromDateFieldController.text,
+        dateTo: toDateFieldController.text,
         isCurrentWork: false);
 
     addNewWorkList.add(Column(
@@ -694,11 +697,11 @@ class _AccountFamilyPageState extends State<AccountFamilyPage> {
                       hint: "MM/YYYY",
                       controller: fromDateFieldController,
                       onChanged: (value) {
-                        print(DateTime.parse(value.toString()));
-                        if (index >= 0 && index < workDataList.length) {
-                          workDataList[index].dateFrom =
-                              DateTime.parse(value.toString());
-                        }
+                        // print(DateTime.parse(value.toString()));
+                        // if (index >= 0 && index < workDataList.length) {
+                        //   workDataList[index].dateFrom =
+                        //       DateTime.parse(value.toString());
+                        // }
                       },
                       onTap: () {
                         _selectDateListe("fromD");
@@ -738,11 +741,11 @@ class _AccountFamilyPageState extends State<AccountFamilyPage> {
                       hint: "MM/YYYY",
                       controller: toDateFieldController,
                       onChanged: (value) {
-                        print(DateTime.parse(value.toString()));
-                        if (index >= 0 && index < workDataList.length) {
-                          workDataList[index].dateTo =
-                              DateTime.parse(value.toString());
-                        }
+                        // print(DateTime.parse(value.toString()));
+                        // if (index >= 0 && index < workDataList.length) {
+                        //   workDataList[index].dateTo =
+                        //       DateTime.parse(value.toString());
+                        // }
                       },
                       onTap: () {
                         _selectDateListe("toD");
@@ -1059,50 +1062,32 @@ class _AccountFamilyPageState extends State<AccountFamilyPage> {
             InkWell(
               onTap: () {
                 setState(() {});
-                _selectDate(context, "fromDEdu");
+                
               },
-              child: Container(
+              child:   SizedBox(
                 width: MediaQuery.sizeOf(context).width * 0.40.w,
-                padding: EdgeInsets.all(10.dm),
-                decoration: BoxDecoration(
-                  //color: Colors.red,
-                  color: CustomTypography.kBottomNavColor,
-                  //color: const Color(0xFFF4F4F4),
-                  borderRadius: BorderRadius.circular(4.r),
-                  border: Border.all(
-                    width: 1.w, // Width of the border
-                    color: const Color(0xFFB7C6CC),
-                  ),
-                ),
-                height: 44.h,
-                child: Padding(
-                  padding: EdgeInsets.only(left: 0.0.w, right: 0.w),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      //THE CHECKING FOR EMPTY STATE IS REVERS HERE
-                      Text(
-                        fromDateEdu.isEmpty ? 'MM/YYYY' : fromDateEdu,
-                        style: fromDateEdu.isEmpty
-                            ? Theme.of(context).textTheme.labelSmall?.copyWith(
-                                fontWeight: FontWeight.w500,
-                                color: CustomTypography.kGreyColorlabel,
-                                fontSize: 13.0.sp)
-                            : Theme.of(context)
-                                .textTheme
-                                .titleSmall!
-                                .copyWith(color: const Color(0xff344054)),
-                      ),
-                      Image.asset(
-                        'assets/images/datee.png',
-                        width: 24,
-                        height: 24,
-                      ),
-                    ],
-                  ),
-                ),
+                child: 
+                FormFieldInput(
+                          suffixIcon:  Image.asset(
+                          'assets/images/datee.png',
+                          width: 24,
+                          height: 24,
+                        ),
+                          readOnly: true,
+                          hint: "MM/YYYY",
+                          controller:_fromDateController,
+                          onChanged: (value){
+                          
+                          },
+                          onTap: () {
+                            _selectDate( context,"fromDEdu");
+                          },
+                          // onTapData: ,
+                        ),
               ),
-            ),
+      
+              ),
+            
           ],
         ),
         Column(
@@ -1121,58 +1106,37 @@ class _AccountFamilyPageState extends State<AccountFamilyPage> {
             InkWell(
               onTap: () {
                 setState(() {});
-                // showModalBottomSheet(
-                //   context: context,
-                //   builder: (context) {
-                //     return const MyBottomSheet();
-                //   },
-                // );
-                _selectDate(context, "toDEdu");
+                
               },
-              child: Container(
-                width: MediaQuery.sizeOf(context).width * 0.45.w,
-                padding: EdgeInsets.all(10.dm),
-                decoration: BoxDecoration(
-                  color: CustomTypography.kBottomNavColor,
-                  //color: const Color(0xFFF4F4F4),
-                  borderRadius: BorderRadius.circular(4.r),
-                  border: Border.all(
-                    width: 1.w, // Width of the border
-                    color: const Color(0xFFB7C6CC),
-                  ),
-                ),
-                height: 44.h,
-                child: Padding(
-                  padding: EdgeInsets.only(left: 0.0.w, right: 0.w),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        toDateEdu.isEmpty ? 'MM/YYYY' : toDateEdu,
-                        style: toDateEdu.isEmpty
-                            ? Theme.of(context).textTheme.labelSmall?.copyWith(
-                                fontWeight: FontWeight.w500,
-                                color: CustomTypography.kGreyColorlabel,
-                                fontSize: 13.0.sp)
-                            : Theme.of(context)
-                                .textTheme
-                                .titleSmall!
-                                .copyWith(color: const Color(0xff344054)),
-                      ),
-                      Image.asset(
-                        'assets/images/datee.png',
-                        width: 24,
-                        height: 24,
-                      ),
-                    ],
-                  ),
-                ),
+              child:  SizedBox(
+                width: MediaQuery.sizeOf(context).width * 0.40.w,
+                child: 
+                FormFieldInput(
+                          suffixIcon:  Image.asset(
+                          'assets/images/datee.png',
+                          width: 24,
+                          height: 24,
+                        ),
+                          readOnly: true,
+                          hint: "MM/YYYY",
+                          controller:_toDateController,
+                          onChanged: (value){
+                           
+                          },
+                          onTap: () {
+                            _selectDate(context, "toDEdu");
+                          },
+                          // onTapData: ,
+                        ),
               ),
+              
+           
             ),
           ],
         ),
       ],
     );
+  
   }
 
   Widget _buildMoreEduDetails() {
@@ -1280,47 +1244,23 @@ class _AccountFamilyPageState extends State<AccountFamilyPage> {
             InkWell(
               onTap: () {
                 setState(() {});
-                _selectDate(context, "fromDWork");
               },
-              child: Container(
+              child: SizedBox(
                 width: MediaQuery.sizeOf(context).width * 0.40.w,
-                padding: EdgeInsets.all(10.dm),
-                decoration: BoxDecoration(
-                  color: CustomTypography.kBottomNavColor,
-                  //color: Colors.red,
-                  //color: const Color(0xFFF4F4F4),
-                  borderRadius: BorderRadius.circular(4.r),
-                  border: Border.all(
-                    width: 1.w, // Width of the border
-                    color: const Color(0xFFB7C6CC),
+                child: FormFieldInput(
+                  suffixIcon: Image.asset(
+                    'assets/images/datee.png',
+                    width: 24,
+                    height: 24,
                   ),
-                ),
-                height: 44.h,
-                child: Padding(
-                  padding: EdgeInsets.only(left: 0.0.w, right: 0.w),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      //THE CHECKING FOR EMPTY STATE IS REVERS HERE
-                      Text(
-                        fromDateWork.isEmpty ? 'MM/YYYY' : fromDateWork,
-                        style: fromDateWork.isEmpty
-                            ? Theme.of(context).textTheme.labelSmall?.copyWith(
-                                fontWeight: FontWeight.w500,
-                                color: CustomTypography.kGreyColorlabel,
-                                fontSize: 13.0.sp)
-                            : Theme.of(context)
-                                .textTheme
-                                .titleSmall!
-                                .copyWith(color: const Color(0xff344054)),
-                      ),
-                      Image.asset(
-                        'assets/images/datee.png',
-                        width: 24,
-                        height: 24,
-                      ),
-                    ],
-                  ),
+                  readOnly: true,
+                  hint: "MM/YYYY",
+                  controller: _fromDateWorkController,
+                  onChanged: (value) {},
+                  onTap: () {
+                    _selectDate(context, "fromDWork");
+                  },
+                  // onTapData: ,
                 ),
               ),
             ),
@@ -1342,51 +1282,23 @@ class _AccountFamilyPageState extends State<AccountFamilyPage> {
             InkWell(
               onTap: () {
                 setState(() {});
-                // showModalBottomSheet(
-                //   context: context,
-                //   builder: (context) {
-                //     return const MyBottomSheet();
-                //   },
-                // );
-                _selectDate(context, "toDWork");
               },
-              child: Container(
-                width: MediaQuery.sizeOf(context).width * 0.45.w,
-                padding: EdgeInsets.all(10.dm),
-                decoration: BoxDecoration(
-                  color: CustomTypography.kBottomNavColor,
-                  //color: const Color(0xFFF4F4F4),
-                  borderRadius: BorderRadius.circular(4.r),
-                  border: Border.all(
-                    width: 1.w, // Width of the border
-                    color: const Color(0xFFB7C6CC),
+              child: SizedBox(
+                width: MediaQuery.sizeOf(context).width * 0.40.w,
+                child: FormFieldInput(
+                  suffixIcon: Image.asset(
+                    'assets/images/datee.png',
+                    width: 24,
+                    height: 24,
                   ),
-                ),
-                height: 44.h,
-                child: Padding(
-                  padding: EdgeInsets.only(left: 0.0.w, right: 0.w),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        toDateWork.isEmpty ? 'MM/YYYY' : toDateWork,
-                        style: toDateWork.isEmpty
-                            ? Theme.of(context).textTheme.labelSmall?.copyWith(
-                                fontWeight: FontWeight.w500,
-                                color: CustomTypography.kGreyColorlabel,
-                                fontSize: 13.0.sp)
-                            : Theme.of(context)
-                                .textTheme
-                                .titleSmall!
-                                .copyWith(color: const Color(0xff344054)),
-                      ),
-                      Image.asset(
-                        'assets/images/datee.png',
-                        width: 24,
-                        height: 24,
-                      ),
-                    ],
-                  ),
+                  readOnly: true,
+                  hint: "MM/YYYY",
+                  controller: _toDateWorkController,
+                  onChanged: (value) {},
+                  onTap: () {
+                    _selectDate(context, "toDWork");
+                  },
+                  // onTapData: ,
                 ),
               ),
             ),

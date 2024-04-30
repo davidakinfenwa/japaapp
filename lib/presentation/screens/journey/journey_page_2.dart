@@ -183,12 +183,9 @@ class _JourneySelectionPageState extends State<JourneySelectionPage> {
 
  
  void _onUserPredictionCallback() async{
-    // KeyboardUtil.hideKeyboard(context);
-    // final userId = await TokenService().retrieveUserId();
-    //if (!_formKey.currentState!.validate()) return;
+    
      LoadingData.showCustomDialog(context);
 
-    //final signUpFromParams = SignUpFromParams(id: userId.toString(), firstName: _firstNameTextFieldController.text, otherName: _otherNameTextFieldController.text, lastName: _lastNameTextFieldController.text, phoneNumber: _phoneNumerTextFieldController.text, password: _passwordTextFieldController.text, confirmPassword: _comfirmPasswordTextFieldController.text);
     context.read<CountryPredictionCubit>().countryPrediction();
   }
 

@@ -18,8 +18,8 @@ class WorkProfileModel {
 class WorkData {
      String companyName;
      String position;
-     DateTime dateFrom;
-     DateTime dateTo;
+     String dateFrom;
+     String dateTo;
     final bool isCurrentWork;
 
     WorkData({
@@ -33,16 +33,16 @@ class WorkData {
     factory WorkData.fromJson(Map<String, dynamic> json) => WorkData(
         companyName: json["company_name"],
         position: json["position"],
-        dateFrom: DateTime.parse(json["date_from"]),
-        dateTo: DateTime.parse(json["date_to"]),
+        dateFrom: json["date_from"],
+        dateTo: json["date_to"],
         isCurrentWork: json["is_current_work"],
     );
 
     Map<String, dynamic> toJson() => {
         "company_name": companyName,
         "position": position,
-        "date_from": "${dateFrom.year.toString().padLeft(4, '0')}-${dateFrom.month.toString().padLeft(2, '0')}-${dateFrom.day.toString().padLeft(2, '0')}",
-        "date_to": "${dateTo.year.toString().padLeft(4, '0')}-${dateTo.month.toString().padLeft(2, '0')}-${dateTo.day.toString().padLeft(2, '0')}",
+        "date_from": dateFrom,
+        "date_to": dateTo,
         "is_current_work": isCurrentWork,
     };
 }

@@ -10,8 +10,10 @@ class CustomTypography {
   static final kPrimaryColor50 = ColorUtil.colorFromHex('#e8edef');
   static final kPrimaryColor75 = ColorUtil.colorFromHex('#a0b3bb');
   static final kPrimaryColor100= ColorUtil.colorFromHex('#79949f');
-  static final kPrimaryColor200 = ColorUtil.colorFromHex('#3f6576');
-  static final kPrimaryColor300 = ColorUtil.colorFromHex('#18465a');
+  static final kPrimaryColor200 = ColorUtil.colorFromHex('#0A7EEA');
+  //static final kPrimaryColor200 = ColorUtil.colorFromHex('#3f6576');
+  // static final kPrimaryColor300 = ColorUtil.colorFromHex('#18465a');
+  static final kPrimaryColor300 = ColorUtil.colorFromHex('#0A7EEA');
   static final kPrimaryColor400 = ColorUtil.colorFromHex('#11313f');
   static final kPrimaryColor500 = ColorUtil.colorFromHex('#0f2b37');
  
@@ -111,6 +113,7 @@ class CustomTypography {
   static final kTitleSmall = ColorUtil.colorFromHex('#979797');
   static final kTitleMedium = ColorUtil.colorFromHex('#344054');
   static final kTitleLarge = ColorUtil.colorFromHex('#344053');
+  static final kBackgroundOnboard = ColorUtil.colorFromHex('#D3DFEA');
 
   static final kTextFieldBorderColor = kLineColor;
 

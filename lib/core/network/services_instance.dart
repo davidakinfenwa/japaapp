@@ -42,7 +42,7 @@ class Services {
           "Accept": "application/json"
         },
         )
-      );
+      ).timeout(Duration(seconds: 60));
 
      return response;
     } on DioException catch (e) {
@@ -84,7 +84,7 @@ class Services {
         },
         )
 
-      );
+      ).timeout(Duration(seconds: 60));
 
      return response;
     } on DioException catch (e) {
@@ -126,7 +126,7 @@ class Services {
         onReceiveProgress: onReceiveProgress,
         deleteOnError: deleteOnError,
         
-      );
+      ).timeout(Duration(seconds: 60));
       return response;
     } on DioException catch (e) {
 
@@ -159,7 +159,7 @@ class Services {
         cancelToken: cancelToken,
         onSendProgress: onSendProgress,
         onReceiveProgress: onReceiveProgress,
-      );
+      ).timeout(Duration(seconds: 60));
       return response;
     } on FormatException catch (_) {
       throw const FormatException("Unable to process the data");
@@ -216,7 +216,7 @@ class Services {
         options: options,
         cancelToken: cancelToken,
         data: data,
-      );
+      ).timeout(Duration(seconds: 60));
       return response;
     } on DioException catch (e) {
 
@@ -261,7 +261,7 @@ Future<Response> uploadMultipleFile({
       url,
       data: formData,
       
-    );
+    ).timeout(Duration(seconds: 60));
     return response;
    } on DioException catch (e) {
 
@@ -316,7 +316,7 @@ Future<Response> uploadFile({
           "Accept": "application/json"
         },
       ),
-    );
+    ).timeout(Duration(seconds: 60));
     return response;
   } on DioError catch (e) {
     throw _exceptionMapper.mapException(e);

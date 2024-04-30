@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:japaapp/core/constants.dart';
 import 'package:japaapp/core/theme/custom_typography.dart';
+import 'package:japaapp/core/util/width_constraints.dart';
 import 'package:japaapp/presentation/widget/clipper_section.dart';
 @RoutePage()
 
@@ -59,34 +60,108 @@ class _SecondScreenOnboardState extends State<SecondScreenOnboard> with SingleTi
   }
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: CustomTypography.kSecondaryColor200,
+    return  Container(
+       // color: Colors.red,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Center(
+              child: SizedBox(
+                  width: 300,
+                  height: Sizing.kLogoDiameter * 1.5.h,
+                  child: SvgPicture.asset(
+                    'assets/svg/onboard1.svg',
+                    fit: BoxFit.cover,
+                  )),
+            ),
+            _buildWelcomText(),
+          ],
+        ),
+      
+    );
+  }
 
-      body: Stack(
-            children: [
-             Positioned.fill(
-                child: SvgPicture.asset(
-                  'assets/svg/splash.svg',
-                ),
-              ),
-              Align(
-                alignment:Alignment.bottomCenter,
-                child:AnimatedBuilder(animation:_animationController ,builder: (context, child) {
-                  return  ClipPath(
-                  clipper: DrawClip(_animationController.value),
-                  child: Container(
-                    width: MediaQuery.sizeOf(context).width.w,
-                  height: Sizing.kHSpacing50*3,
-                  decoration:const BoxDecoration(
-                    color: CustomTypography.kWhiteColor
-                  ),
-                    //child:const Text("Data start here"),
-                  ),
-                );
-                },)
-              ),
-            ],
+  Widget _buildWelcomText() {
+    return Center(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          SizedBox(height: (Sizing.kSizingMultiple * 4).h),
+
+            SizedBox(
+            width: MediaQuery.sizeOf(context).width*0.85.w,
+            child: RichText(
+                textAlign: TextAlign.center,
+                text: TextSpan(
+                  text: 'CONFUSED ABOUT SETTELING',
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                  fontSize: 20.sp,
+                  fontWeight: FontWeight.w600,
+                  color: CustomTypography.kPrimaryColor200),
+                  // children: <TextSpan>[
+                  //   TextSpan(
+                  //     text: ' \nCONFUSED ABOUT SETTELING',
+                  //     style:
+                  //         Theme.of(context).textTheme.headlineSmall?.copyWith(
+                  //               color: CustomTypography.kPrimaryColor200,
+                  //               fontWeight: FontWeight.w700,
+                  //               //fontFamily: "Nunito"
+                  //             ),
+                  //   ),
+
+                  //   // TextSpan(text: '!'),
+                  // ],
+                )),
           ),
+          
+          SizedBox(height: (Sizing.kSizingMultiple * 2).h),
+          SizedBox(
+            width: 250.w,
+            child: Text(
+              "Confused about your next career and migration plans?",
+              style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                  fontWeight: FontWeight.w500,
+                  color: CustomTypography.kGreyColor70,
+                  fontSize: 14.0.sp),
+
+                  textAlign: TextAlign.center,
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+
+    Widget _buildTopSection() {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(10, 20, 10, 0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          SizedBox(
+            width: MediaQuery.sizeOf(context).width * 0.75.w,
+            child: Text(
+              "A simple way to Migrate and Settle",
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                  fontSize: 24.sp,
+                  fontWeight: FontWeight.w600,
+                  color: CustomTypography.kPrimaryColor200),
+            ),
+          ),
+          SizedBox(height: (Sizing.kSizingMultiple * 1.5).h),
+          SizedBox(
+            width: MediaQuery.sizeOf(context).width * 0.75.w,
+            child: Text(
+              'Japa App offers you a simple and guided way to migrate to your dream country. ',
+              style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                  fontWeight: FontWeight.w500,
+                  color: CustomTypography.kGreyColor70,
+                  fontSize: 14.0.sp),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -115,36 +190,79 @@ class _ThirdScreenOnboardState extends State<ThirdScreenOnboard> with SingleTick
     super.dispose();
   }
   
-  @override
+    @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: CustomTypography.kSecondaryColor200,
-
-      body: Stack(
-            children: [
-             Positioned.fill(
+    return WidthConstraint(context).withHorizontalSymmetricalPadding(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Center(
+            child: SizedBox(
+                width: 300,
+                height: Sizing.kLogoDiameter * 1.5.h,
                 child: SvgPicture.asset(
-                  'assets/svg/splash.svg',
-                ),
-              ),
-              Align(
-                alignment:Alignment.bottomCenter,
-                child:AnimatedBuilder(animation:_animationController ,builder: (context, child) {
-                  return  ClipPath(
-                  clipper: DrawClip1(_animationController.value),
-                  child: Container(
-                    width: MediaQuery.sizeOf(context).width.w,
-                  height: Sizing.kHSpacing50*3,
-                  decoration:const BoxDecoration(
-                    color: CustomTypography.kWhiteColor
-                  ),
-                    //child:const Text("Data start here"),
-                  ),
-                );
-                },)
-              ),
-            ],
+                  'assets/svg/onboard2.svg',
+                  fit: BoxFit.cover,
+                )),
           ),
+          _buildWelcomText(),
+        ],
+      ),
+    );
+  }
+
+
+
+
+
+    Widget _buildWelcomText() {
+    return Center(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          SizedBox(height: (Sizing.kSizingMultiple * 4).h),
+
+            SizedBox(
+            width: MediaQuery.sizeOf(context).width*0.85.w,
+            child: RichText(
+                textAlign: TextAlign.center,
+                text: TextSpan(
+                  text: 'A simple way to Migrate',
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                  fontSize: 25.sp,
+                  fontWeight: FontWeight.w600,
+                  color: CustomTypography.kPrimaryColor200),
+                  // children: <TextSpan>[
+                  //   TextSpan(
+                  //     text: ' \nCONFUSED ABOUT SETTELING',
+                  //     style:
+                  //         Theme.of(context).textTheme.headlineSmall?.copyWith(
+                  //               color: CustomTypography.kPrimaryColor200,
+                  //               fontWeight: FontWeight.w700,
+                  //               //fontFamily: "Nunito"
+                  //             ),
+                  //   ),
+
+                  //   // TextSpan(text: '!'),
+                  // ],
+                )),
+          ),
+          
+          SizedBox(height: (Sizing.kSizingMultiple * 2).h),
+          SizedBox(
+            width: 250.w,
+            child: Text(
+              "Let’s help take the right steps in the step that fits you!",
+              style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                  fontWeight: FontWeight.w500,
+                  color: CustomTypography.kGreyColor70,
+                  fontSize: 14.0.sp),
+
+                  textAlign: TextAlign.center,
+            ),
+          )
+        ],
+      ),
     );
   }
 }
@@ -171,36 +289,78 @@ class _FourthScreenOncoardState extends State<FourthScreenOncoard> with SingleTi
     _animationController.dispose();
     super.dispose();
   }
-  @override
+   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: CustomTypography.kSecondaryColor200,
-
-      body:Stack(
-            children: [
-             Positioned.fill(
+    return WidthConstraint(context).withHorizontalSymmetricalPadding(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Center(
+            child: SizedBox(
+                width: 300,
+                height: Sizing.kLogoDiameter * 1.5.h,
                 child: SvgPicture.asset(
-                  'assets/svg/splash.svg',
-                ),
-              ),
-              Align(
-                alignment:Alignment.bottomCenter,
-                child:AnimatedBuilder(animation:_animationController ,builder: (context, child) {
-                  return  ClipPath(
-                  clipper: DrawClip2(_animationController.value),
-                  child: Container(
-                    width: MediaQuery.sizeOf(context).width.w,
-                  height: Sizing.kHSpacing50*3,
-                  decoration:const BoxDecoration(
-                    color: CustomTypography.kWhiteColor
-                  ),
-                    //child:const Text("Data start here"),
-                  ),
-                );
-                },)
-              ),
-            ],
-          ) ,
+                  'assets/svg/onboard3.svg',
+                  fit: BoxFit.cover,
+                )),
+          ),
+          _buildWelcomText(),
+        ],
+      ),
+    );
+  }
+
+ 
+
+
+      Widget _buildWelcomText() {
+    return Center(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          SizedBox(height: (Sizing.kSizingMultiple * 4).h),
+
+            SizedBox(
+            width: MediaQuery.sizeOf(context).width*0.85.w,
+            child: RichText(
+                textAlign: TextAlign.center,
+                text: TextSpan(
+                  text: 'A simple way to Migrate',
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                  fontSize: 25.sp,
+                  fontWeight: FontWeight.w600,
+                  color: CustomTypography.kPrimaryColor200),
+                  // children: <TextSpan>[
+                  //   TextSpan(
+                  //     text: ' \nCONFUSED ABOUT SETTELING',
+                  //     style:
+                  //         Theme.of(context).textTheme.headlineSmall?.copyWith(
+                  //               color: CustomTypography.kPrimaryColor200,
+                  //               fontWeight: FontWeight.w700,
+                  //               //fontFamily: "Nunito"
+                  //             ),
+                  //   ),
+
+                  //   // TextSpan(text: '!'),
+                  // ],
+                )),
+          ),
+          
+          SizedBox(height: (Sizing.kSizingMultiple * 2).h),
+          SizedBox(
+            width: 250.w,
+            child: Text(
+             "Seamlessly connect with a community of people just like you!",
+              style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                  fontWeight: FontWeight.w500,
+                  color: CustomTypography.kGreyColor70,
+                  fontSize: 14.0.sp),
+
+                  textAlign: TextAlign.center,
+            ),
+          )
+        ],
+      ),
     );
   }
 }

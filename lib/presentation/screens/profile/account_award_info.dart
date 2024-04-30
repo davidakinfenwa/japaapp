@@ -32,7 +32,7 @@ class AccountAwardPages extends StatefulWidget implements AutoRouteWrapper {
   @override
   State<AccountAwardPages> createState() => _AccountAwardPagesState();
 
-       @override
+  @override
   Widget wrappedRoute(BuildContext context) {
     
     return MultiBlocProvider(
@@ -57,6 +57,8 @@ class _AccountAwardPagesState extends State<AccountAwardPages> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   TextEditingController _awwardTitleTextFieldController =TextEditingController();
   TextEditingController _awardTypeTextFieldController = TextEditingController();
+    TextEditingController _toDateFieldController = TextEditingController();
+
 
   DateTime userDOB1 = DateTime.now();
   String toDate = '';
@@ -66,6 +68,7 @@ class _AccountAwardPagesState extends State<AccountAwardPages> {
     super.initState();
     _awwardTitleTextFieldController = TextEditingController();
     _awardTypeTextFieldController = TextEditingController();
+    _toDateFieldController = TextEditingController();
   }
   @override
   void didChangeDependencies() {
@@ -77,6 +80,7 @@ class _AccountAwardPagesState extends State<AccountAwardPages> {
       addNewAwardkSection(i+1, userInfo[i]);
       _awwardTitleTextFieldController = TextEditingController(text: userInfo[0].title);
     _awardTypeTextFieldController = TextEditingController(text: userInfo[0].type);
+    _toDateFieldController = TextEditingController(text: userInfo[0].date);
     }
         } else {
           
@@ -93,7 +97,7 @@ class _AccountAwardPagesState extends State<AccountAwardPages> {
   List<Widget> addNewAwardList = [];
   List<AwardRecord> awardDataList = [];
   void addFirstDefaultMilestone() {
-    AwardRecord defaultMilestone = AwardRecord(type: _awardTypeTextFieldController.text,title: _awwardTitleTextFieldController.text,date: userDOB1);
+    AwardRecord defaultMilestone = AwardRecord(type: _awardTypeTextFieldController.text,title: _awwardTitleTextFieldController.text,date: _toDateFieldController.text);
     if (defaultMilestone.type.isNotEmpty) {
       awardDataList.insert(0, defaultMilestone);
       
@@ -109,7 +113,7 @@ class _AccountAwardPagesState extends State<AccountAwardPages> {
     );
 
     if (picked != null && picked != DateTime.now()) {
-      String formattedDate = DateFormat('MMM yyyy').format(picked);
+      String formattedDate = DateFormat('yyyy-MM-dd').format(picked);
       setState(() {
          userDOB1 = picked;
         toDate = formattedDate;
@@ -136,19 +140,20 @@ class _AccountAwardPagesState extends State<AccountAwardPages> {
       );
 
       if (picked != null && picked != DateTime.now()) {
-        String formattedDate = DateFormat('MMM yyyy').format(picked);
+        String formattedDate = DateFormat('yyyy-MM-dd').format(picked);
         setState(() {
           userDOB = picked;
           
         toDateFieldController.text=formattedDate;
-          toDate = formattedDate;
+         awardDataList[index].date =formattedDate;
+          //toDate = formattedDate;
         });
       }
     }
       AwardRecord awardRecord = AwardRecord(
         type: awardTypeListController.text,
         title: awardTitleListTextFieldController.text,
-        date: userDOB);
+        date: toDateFieldController.text);
 
     addNewAwardList.add(Column(
       children: [
@@ -249,10 +254,10 @@ class _AccountAwardPagesState extends State<AccountAwardPages> {
                   hint: "MM/YYYY",
                   controller: toDateFieldController,
                   onChanged: (value) {
-                    print(DateTime.parse(value.toString()));
-                    if (index >= 0 && index < awardDataList.length) {
-                      awardDataList[index].date =DateTime.parse(value.toString());
-                    }
+                    // print(DateTime.parse(value.toString()));
+                    // if (index >= 0 && index < awardDataList.length) {
+                    //   awardDataList[index].date =DateTime.parse(value.toString());
+                    // }
                   },
                   onTap: () {
                     selectDateList("toD");
@@ -430,66 +435,45 @@ class _AccountAwardPagesState extends State<AccountAwardPages> {
   }
 
   Widget _buildAwardDateTextField() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          "To",
-          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.w500,
-                color: CustomTypography.kGreyColorlabel,
-              ),
-        ),
-        SizedBox(
-          height: Sizing.kHSpacing8 / 2,
-        ),
-        InkWell(
-          onTap: () {
-            setState(() {});
-            _selectDate(context, "toD");
-          },
-          child: Container(
-            //width: MediaQuery.sizeOf(context).width * 0.45.w,
-            padding: EdgeInsets.all(10.dm),
-            decoration: BoxDecoration(
-              color: CustomTypography.kBottomNavColor,
-              //color: const Color(0xFFF4F4F4),
-              borderRadius: BorderRadius.circular(4.r),
-              border: Border.all(
-                width: 1.w, // Width of the border
-                color: const Color(0xFFB7C6CC),
+    return      Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "To",
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w500,
+                    color: CustomTypography.kGreyColorlabel,
+                  ),
+            ),
+            SizedBox(
+              height: Sizing.kHSpacing8 / 2,
+            ),
+            InkWell(
+              onTap: () {
+                setState(() {});
+              },
+              child: SizedBox(
+                width: MediaQuery.sizeOf(context).width.w,
+                child: FormFieldInput(
+                  suffixIcon: Image.asset('assets/images/datee.png', width: 24, height: 24,),
+                  readOnly: true,
+                  hint: "MM/YYYY",
+                  controller: _toDateFieldController,
+                  onChanged: (value) {
+                    // print(DateTime.parse(value.toString()));
+                    // if (index >= 0 && index < awardDataList.length) {
+                    //   awardDataList[index].date =DateTime.parse(value.toString());
+                    // }
+                  },
+                  onTap: () {
+                    _selectDate(context,"toD");
+                  },
+                  // onTapData: ,
+                ),
               ),
             ),
-            height: 44.h,
-            child: Padding(
-              padding: EdgeInsets.only(left: 0.0.w, right: 0.w),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    toDate.isEmpty ? 'MM/YYYY' : toDate,
-                    style: toDate.isEmpty
-                        ? Theme.of(context).textTheme.labelSmall?.copyWith(
-                            fontWeight: FontWeight.w500,
-                            color: CustomTypography.kGreyColorlabel,
-                            fontSize: 13.0.sp)
-                        : Theme.of(context)
-                            .textTheme
-                            .titleSmall!
-                            .copyWith(color: const Color(0xff344054)),
-                  ),
-                  Image.asset(
-                    'assets/images/datee.png',
-                    width: 24,
-                    height: 24,
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ],
-    );
+          ],
+        );
   }
 
   Widget _buildActionButtonback() {

@@ -185,7 +185,7 @@ class _JourneyVisaPredictedPageState extends State<JourneyVisaPredictedPage> {
         CustomButton(
           type: ButtonType.regularButton(
               onTap: () {
-                context.router.push( MyProcessTabRoute(nav: "home"));
+                context.router.replaceAll([ IntendingMigrantRoute(nav: "home")]);
               },
               label: 'Begin my process',
               isLoadingMode: false,

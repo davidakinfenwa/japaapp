@@ -21,15 +21,15 @@ class _LandingPageState extends State<LandingPage> {
     return Scaffold(
       body: Stack(
         children: [
-          Opacity(
-            opacity: 0.9, // Set opacity value (0.0 to 1.0)
-            child:
-                //  SvgPicture.asset("assets/svg/chat.svg"),
-                Image.asset(
-              'assets/images/neew.jpg',
-              fit: BoxFit.cover,
-            ),
-          ),
+          // Opacity(
+          //   opacity: 0.9, // Set opacity value (0.0 to 1.0)
+          //   child:
+          //       //  SvgPicture.asset("assets/svg/chat.svg"),
+          //       Image.asset(
+          //     'assets/images/neew.jpg',
+          //     fit: BoxFit.cover,
+          //   ),
+          // ),
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [

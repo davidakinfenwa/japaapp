@@ -46,8 +46,8 @@ class FamilyProfileFormModel {
 class EducationFamily {
      String levelEducation;
      String institution;
-     DateTime fromDate;
-     DateTime toDate;
+     String fromDate;
+     String toDate;
      String major;
      String scale;
      String grade;
@@ -67,8 +67,8 @@ class EducationFamily {
     factory EducationFamily.fromJson(Map<String, dynamic> json) => EducationFamily(
         levelEducation: json["level_education"],
         institution: json["institution"],
-        fromDate: DateTime.parse(json["from_date"]),
-        toDate: DateTime.parse(json["to_date"]),
+        fromDate: json["from_date"],
+        toDate: json["to_date"],
         major: json["major"],
         scale: json["scale"],
         grade: json["grade"],
@@ -78,8 +78,8 @@ class EducationFamily {
     Map<String, dynamic> toJson() => {
         "level_education": levelEducation,
         "institution": institution,
-        "from_date": "${fromDate.year.toString().padLeft(4, '0')}-${fromDate.month.toString().padLeft(2, '0')}-${fromDate.day.toString().padLeft(2, '0')}",
-        "to_date": "${toDate.year.toString().padLeft(4, '0')}-${toDate.month.toString().padLeft(2, '0')}-${toDate.day.toString().padLeft(2, '0')}",
+        "from_date": fromDate,
+        "to_date": toDate,
         "major": major,
         "scale": scale,
         "grade": grade,
@@ -90,8 +90,8 @@ class EducationFamily {
 class WorkFamily {
      String companyName;
      String position;
-     DateTime dateFrom;
-     DateTime dateTo;
+     String dateFrom;
+     String dateTo;
      dynamic isCurrentWork;
 
     WorkFamily({
@@ -105,16 +105,16 @@ class WorkFamily {
     factory WorkFamily.fromJson(Map<String, dynamic> json) => WorkFamily(
         companyName: json["company_name"],
         position: json["position"],
-        dateFrom: DateTime.parse(json["date_from"]),
-        dateTo: DateTime.parse(json["date_to"]),
+        dateFrom:json["date_from"],
+        dateTo: json["date_to"],
         isCurrentWork: json["is_current_work"],
     );
 
     Map<String, dynamic> toJson() => {
         "company_name": companyName,
         "position": position,
-        "date_from": "${dateFrom.year.toString().padLeft(4, '0')}-${dateFrom.month.toString().padLeft(2, '0')}-${dateFrom.day.toString().padLeft(2, '0')}",
-        "date_to": "${dateTo.year.toString().padLeft(4, '0')}-${dateTo.month.toString().padLeft(2, '0')}-${dateTo.day.toString().padLeft(2, '0')}",
+        "date_from": dateFrom,
+        "date_to": dateTo,
         "is_current_work": isCurrentWork,
     };
     

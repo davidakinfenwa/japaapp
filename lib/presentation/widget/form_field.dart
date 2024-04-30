@@ -601,8 +601,10 @@ class _PhoneNumberInputFieldState extends State<PhoneNumberInputField> {
                   ),
                   //dialogBackgroundColor: Colors.white),
                   child: IntlPhoneField(
+                    
                     pickerDialogStyle: PickerDialogStyle(
                       backgroundColor: Colors.white,
+                      
                       width: MediaQuery.sizeOf(context).width,
                       padding: EdgeInsets.all(20.sp),
                       searchFieldInputDecoration: InputDecoration( 
@@ -628,6 +630,7 @@ class _PhoneNumberInputFieldState extends State<PhoneNumberInputField> {
                               fontWeight: FontWeight.w500,
                               color: CustomTypography.kGreyColorlabel,
                               fontSize: 13.0.sp) ,
+                              hintText: "Search for country",
                       hintStyle: Theme.of(context)
                           .textTheme
                           .labelSmall
@@ -658,12 +661,12 @@ class _PhoneNumberInputFieldState extends State<PhoneNumberInputField> {
                       filled: true,
                       fillColor: CustomTypography.kBottomNavColor,
                       // hintText: widget.hintText,
-                      // labelStyle: TextStyle(color: Colors.red),
+                      labelStyle: TextStyle(color: Colors.red),
                       label: Text(
                         widget.hintText.toString(),
                         style: Theme.of(context).textTheme.labelSmall?.copyWith(
                             fontWeight: FontWeight.w500,
-                            color: CustomTypography.kGreyColorlabel,
+                            color: CustomTypography.kBlackColor,
                             fontSize: 13.0.sp),
                       ),
                       contentPadding: EdgeInsets.all(15.w),

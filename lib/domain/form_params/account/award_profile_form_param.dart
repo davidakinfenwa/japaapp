@@ -19,7 +19,7 @@ class AwardFormParam {
 class AwardRecord {
      String type;
      String title;
-     DateTime date;
+     String date;
 
     AwardRecord({
         required this.type,
@@ -30,12 +30,12 @@ class AwardRecord {
     factory AwardRecord.fromJson(Map<String, dynamic> json) => AwardRecord(
         type: json["type"],
         title: json["title"],
-        date: DateTime.parse(json["date"]),
+        date: json["date"],
     );
 
     Map<String, dynamic> toJson() => {
         "type": type,
         "title": title,
-        "date": "${date.year.toString().padLeft(4, '0')}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}",
+        "date": date,
     };
 }

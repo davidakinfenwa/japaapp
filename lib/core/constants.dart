@@ -51,7 +51,7 @@ class Sizing {
   static const kOTPExpiryDuration = 60; // seconds
 
   // splash screen
-  static const kSplashScreenDelay = 25; // seconds
+  static const kSplashScreenDelay = 3; // seconds
 
   // icon images
   static final kIconImagesHeightSize = (Sizing.kSizingMultiple * 3.75).h;
