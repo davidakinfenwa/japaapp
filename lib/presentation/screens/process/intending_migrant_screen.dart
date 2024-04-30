@@ -71,7 +71,7 @@ class _IntendingMigrantScreenState extends State<IntendingMigrantScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-     widget.nav=="home"? LoadingData.showCustomDialog(context):"";
+     //widget.nav=="home"? LoadingData.showCustomDialog(context):"";
    
   }
   
