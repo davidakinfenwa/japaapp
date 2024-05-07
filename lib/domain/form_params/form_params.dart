@@ -12,4 +12,5 @@ export 'account/work_profile_form_param.dart';
 export 'account/family_profile_form_params.dart';
 export 'account/award_profile_form_param.dart';
 export 'account/budget_form_params.dart';
+export 'journey/task_form_params.dart';
 

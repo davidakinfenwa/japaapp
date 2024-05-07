@@ -39,6 +39,9 @@ class AppRouter extends _$AppRouter {
         CustomRoute(page: SelectedServicesRoute.page,transitionsBuilder: TransitionsBuilders.noTransition, ),
         CustomRoute(page: CommunityDetailRoute.page,transitionsBuilder: TransitionsBuilders.noTransition, ),
         AutoRoute(page: IntendingMigrantRoute.page),
+        AutoRoute(page: NewsUpdateRoute.page),
+        AutoRoute(page: DetailNewsRoute.page),
+
 
 
         

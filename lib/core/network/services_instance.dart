@@ -167,7 +167,8 @@ class Services {
   }
 
   Future<Response> patch(
-      String uri, {
+     {
+         required String uri,
         data,
         Map<String, dynamic>? queryParameters,
         Options? options,
@@ -200,20 +201,29 @@ class Services {
   }
 
   Future<Response> delete(
-      String uri, {
+       {
+        required String uri,
         data,
         Map<String, dynamic>? queryParameters,
         Options? options,
         CancelToken? cancelToken,
         ProgressCallback? onReceiveProgress,
+        String? authorization
       }) async {
     try {
       var response = await dioClient.delete(
         uri,
         queryParameters: queryParameters,
-        options: options,
+      
         cancelToken: cancelToken,
         data: data,
+         options: Options(
+        headers: {
+          'Authorization': authorization,
+          "content-type": "application/json",
+          "Accept": "application/json"
+        },
+        )
       ).timeout(Duration(seconds: 60));
       return response;
     } on DioException catch (e) {

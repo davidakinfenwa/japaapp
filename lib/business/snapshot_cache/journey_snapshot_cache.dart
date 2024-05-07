@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:japaapp/domain/model/journey/country_prediction_model.dart';
-import 'package:japaapp/domain/model/journey/intending_migrant_model.dart';
+import 'package:japaapp/domain/model/models.dart';
 
 
 
@@ -8,6 +7,7 @@ class JourneySnapshotCache with ChangeNotifier {
   static CountryPredictionModel? _countryPredictionModel;
   static CountryPredictionModel? _visaPredictionModel;
   static IntendingMigrantProcessModel? _intendingMigrantProcessModel;
+   static IntendingMigrantProcessModel? _actionModel;
 
 
   CountryPredictionModel get countryPredictionModel => _countryPredictionModel ?? CountryPredictionModel.empty();
@@ -31,6 +31,14 @@ class JourneySnapshotCache with ChangeNotifier {
     notifyListeners();
   }
 
-  
+   IntendingMigrantProcessModel get actionModel => _actionModel ?? IntendingMigrantProcessModel.empty();
+  set actionModel(IntendingMigrantProcessModel user) {
+    _actionModel= user;
+    notifyListeners();
+  }
+
+   void notifyAllListeners() {
+    notifyListeners();
+  }
 
 }

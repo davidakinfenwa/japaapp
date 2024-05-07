@@ -21,6 +21,13 @@ class Endpoints {
   static const String countryPrediction = 'profile/analyse';
   static const String visaPrediction = 'profile/visa-recommendation';
   static const String intendingMigrant = 'profile/intending-migrant-myprocess';
+  static const String deleteTask = 'profile/remove_task-im-myprocess';
+  static const String markTask = 'profile/mark-task-im-myprocess';
+  static const String setDueDateTask = 'profile/setduedate-im-myprocess';
+
+  //News 
+  static const String recentNews = 'dashboard/recentnews';
+
   
 
   

@@ -44,6 +44,8 @@ class Datum {
     final String id;
     final String userId;
     final String task;
+    final String status;
+    final String dueDate; 
     final DateTime createdAt;
     final DateTime updatedAt;
 
@@ -51,6 +53,8 @@ class Datum {
         required this.id,
         required this.userId,
         required this.task,
+        required this.dueDate,
+        required this.status,
         required this.createdAt,
         required this.updatedAt,
     });
@@ -61,6 +65,8 @@ class Datum {
         task: json["task"],
         createdAt: DateTime.parse(json["created_at"]),
         updatedAt: DateTime.parse(json["updated_at"]),
+        dueDate: json["due_date"] !=null? json["due_date"]:"",
+        status: json["status"],
     );
 
     Map<String, dynamic> toJson() => {

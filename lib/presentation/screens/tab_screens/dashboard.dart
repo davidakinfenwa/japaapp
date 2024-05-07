@@ -2,17 +2,21 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:japaapp/business/blocs/bloc_state.dart';
+import 'package:japaapp/business/blocs/news_bloc/recent_news_form_cubit.dart';
 import 'package:japaapp/business/snapshot/tabscreen_provider.dart';
 import 'package:japaapp/business/snapshot_cache/auth_snapshot_cache.dart';
+import 'package:japaapp/business/snapshot_cache/news_snapshot_cache.dart';
 import 'package:japaapp/core/constants.dart';
 import 'package:japaapp/core/exceptions/exceptions.dart';
 import 'package:japaapp/core/route/app_router.dart';
 import 'package:japaapp/core/theme/custom_typography.dart';
 import 'package:japaapp/core/util/width_constraints.dart';
 import 'package:japaapp/domain/model/models.dart';
+import 'package:japaapp/domain/model/news/news_model.dart';
 import 'package:japaapp/presentation/shared/custom_button.dart';
 import 'package:provider/provider.dart';
 
@@ -21,38 +25,38 @@ class DashboardTab extends StatefulWidget {
 
   @override
   State<DashboardTab> createState() => _DashboardTabState();
-
 }
 
-class _DashboardTabState extends State<DashboardTab> with SingleTickerProviderStateMixin {
+class _DashboardTabState extends State<DashboardTab>
+    with SingleTickerProviderStateMixin {
   TapGestureRecognizer tapRecognizer = TapGestureRecognizer();
   late AnimationController _controller;
 
   @override
   void initState() {
-   
     tapRecognizer = TapGestureRecognizer()..onTap = _handlePress;
     _controller = AnimationController(
       vsync: this,
       duration: Duration(seconds: 4), // Adjust duration as needed
     )..repeat(reverse: true);
-     super.initState();
+    super.initState();
   }
+
   @override
   void dispose() {
     _controller.dispose();
     super.dispose();
   }
 
-   void _handlePress() {
+  void _handlePress() {
     HapticFeedback.vibrate();
-   
+
     context.router.replace(const JourneyLandingRoute());
   }
 
   ScrollPhysics _physics = const BouncingScrollPhysics();
 
-  Widget _buildSalutationSection( ) {
+  Widget _buildSalutationSection() {
     //  final _isLoadingState =
     //     state is Loading<Failure<ExceptionMessage>, AccountBalance>;
 
@@ -136,36 +140,38 @@ class _DashboardTabState extends State<DashboardTab> with SingleTickerProviderSt
             //         ),
             //   ),
             // ),
-             SizedBox(
+            SizedBox(
               width: MediaQuery.sizeOf(context).width * 0.5.w,
-               child: AnimatedBuilder(
-                animation: _controller,
-                 builder: (context,index) {
-                   return Text.rich(
-                         TextSpan(
-                           text: 'Your dreams begins here!',
-                           children: [
-                             TextSpan(
-                               text: ' Get Started',
-                               style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                                      fontWeight: FontWeight.w700,
-                                      color: CustomTypography.kPrimaryColor300,
-                                      fontSize: 16.0.sp,
-                                      decoration: TextDecoration.underline),
-                               recognizer: tapRecognizer,
-                               
-                             ),
-                           ],
-                           style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                               fontWeight: FontWeight.w500,
-                               color: CustomTypography.kGreyColorlabel,
-                               //height: 0.15.h,
-                               fontSize: 16.0.sp),
-                         ),
-                       );
-                 }
-               ),
-             )
+              child: AnimatedBuilder(
+                  animation: _controller,
+                  builder: (context, index) {
+                    return Text.rich(
+                      TextSpan(
+                        text: 'Your dreams begins here!',
+                        children: [
+                          TextSpan(
+                            text: ' Get Started',
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleLarge!
+                                .copyWith(
+                                    fontWeight: FontWeight.w700,
+                                    color: CustomTypography.kPrimaryColor300,
+                                    fontSize: 16.0.sp,
+                                    decoration: TextDecoration.underline),
+                            recognizer: tapRecognizer,
+                          ),
+                        ],
+                        style:
+                            Theme.of(context).textTheme.titleMedium!.copyWith(
+                                fontWeight: FontWeight.w500,
+                                color: CustomTypography.kGreyColorlabel,
+                                //height: 0.15.h,
+                                fontSize: 16.0.sp),
+                      ),
+                    );
+                  }),
+            )
           ],
         ),
         Expanded(
@@ -313,8 +319,9 @@ class _DashboardTabState extends State<DashboardTab> with SingleTickerProviderSt
               itemBuilder: (context, index) {
                 final data = items[index];
                 return InkWell(
-                  onTap: (){
-                    context.router.push(CommunityDetailRoute(title:  data['title'] ));
+                  onTap: () {
+                    context.router
+                        .push(CommunityDetailRoute(title: data['title']));
                   },
                   child: _buildCommunityList(
                       data['title'], data['image'], data['count']),
@@ -357,10 +364,9 @@ class _DashboardTabState extends State<DashboardTab> with SingleTickerProviderSt
                 child: Text(
                   constraints.maxHeight > 50 ? "$title..." : title,
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        color: const Color(0xFF344054),
-                        fontWeight: FontWeight.w500,
-                        fontSize: 14.sp
-                      ),
+                      color: const Color(0xFF344054),
+                      fontWeight: FontWeight.w500,
+                      fontSize: 14.sp),
                   maxLines: constraints.maxHeight > 50 ? null : 1,
                   //overflow: TextOverflow.ellipsis,
                 ),
@@ -459,7 +465,6 @@ class _DashboardTabState extends State<DashboardTab> with SingleTickerProviderSt
             height: 180.h,
             width: MediaQuery.sizeOf(context).width,
             child: ListView.builder(
-              
               padding: EdgeInsets.fromLTRB(0, 0, 0.w, 0),
               shrinkWrap: true,
               dragStartBehavior: DragStartBehavior.start,
@@ -481,24 +486,29 @@ class _DashboardTabState extends State<DashboardTab> with SingleTickerProviderSt
 
   Widget _buildConsultantList(String title, String img, String count) {
     return Container(
-     // padding: EdgeInsets.only(left: 10.w),
-     margin: EdgeInsets.only(right: Sizing.kWSpacing12.w),
-       width: 130,
-          //   height: 120,
-      decoration:BoxDecoration(
+      // padding: EdgeInsets.only(left: 10.w),
+      margin: EdgeInsets.only(right: Sizing.kWSpacing12.w),
+      width: 130,
+      //   height: 120,
+      decoration: BoxDecoration(
         border: Border.all(color: CustomTypography.kGreyColor40),
         borderRadius: BorderRadius.circular(Sizing.kSizingMultiple),
-       // color: Colors.red,
-      ) ,
+        // color: Colors.red,
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           ClipRRect(
             clipBehavior: Clip.antiAlias,
-            borderRadius:BorderRadius.only(topLeft: Radius.circular(Sizing.kBorderRadius.r),topRight: Radius.circular(Sizing.kBorderRadius.r)),
-            child: Image.asset(img,fit: BoxFit.cover,) ,
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(Sizing.kBorderRadius.r),
+                topRight: Radius.circular(Sizing.kBorderRadius.r)),
+            child: Image.asset(
+              img,
+              fit: BoxFit.cover,
+            ),
           ),
-         
+
           // Container(
           //   width: 130,
           //   height: 120,
@@ -512,97 +522,99 @@ class _DashboardTabState extends State<DashboardTab> with SingleTickerProviderSt
           //   //       borderRadius: BorderRadius.only(topLeft: Radius.circular(Sizing.kBorderRadius.r),topRight: Radius.circular(Sizing.kBorderRadius.r))),
           //   // ),
           // ),
-       Padding(
-         padding: const EdgeInsets.only(left: 8),
-         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-             
-            Padding(
-              padding: const EdgeInsets.only(right: 8),
-              child: SizedBox(
-                width: 120,
-                child: Text(
-                  title,
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        color: const Color(0xFF344054),
-                        fontWeight: FontWeight.w700,
-                        fontSize: 14.sp,
-                        height: 1.2.h,
-                      ),
-                ),
-              ),
-            ),
-            SizedBox(
-              height: Sizing.kSizingMultiple.h,
-            ),
-            Padding(
-              padding: const EdgeInsets.only(right: 15),
-              child: Row(
-                children: List.generate(
-                  4,
-                  (index) => SvgPicture.asset("assets/svg/star.svg"),
-                ),
-              ),
-            ),
-            SizedBox( height: Sizing.kSizingMultiple.h),
-            Padding(
-              padding:  EdgeInsets.only(right: 14.w),
-              child: Text.rich(
-                TextSpan(
-                  text: 'Hourly Price:',
-                  children: [
-                    TextSpan(
-                      text: ' \$100',
-                      style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                          fontWeight: FontWeight.w700,
-                          color: CustomTypography.kBlackColor,
-                          fontSize: 12.0.sp),
-                      //recognizer: _tapRecognizer,
+          Padding(
+            padding: const EdgeInsets.only(left: 8),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(right: 8),
+                  child: SizedBox(
+                    width: 120,
+                    child: Text(
+                      title,
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                            color: const Color(0xFF344054),
+                            fontWeight: FontWeight.w700,
+                            fontSize: 14.sp,
+                            height: 1.2.h,
+                          ),
                     ),
-                  ],
-                  style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                      fontWeight: FontWeight.w500,
-                      color: CustomTypography.kGreyColorlabel,
-                      height: 0.15.h,
-                      fontSize: 10.0.sp),
+                  ),
                 ),
-              ),
+                SizedBox(
+                  height: Sizing.kSizingMultiple.h,
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(right: 15),
+                  child: Row(
+                    children: List.generate(
+                      4,
+                      (index) => SvgPicture.asset("assets/svg/star.svg"),
+                    ),
+                  ),
+                ),
+                SizedBox(height: Sizing.kSizingMultiple.h),
+                Padding(
+                  padding: EdgeInsets.only(right: 14.w),
+                  child: Text.rich(
+                    TextSpan(
+                      text: 'Hourly Price:',
+                      children: [
+                        TextSpan(
+                          text: ' \$100',
+                          style: Theme.of(context)
+                              .textTheme
+                              .titleSmall!
+                              .copyWith(
+                                  fontWeight: FontWeight.w700,
+                                  color: CustomTypography.kBlackColor,
+                                  fontSize: 12.0.sp),
+                          //recognizer: _tapRecognizer,
+                        ),
+                      ],
+                      style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                          fontWeight: FontWeight.w500,
+                          color: CustomTypography.kGreyColorlabel,
+                          height: 0.15.h,
+                          fontSize: 10.0.sp),
+                    ),
+                  ),
+                ),
+              ],
             ),
-         ],),
-       )
-
+          )
         ],
       ),
     );
   }
 
   Widget _buildNewsSection() {
-    final List<Map<String, dynamic>> items = [
-      {
-        "image": "assets/images/com12.png",
-        "count": "2h ago · by Isabella Kwai",
-        "title": 'UK net migration in 2022 revised upwards to 745,000'
-      },
-      // {"image": "assets/svgs/squarepassword.svg", "title": 'Locked Savings'},
-      {
-        "image": "assets/images/com13.png",
-        "count": "2h ago · by Isabella Kwai",
-        "title": 'Immigration is rocketing. Thats brilliant news for Britain.'
-      },
-      {
-        "image": "assets/images/com14.png",
-        "count": "2h ago · by Isabella Kwai",
-        "title":
-            'Immigration Series: All about how to get naturalised in Germany'
-      },
-      {
-        "image": "assets/images/com12.png",
-        "count": "2h ago · by Isabella Kwai",
-        "title":
-            'Immigration Series: All about how to get naturalised in Germany'
-      },
-    ];
+    // final List<Map<String, dynamic>> items = [
+    //   {
+    //     "image": "assets/images/com12.png",
+    //     "count": "2h ago · by Isabella Kwai",
+    //     "title": 'UK net migration in 2022 revised upwards to 745,000'
+    //   },
+    //   // {"image": "assets/svgs/squarepassword.svg", "title": 'Locked Savings'},
+    //   {
+    //     "image": "assets/images/com13.png",
+    //     "count": "2h ago · by Isabella Kwai",
+    //     "title": 'Immigration is rocketing. Thats brilliant news for Britain.'
+    //   },
+    //   {
+    //     "image": "assets/images/com14.png",
+    //     "count": "2h ago · by Isabella Kwai",
+    //     "title":
+    //         'Immigration Series: All about how to get naturalised in Germany'
+    //   },
+    //   {
+    //     "image": "assets/images/com12.png",
+    //     "count": "2h ago · by Isabella Kwai",
+    //     "title":
+    //         'Immigration Series: All about how to get naturalised in Germany'
+    //   },
+    // ];
     return SizedBox(
       child: Container(
         padding: const EdgeInsets.all(10),
@@ -633,7 +645,9 @@ class _DashboardTabState extends State<DashboardTab> with SingleTickerProviderSt
                     InkWell(
                         splashColor: Colors.transparent,
                         highlightColor: Colors.transparent,
-                        onTap: () {},
+                        onTap: () {
+                          context.router.push(NewsUpdateRoute());
+                        },
                         child: Text(
                           "Read More",
                           style:
@@ -654,25 +668,31 @@ class _DashboardTabState extends State<DashboardTab> with SingleTickerProviderSt
             SizedBox(
               height: Sizing.kHSpacing10,
             ),
-            Container(
-              
-              height: 380.h,
-              width: MediaQuery.sizeOf(context).width,
-              child: ListView.builder(
-                // padEnds: false,
-                padding: EdgeInsets.fromLTRB(0, 0, 0.w, 0),
-                shrinkWrap: true,
-                dragStartBehavior: DragStartBehavior.start,
-                scrollDirection: Axis.vertical,
-                physics: NeverScrollableScrollPhysics(),
-                itemCount: items.length,
+            BlocBuilder<RecentNewCubit, BlocState<Failure<ExceptionMessage>, RecentNewsModel>>(
+              builder: (context, state) {
+                 final items = context.read<NewsSnapshotCache>().newsModel;
+          final isLoading =state is Loading<Failure<ExceptionMessage>, RecentNewsModel>;
+        return  isLoading==true? CircularProgressIndicator.adaptive():
+                 Container(
+                  height: 380.h,
+                  width: MediaQuery.sizeOf(context).width,
+                  child: ListView.builder(
+                    // padEnds: false,
+                    padding: EdgeInsets.fromLTRB(0, 0, 0.w, 0),
+                    shrinkWrap: true,
+                    dragStartBehavior: DragStartBehavior.start,
+                    scrollDirection: Axis.vertical,
+                    physics: NeverScrollableScrollPhysics(),
+                    itemCount: items.news.length,
 
-                itemBuilder: (context, index) {
-                  final data = items[index];
-                  return _buildNewsList(
-                      data['title'], data['image'], data['count']);
-                },
-              ),
+                    itemBuilder: (context, index) {
+                      final data = items.news[index];
+                      return _buildNewsList(
+                          data.title, data.mediaImageUrl, data.postedBy);
+                    },
+                  ),
+                );
+              },
             ),
             //SizedBox(height: (Sizing.kSizingMultiple * 2.5).h),
           ],
@@ -694,7 +714,7 @@ class _DashboardTabState extends State<DashboardTab> with SingleTickerProviderSt
             height: 90,
             decoration: ShapeDecoration(
               image: DecorationImage(
-                image: AssetImage(img),
+                image: NetworkImage(img),
                 fit: BoxFit.fill,
               ),
               shape: RoundedRectangleBorder(
@@ -722,7 +742,7 @@ class _DashboardTabState extends State<DashboardTab> with SingleTickerProviderSt
                 LayoutBuilder(
                   builder: (BuildContext context, BoxConstraints constraints) {
                     return SizedBox(
-                     width: MediaQuery.sizeOf(context).width*0.5,
+                      width: MediaQuery.sizeOf(context).width * 0.5,
                       height: 50,
                       child: Text(
                         constraints.maxHeight > 50 ? "$title..." : title,
@@ -743,10 +763,8 @@ class _DashboardTabState extends State<DashboardTab> with SingleTickerProviderSt
                 Text(
                   count,
                   style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                        color: const Color(0xFF6C7072),
-                        fontWeight: FontWeight.w400
-                       
-                      ),
+                      color: const Color(0xFF6C7072),
+                      fontWeight: FontWeight.w400),
                 ),
               ],
             ),
@@ -858,8 +876,9 @@ class _DashboardTabState extends State<DashboardTab> with SingleTickerProviderSt
                 itemBuilder: (context, index) {
                   return Container(
                     width: MediaQuery.sizeOf(context).width * 0.6,
-                    margin: EdgeInsets.only(right: Sizing.kSizingMultiple*2.w),
-                    padding:const EdgeInsets.all(10),
+                    margin:
+                        EdgeInsets.only(right: Sizing.kSizingMultiple * 2.w),
+                    padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
                       color: const Color(0xFFF8F8F8),
                       borderRadius: BorderRadius.circular(16),
@@ -993,6 +1012,4 @@ class _DashboardTabState extends State<DashboardTab> with SingleTickerProviderSt
       ),
     );
   }
-
-  
 }

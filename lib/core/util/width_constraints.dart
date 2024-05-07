@@ -22,7 +22,7 @@ class WidthConstraint {
   /// gets the maximum width constaint. Default value is 500
   double get maxWidthConstraint => _maxWithConstraint;
 
-  final _paddingConst = 20.w;
+  final _paddingConst = 14.w;
 
   /// gets content width which should be 95% of device screen width
   /// if device screen width is less than 500 and

@@ -5,6 +5,7 @@ import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:japaapp/business/snapshot/tabscreen_provider.dart';
 import 'package:japaapp/business/snapshot_cache/journey_snapshot_cache.dart';
+import 'package:japaapp/business/snapshot_cache/news_snapshot_cache.dart';
 import 'package:japaapp/core/dependence/dependence.dart';
 import 'package:japaapp/core/route/app_router.dart';
 import 'package:japaapp/core/theme/custom_typography.dart';
@@ -44,6 +45,7 @@ void main() async {
         ChangeNotifierProvider(create: (context) => AccountPageProvider()),
         ChangeNotifierProvider(create: (context) => AccountSnapshotCache()),
         ChangeNotifierProvider(create: (context) => JourneySnapshotCache()),
+        ChangeNotifierProvider(create: (context) => NewsSnapshotCache()),
         
       ],
       child: MultiBlocProvider(providers: [

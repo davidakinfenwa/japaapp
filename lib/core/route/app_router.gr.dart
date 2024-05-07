@@ -67,6 +67,12 @@ abstract class _$AppRouter extends RootStackRouter {
         child: WrappedRoute(child: const CreateAccountPage()),
       );
     },
+    DetailNewsRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: WrappedRoute(child: const DetailNewsScreen()),
+      );
+    },
     EmailVerificationRoute.name: (routeData) {
       return AutoRoutePage<dynamic>(
         routeData: routeData,
@@ -83,10 +89,11 @@ abstract class _$AppRouter extends RootStackRouter {
       final args = routeData.argsAs<IntendingMigrantRouteArgs>();
       return AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: IntendingMigrantScreen(
+        child: WrappedRoute(
+            child: IntendingMigrantScreen(
           key: args.key,
           nav: args.nav,
-        ),
+        )),
       );
     },
     JoureyCompareDestinationRoute.name: (routeData) {
@@ -139,6 +146,12 @@ abstract class _$AppRouter extends RootStackRouter {
           key: args.key,
           nav: args.nav,
         ),
+      );
+    },
+    NewsUpdateRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: WrappedRoute(child: const NewsUpdateScreen()),
       );
     },
     OTPVerificationRoute.name: (routeData) {
@@ -322,6 +335,20 @@ class CreateAccountRoute extends PageRouteInfo<void> {
         );
 
   static const String name = 'CreateAccountRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
+/// [DetailNewsScreen]
+class DetailNewsRoute extends PageRouteInfo<void> {
+  const DetailNewsRoute({List<PageRouteInfo>? children})
+      : super(
+          DetailNewsRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'DetailNewsRoute';
 
   static const PageInfo<void> page = PageInfo<void>(name);
 }
@@ -526,6 +553,20 @@ class MyProcessTabRouteArgs {
   String toString() {
     return 'MyProcessTabRouteArgs{key: $key, nav: $nav}';
   }
+}
+
+/// generated route for
+/// [NewsUpdateScreen]
+class NewsUpdateRoute extends PageRouteInfo<void> {
+  const NewsUpdateRoute({List<PageRouteInfo>? children})
+      : super(
+          NewsUpdateRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'NewsUpdateRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
 }
 
 /// generated route for

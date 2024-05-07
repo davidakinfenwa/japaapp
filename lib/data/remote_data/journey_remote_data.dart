@@ -1,14 +1,16 @@
 import 'package:japaapp/core/network/network.dart';
 import 'package:japaapp/data/local_data/local_storage.dart';
+import 'package:japaapp/domain/form_params/form_params.dart';
 import 'package:japaapp/domain/form_params/journey/visa_selection_form_params.dart';
-import 'package:japaapp/domain/model/journey/country_prediction_model.dart';
-import 'package:japaapp/domain/model/journey/intending_migrant_model.dart';
+import 'package:japaapp/domain/model/models.dart';
 
 abstract class JourneyRemoteDataSource {
   Future<CountryPredictionModel> countryPrediction();
   Future< CountryPredictionModel> visaPrediction({required VisaSelectionFormParams visaSelectionFormParams});
   Future< IntendingMigrantProcessModel> intendingMigrantProcess();
-
+   Future< IntendingMigrantProcessModel> markAsDone({required MarkTaskDoneFormParams markTaskDoneFormParams});
+  Future< IntendingMigrantProcessModel>setDueDate({required SetDueDateFormParams setDueDateFormParams});
+  Future< IntendingMigrantProcessModel> deleteTask({required DeleteTaskFormParams deleteTaskFormParams});
 
 
 }
@@ -33,6 +35,24 @@ class JourneyRemoteDataSourceImpl implements JourneyRemoteDataSource{
   @override
   Future<IntendingMigrantProcessModel> intendingMigrantProcess()async {
    var apiRes= await _services.get(uri:Endpoints.intendingMigrant,authorization: "Bearer Bearer ${await TokenService().retrieveToken()}");
+    return IntendingMigrantProcessModel.fromJson(apiRes.data);
+  }
+  
+  @override
+  Future<IntendingMigrantProcessModel> deleteTask({required DeleteTaskFormParams deleteTaskFormParams})async {
+   var apiRes= await _services.delete(uri:Endpoints.deleteTask,data: deleteTaskFormParams, authorization: "Bearer Bearer ${await TokenService().retrieveToken()}");
+    return IntendingMigrantProcessModel.fromJson(apiRes.data);
+  }
+  
+  @override
+  Future<IntendingMigrantProcessModel> markAsDone({required MarkTaskDoneFormParams markTaskDoneFormParams})async {
+   var apiRes= await _services.post(uri:Endpoints.markTask,data: markTaskDoneFormParams, authorization: "Bearer Bearer ${await TokenService().retrieveToken()}");
+    return IntendingMigrantProcessModel.fromJson(apiRes.data);
+  }
+  
+  @override
+  Future<IntendingMigrantProcessModel> setDueDate({required SetDueDateFormParams setDueDateFormParams})async {
+    var apiRes= await _services.post(uri:Endpoints.setDueDateTask,data: setDueDateFormParams, authorization: "Bearer Bearer ${await TokenService().retrieveToken()}");
     return IntendingMigrantProcessModel.fromJson(apiRes.data);
   }
   

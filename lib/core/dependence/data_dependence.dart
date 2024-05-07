@@ -14,17 +14,23 @@ import 'package:japaapp/business/blocs/auth_blocs/signin_form_cubit/signin_form_
 import 'package:japaapp/business/blocs/auth_blocs/signup_form_cubit/signup_form_cubit.dart';
 import 'package:japaapp/business/blocs/journey/country_prediction_form_cubit.dart';
 import 'package:japaapp/business/blocs/journey/intending_migrant_form_cubit.dart';
+
 import 'package:japaapp/business/blocs/journey/visa_prediction_form_cubit.dart';
+import 'package:japaapp/business/blocs/news_bloc/recent_news_form_cubit.dart';
 import 'package:japaapp/business/snapshot_cache/journey_snapshot_cache.dart';
+import 'package:japaapp/business/snapshot_cache/news_snapshot_cache.dart';
 import 'package:japaapp/business/snapshot_cache/snapshot_cache.dart';
 import 'package:japaapp/core/network/network.dart';
 import 'package:japaapp/data/remote_data/account_remote_data.dart';
 import 'package:japaapp/data/remote_data/auth_remote_data.dart';
 import 'package:japaapp/data/remote_data/journey_remote_data.dart';
+import 'package:japaapp/data/remote_data/news_remote_data.dart';
 import 'package:japaapp/data/repository_impl/account_repo_impl.dart';
 import 'package:japaapp/data/repository_impl/auth_repo_impl.dart';
 import 'package:japaapp/data/repository_impl/journey_repo_impl.dart';
+import 'package:japaapp/data/repository_impl/news_repo_impl.dart';
 import 'package:japaapp/domain/repositories/journey_repository.dart';
+import 'package:japaapp/domain/repositories/news.repository.dart';
 import 'package:japaapp/domain/repositories/repositories.dart';
 
 void authDependenciesInit(GetIt getIt) {
@@ -45,6 +51,8 @@ void authDependenciesInit(GetIt getIt) {
   getIt.registerFactory<VisaPredictionCubit>(() => VisaPredictionCubit( repository: getIt(), snapshotCache: getIt()));
   getIt.registerFactory<CreateBudgetInformationCubit>(() => CreateBudgetInformationCubit( repository: getIt(), snapshotCache: getIt()));
   getIt.registerFactory<IntendingMigrantCubit>(() => IntendingMigrantCubit( repository: getIt(), snapshotCache: getIt()));
+  getIt.registerFactory<RecentNewCubit>(() => RecentNewCubit( repository: getIt(), snapshotCache: getIt()));
+ // getIt.registerFactory<TaskActionCubit>(() => TaskActionCubit( repository: getIt(), snapshotCache: getIt()));
 
 
 
@@ -52,11 +60,13 @@ void authDependenciesInit(GetIt getIt) {
   getIt.registerLazySingleton<AuthRepository>(() => AuthRepositoryImpl(networkInfo: getIt(), remoteDataSource: getIt(),),);
   getIt.registerLazySingleton<AccountRepository>(() => AccountRepositoryImpl(networkInfo: getIt(), remoteDataSource: getIt(),),);
   getIt.registerLazySingleton<JoruneyRepository>(() => JourneyRepoImp(networkInfo: getIt(), remoteDataSource: getIt(),),);
+  getIt.registerLazySingleton<NewsRepository>(() => NewsRepoImp(networkInfo: getIt(), remoteDataSource: getIt(),),);
 
 //REMOTE DATA
   getIt.registerLazySingleton<AuthRemoteDataSource>(() => AuthRemoteDataSourceImpl(services: getIt()));
   getIt.registerLazySingleton<AccountRemoteDataSource>(() => AccountRemoteDataSourceImpl(services: getIt()));
   getIt.registerLazySingleton<JourneyRemoteDataSource>(() => JourneyRemoteDataSourceImpl(services: getIt()));
+  getIt.registerLazySingleton<NewsRemoteDataSource>(() => NewsRemoteDataSourceImpl(services: getIt()));
 
   getIt.registerLazySingleton<Services>(() => Services(exceptionMapper: getIt()));
 
@@ -64,4 +74,5 @@ void authDependenciesInit(GetIt getIt) {
   getIt.registerLazySingleton<AuthSnapshotCache>(() => AuthSnapshotCache());
   getIt.registerLazySingleton<AccountSnapshotCache>(() => AccountSnapshotCache());
   getIt.registerLazySingleton<JourneySnapshotCache>(() => JourneySnapshotCache());
+  getIt.registerLazySingleton<NewsSnapshotCache>(() => NewsSnapshotCache());
 }

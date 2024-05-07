@@ -9,6 +9,8 @@ export 'tab_screens/dashboard.dart';
 export 'tab_screens/tab_screen.dart';
 export 'tab_screens/process_tab.dart';
 export 'community/community_detail_screen.dart';
+export 'news/view_all_news_screen.dart';
+export 'news/detail_news_screen.dart';
 
 
 
