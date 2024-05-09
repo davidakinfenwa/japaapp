@@ -16,6 +16,7 @@ import 'package:japaapp/business/blocs/journey/country_prediction_form_cubit.dar
 import 'package:japaapp/business/blocs/journey/intending_migrant_form_cubit.dart';
 
 import 'package:japaapp/business/blocs/journey/visa_prediction_form_cubit.dart';
+import 'package:japaapp/business/blocs/news_bloc/all_news_form_cubit.dart';
 import 'package:japaapp/business/blocs/news_bloc/recent_news_form_cubit.dart';
 import 'package:japaapp/business/snapshot_cache/journey_snapshot_cache.dart';
 import 'package:japaapp/business/snapshot_cache/news_snapshot_cache.dart';
@@ -52,6 +53,7 @@ void authDependenciesInit(GetIt getIt) {
   getIt.registerFactory<CreateBudgetInformationCubit>(() => CreateBudgetInformationCubit( repository: getIt(), snapshotCache: getIt()));
   getIt.registerFactory<IntendingMigrantCubit>(() => IntendingMigrantCubit( repository: getIt(), snapshotCache: getIt()));
   getIt.registerFactory<RecentNewCubit>(() => RecentNewCubit( repository: getIt(), snapshotCache: getIt()));
+  getIt.registerFactory<AllNewsCubit>(() => AllNewsCubit( repository: getIt(), snapshotCache: getIt()));
  // getIt.registerFactory<TaskActionCubit>(() => TaskActionCubit( repository: getIt(), snapshotCache: getIt()));
 
 

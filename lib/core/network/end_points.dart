@@ -27,6 +27,9 @@ class Endpoints {
 
   //News 
   static const String recentNews = 'dashboard/recentnews';
+  static const String allNews = 'dashboard/news';
+
+
 
   
 

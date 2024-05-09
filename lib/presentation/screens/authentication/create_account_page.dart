@@ -198,6 +198,7 @@ return countryCode;
 
   Widget _buildTopSection() {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SizedBox(
           width: MediaQuery.sizeOf(context).width * 0.75.w,
@@ -209,6 +210,16 @@ return countryCode;
                   height: 0.75.h,
                 ),
           ),
+        ),
+           SizedBox(height: (Sizing.kSizingMultiple * 1).h),
+        Text(
+          "Finding that path is easier than you think. Let's get you up and running. ",
+          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                fontSize: 14.sp,
+                fontWeight: FontWeight.w400,
+
+                ///height: 0.75.h,
+              ),
         ),
       ],
     );

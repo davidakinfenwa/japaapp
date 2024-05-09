@@ -144,15 +144,11 @@ class _IntendingMigrantScreenState extends State<IntendingMigrantScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          SizedBox(height: (Sizing.kSizingMultiple).h),
+                          //SizedBox(height: (Sizing.kSizingMultiple).h),
                           widget.nav == "home"
                               ? _buildIntendedImmigrantSection()
                               : _buildNewImmigrantInNeeedSection(),
 
-                          //   SizedBox(height: (Sizing.kSizingMultiple * 4).h),
-                          //  widget.nav == "home"
-                          //       ? _buildActionButton()
-                          //       : _buildActionContinueButton(),
                           SizedBox(height: (Sizing.kSizingMultiple).h),
                           widget.nav == "home"
                               ? const SizedBox()
@@ -195,6 +191,9 @@ class _IntendingMigrantScreenState extends State<IntendingMigrantScreen> {
   }
 
   Widget _buildIntendedImmigrantSection() {
+    
+    var bottomNavCProvider = Provider.of<TabScreenNotifier>(context);
+
       return BlocConsumer<IntendingMigrantCubit, BlocState<Failure<ExceptionMessage>, IntendingMigrantProcessModel>>(
       listener: (context, state) {
         state.maybeMap(
@@ -229,21 +228,26 @@ class _IntendingMigrantScreenState extends State<IntendingMigrantScreen> {
                 backgroundColor: true,
                 buttonText: "Dismiss", onTap: () {
               context.router.maybePop();
+               bottomNavCProvider.pageIndex = 1;
+        context.router.replaceAll([const TabRoute()]);
             }, alertType: AlertType.warning);
           },
         );
       },
       builder:(context, state) {
-         final checkList = context.read<JourneySnapshotCache>().intendingMigrantProcessModel;
-          final isLoading =state is Loading<Failure<ExceptionMessage>, IntendingMigrantProcessModel>;
+        final checkList = context.read<JourneySnapshotCache>().intendingMigrantProcessModel;
+         
+          final isLoading = state is Loading<Failure<ExceptionMessage>, IntendingMigrantProcessModel>;
+          print("this is the loading kkkkkk $isLoading");
          //BotToast.cleanAll();
-         if (isLoading==true) 
-         {
-             LoadingData.showCustomDialog(context);
-           
-         } 
-           BotToast.cleanAll();
-           return Column(
+      //  return  isLoading==true ?   Column(
+      //   crossAxisAlignment: CrossAxisAlignment.center,
+      //    children: [
+      //      Center(child:CircularProgressIndicator.adaptive()),
+      //    ],
+      //  ):
+       
+          return  Column(
         children: [
         ListView.builder(
             physics: const BouncingScrollPhysics(),

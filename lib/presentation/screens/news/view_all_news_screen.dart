@@ -8,15 +8,20 @@ import 'package:intl/intl.dart';
 import 'package:japaapp/business/blocs/bloc_state.dart';
 import 'package:japaapp/business/blocs/journey/intending_migrant_form_cubit.dart';
 import 'package:japaapp/business/blocs/journey/task_action_form_cubit.dart';
+import 'package:japaapp/business/blocs/news_bloc/all_news_form_cubit.dart';
 import 'package:japaapp/business/snapshot/tabscreen_provider.dart';
 import 'package:japaapp/business/snapshot_cache/journey_snapshot_cache.dart';
+import 'package:japaapp/business/snapshot_cache/news_snapshot_cache.dart';
 import 'package:japaapp/core/constants.dart';
 import 'package:japaapp/core/dependence/dependence.dart';
 import 'package:japaapp/core/exceptions/exceptions.dart';
 import 'package:japaapp/core/route/app_router.dart';
-
 import 'package:japaapp/core/theme/custom_typography.dart';
+
 import 'package:japaapp/core/util/width_constraints.dart';
+import 'package:japaapp/domain/model/news/news_model.dart';
+import 'package:japaapp/presentation/shared/alert_dialog.dart';
+import 'package:timeago/timeago.dart' as timeago;
 
 import 'package:japaapp/presentation/widget/custom_app_bar.dart';
 import 'package:provider/provider.dart';
@@ -33,10 +38,8 @@ class NewsUpdateScreen extends StatefulWidget implements AutoRouteWrapper {
   Widget wrappedRoute(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider<IntendingMigrantCubit>(
-            create: (context) =>
-                getIt<IntendingMigrantCubit>()..intendingMigrant()),
-       
+        BlocProvider<AllNewsCubit>(
+            create: (context) => getIt<AllNewsCubit>()..allNews())
       ],
       child: this,
     );
@@ -46,6 +49,7 @@ class NewsUpdateScreen extends StatefulWidget implements AutoRouteWrapper {
 class _NewsUpdateScreenState extends State<NewsUpdateScreen> {
   @override
   void initState() {
+    getIt<AllNewsCubit>().allNews();
     super.initState();
   }
 
@@ -68,7 +72,7 @@ class _NewsUpdateScreenState extends State<NewsUpdateScreen> {
   Widget _buildProcessforSectionForIntendingOrNewMigrant() {
     return Stack(
       children: [
-       // _buildBackground(),
+        // _buildBackground(),
         WidthConstraint(context).withHorizontalSymmetricalPadding(
           child: Column(
             children: [
@@ -87,9 +91,9 @@ class _NewsUpdateScreenState extends State<NewsUpdateScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           _searchSection(),
-                          SizedBox(height: (Sizing.kSizingMultiple*2).h),
+                          SizedBox(height: (Sizing.kSizingMultiple * 2).h),
                           _buildNewsListSection(),
-                          SizedBox(height: (Sizing.kSizingMultiple*2).h),
+                          SizedBox(height: (Sizing.kSizingMultiple * 2).h),
                         ],
                       ),
                     ),
@@ -127,7 +131,7 @@ class _NewsUpdateScreenState extends State<NewsUpdateScreen> {
     );
   }
 
-    Widget _searchSection() {
+  Widget _searchSection() {
     return SizedBox(
       height: 50.sp,
       child: TextFormField(
@@ -170,56 +174,85 @@ class _NewsUpdateScreenState extends State<NewsUpdateScreen> {
     );
   }
 
-  Widget _buildNewsListSection(){
-      final List<Map<String, dynamic>> items = [
-      {
-        "image": "assets/images/com12.png",
-        "count": "2h ago · by Isabella Kwai",
-        "title": 'UK net migration in 2022 revised upwards to 745,000'
-      },
-      // {"image": "assets/svgs/squarepassword.svg", "title": 'Locked Savings'},
-      {
-        "image": "assets/images/com13.png",
-        "count": "2h ago · by Isabella Kwai",
-        "title": 'Immigration is rocketing. Thats brilliant news for Britain.'
-      },
-      {
-        "image": "assets/images/com14.png",
-        "count": "2h ago · by Isabella Kwai",
-        "title":
-            'Immigration Series: All about how to get naturalised in Germany'
-      },
-      {
-        "image": "assets/images/com12.png",
-        "count": "2h ago · by Isabella Kwai",
-        "title":
-            'Immigration Series: All about how to get naturalised in Germany'
-      },
-    ];
-    return   ListView.builder(
-      // padEnds: false,
-      padding: EdgeInsets.fromLTRB(0, 0, 0.w, 0),
-      shrinkWrap: true,
-      //dragStartBehavior: DragStartBehavior.start,
-      //scrollDirection: Axis.vertical,
-      physics: const NeverScrollableScrollPhysics(),
-      itemCount: items.length,
-    
-      itemBuilder: (context, index) {
-        final data = items[index];
-        return InkWell(
-          onTap: (){
-            context.router.replace(const DetailNewsRoute());
-          },
-          child: _buildNewsList(
-              data['title'], data['image'], data['count']),
-        );
-      },
+  Widget _buildNewsListSection() {
+
+    return SizedBox(
+      height: MediaQuery.sizeOf(context).height,
+      child: BlocBuilder<AllNewsCubit,
+          BlocState<Failure<ExceptionMessage>, NewsSectionModel>>(
+        builder: (context, state) {
+    final items = context.read<NewsSnapshotCache>().newsSectionModel;
+          final isLoading =
+              state is Loading<Failure<ExceptionMessage>, NewsSectionModel>;
+          return isLoading == true
+              ? const Center(child: CircularProgressIndicator.adaptive())
+              : SizedBox(
+                  //height: 380.h,
+                  width: MediaQuery.sizeOf(context).width,
+                  child: ListView.builder(
+                    // padEnds: false,
+                    padding: EdgeInsets.fromLTRB(0, 0, 0.w, 0),
+                    shrinkWrap: true,
+
+                    // scrollDirection: Axis.vertical,
+                    physics: const BouncingScrollPhysics(),
+                    itemCount: items.news.newsData.length,
+
+                    itemBuilder: (context, index) {
+                      final data = items.news.newsData[index];
+                      return InkWell(
+                        onTap: () {
+                          context.router.push(DetailNewsRoute(newModel: data));
+                        },
+                        child: _buildNewsList(data.title, data.mediaImageUrl,
+                            data.postedBy, data.time, data.date.toString()),
+                      );
+                    },
+                  ),
+                );
+        },
+      ),
     );
+
+    // ListView.builder(
+    //   // padEnds: false,
+    //   padding: EdgeInsets.fromLTRB(0, 0, 0.w, 0),
+    //   shrinkWrap: true,
+    //   //dragStartBehavior: DragStartBehavior.start,
+    //   //scrollDirection: Axis.vertical,
+    //   physics: const NeverScrollableScrollPhysics(),
+    //   itemCount: items.length,
+
+    //   itemBuilder: (context, index) {
+    //     final data = items[index];
+    //     return InkWell(
+    //       onTap: (){
+    //        // context.router.replace(const DetailNewsRoute());
+    //       },
+    //       child: _buildNewsList(
+    //           data['title'], data['image'], data['count']),
+    //     );
+    //   },
+    // );
   }
 
+  String formatTimeAgo(DateTime time) {
+    DateTime currentTime = DateTime.now();
+    Duration difference = currentTime.difference(time);
+    return timeago.format(currentTime.subtract(difference));
+  }
 
-   Widget _buildNewsList(String title, String img, String count) {
+  Widget _buildNewsList(
+      String title, String img, String count, String time, String date) {
+    String providedDate = date.toString();
+    String providedTime = time.toString();
+
+    // Combine date and time into a single string
+    String combinedDateTimeString = '$providedDate $providedTime';
+
+    // Parse the combined string into a DateTime object
+    DateTime combinedDateTime =
+        DateFormat('yyyy-MM-dd HH:mm:ss').parse(combinedDateTimeString);
     return Container(
       width: MediaQuery.sizeOf(context).width.w,
       //color: Colors.red,
@@ -227,18 +260,44 @@ class _NewsUpdateScreenState extends State<NewsUpdateScreen> {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            width: 90,
-            height: 85,
-            decoration: ShapeDecoration(
-              image: DecorationImage(
-                image: AssetImage(img),
-                fit: BoxFit.fill,
-              ),
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8)),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: Image.network(
+              img,
+              width: 90,
+              height: 85,
+              fit: BoxFit.cover,
+              loadingBuilder: (BuildContext context, Widget child,
+                  ImageChunkEvent? loadingProgress) {
+                if (loadingProgress == null) {
+                  return child;
+                } else {
+                  return Center(
+                    child: CircularProgressIndicator.adaptive(
+                      // color: Custom,
+                      strokeWidth: 2,
+                      value: loadingProgress.expectedTotalBytes != null
+                          ? loadingProgress.cumulativeBytesLoaded /
+                              (loadingProgress.expectedTotalBytes ?? 1)
+                          : null,
+                    ),
+                  );
+                }
+              },
             ),
           ),
+          // Container(
+          //   width: 90,
+          //   height: 85,
+          //   decoration: ShapeDecoration(
+          //     image: DecorationImage(
+          //       image: AssetImage(img),
+          //       fit: BoxFit.fill,
+          //     ),
+          //     shape: RoundedRectangleBorder(
+          //         borderRadius: BorderRadius.circular(8)),
+          //   ),
+          // ),
           SizedBox(
             width: Sizing.kSizingMultiple * 2.h,
           ),
@@ -246,28 +305,16 @@ class _NewsUpdateScreenState extends State<NewsUpdateScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // SizedBox(
-                //   width: MediaQuery.sizeOf(context).width*0.5,
-                //   child: Text(
-                //     title,
-                //     style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                //           color: const Color(0xFF344054),
-                //           fontWeight: FontWeight.w500,
-                //           // height: 1.2.h,
-                //         ),
-                //   ),
-                // ),
                 LayoutBuilder(
                   builder: (BuildContext context, BoxConstraints constraints) {
                     return SizedBox(
-                     width: MediaQuery.sizeOf(context).width*0.6,
+                      width: MediaQuery.sizeOf(context).width * 0.6,
                       height: 50,
                       child: Text(
                         constraints.maxHeight > 50 ? "$title..." : title,
                         style:
                             Theme.of(context).textTheme.titleMedium?.copyWith(
                                   color: const Color(0xFF090A0A),
-                                 
                                 ),
                         maxLines: constraints.maxHeight > 50 ? null : 1,
                         //overflow: TextOverflow.ellipsis,
@@ -278,14 +325,22 @@ class _NewsUpdateScreenState extends State<NewsUpdateScreen> {
                 SizedBox(
                   height: Sizing.kSizingMultiple.h,
                 ),
-                Text(
-                  count,
-                  style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                        color: const Color(0xFF6C7072),
-                        fontWeight: FontWeight.w400
-                       
+                Text.rich(
+                  TextSpan(
+                    text: formatTimeAgo(combinedDateTime),
+                    children: [
+                      TextSpan(
+                        text: ' . by $count',
+                        style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                            color: const Color(0xFF6C7072),
+                            fontWeight: FontWeight.w400),
                       ),
-                ),
+                    ],
+                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                        color: CustomTypography.kPrimaryColor300,
+                        fontWeight: FontWeight.w400),
+                  ),
+                )
               ],
             ),
           ),
@@ -293,5 +348,4 @@ class _NewsUpdateScreenState extends State<NewsUpdateScreen> {
       ),
     );
   }
-
 }

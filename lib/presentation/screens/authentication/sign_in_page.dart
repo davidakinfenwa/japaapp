@@ -41,6 +41,7 @@ class _SignInPageState extends State<SignInPage> {
   TextEditingController _passwordTextFieldController = TextEditingController();
 
   TapGestureRecognizer _tapRecognizer = TapGestureRecognizer();
+  TapGestureRecognizer _tapRecognizerPassword = TapGestureRecognizer();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   @override
   void initState() {
@@ -48,11 +49,16 @@ class _SignInPageState extends State<SignInPage> {
     _emailTextFieldController = TextEditingController();
     _passwordTextFieldController = TextEditingController();
     _tapRecognizer = TapGestureRecognizer()..onTap = _handlePress;
+    _tapRecognizerPassword=TapGestureRecognizer()..onTap= _handlePressPassword;
   }
 
   void _handlePress() {
     HapticFeedback.vibrate();
     context.router.replace(const EmailVerificationRoute());
+  }
+    void _handlePressPassword() {
+    HapticFeedback.vibrate();
+    context.router.push(const ForgotPasswordInRoute());
   }
 
   @override
@@ -75,44 +81,49 @@ class _SignInPageState extends State<SignInPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        child: WidthConstraint(context).withHorizontalSymmetricalPadding(
-          child: Stack(
-            children: [
-              const Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [CustomBackButton()],
-              ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SingleChildScrollView(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(height: (Sizing.kSizingMultiple * 4).h),
-                        _buildTopSection(),
-                        SizedBox(height: (Sizing.kSizingMultiple).h),
-                        _buildFormSection(),
-                        SizedBox( height:(MediaQuery.sizeOf(context).height * 0.1).h),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Padding(
-                      padding: EdgeInsets.only(bottom: Sizing.kHSpacing50.h),
+      body: GestureDetector(
+        onTap: (){
+          FocusScope.of(context).requestFocus(new FocusNode());
+        },
+        child: SafeArea(
+          child: WidthConstraint(context).withHorizontalSymmetricalPadding(
+            child: Stack(
+              children: [
+                const Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [CustomBackButton()],
+                ),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SingleChildScrollView(
                       child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          _buildActionButton(),
+                          SizedBox(height: (Sizing.kSizingMultiple * 4).h),
+                          _buildTopSection(),
+                          SizedBox(height: (Sizing.kSizingMultiple).h),
+                          _buildFormSection(),
+                          SizedBox( height:(MediaQuery.sizeOf(context).height * 0.1).h),
                         ],
-                      )),
-                ],
-              ),
-            ],
+                      ),
+                    ),
+                  ],
+                ),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Padding(
+                        padding: EdgeInsets.only(bottom: Sizing.kHSpacing50.h),
+                        child: Column(
+                          children: [
+                            _buildActionButton(),
+                          ],
+                        )),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -121,6 +132,7 @@ class _SignInPageState extends State<SignInPage> {
 
   Widget _buildTopSection() {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SizedBox(
           //width: MediaQuery.sizeOf(context).width * 0.75.w,
@@ -139,8 +151,19 @@ class _SignInPageState extends State<SignInPage> {
                 'assets/images/emoji.png',
                 width: (Sizing.kSizingMultiple * 3).w,
               ),
+             
             ],
           ),
+        ),
+           SizedBox(height: (Sizing.kSizingMultiple * 1).h),
+        Text(
+          "Please enter your Pathfinder credentials",
+          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                fontSize: 14.sp,
+                fontWeight: FontWeight.w400,
+
+                ///height: 0.75.h,
+              ),
         ),
       ],
     );
@@ -150,10 +173,13 @@ class _SignInPageState extends State<SignInPage> {
     return Form(
       key: _formKey,
       child: Column(
+        
         children: [
           _buildEmailOneTextField(),
           SizedBox(height: (Sizing.kSizingMultiple * 1.5).h),
           _buildEmailTwoTextField(),
+          SizedBox(height: (Sizing.kSizingMultiple * 2).h),
+          _buildForgotPasswordSection(),
         ],
       ),
     );
@@ -200,6 +226,37 @@ class _SignInPageState extends State<SignInPage> {
           },
         )
       ],
+    );
+  }
+  Widget _buildForgotPasswordSection(){
+    return SizedBox(
+      width: MediaQuery.sizeOf(context).width,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+         Text.rich(
+        TextSpan(
+          text: 'Forgot password?',
+          // children: [
+          //   TextSpan(
+          //     text: ' SignUp',
+          //     style: Theme.of(context).textTheme.titleLarge!.copyWith(
+          //         fontWeight: FontWeight.w700,
+          //         color: const Color(0xff5A5A5A),
+          //         fontSize: 16.0.sp),
+          //     recognizer: _tapRecognizer,
+          //   ),
+          // ],
+          style: Theme.of(context).textTheme.titleMedium!.copyWith(
+              fontWeight: FontWeight.w500,
+              color: CustomTypography.kGreyColorlabel,
+              height: 0.15.h,
+              fontSize: 16.0.sp),
+              recognizer: _tapRecognizerPassword,
+      
+        ),
+      )
+      ],),
     );
   }
 

@@ -25,8 +25,21 @@ class NewsRepoImp implements NewsRepository{
         return left(Failure.serverFailure(exception: e));
       }
     } else {
-      return left(const Failure.serverFailure(
-          exception: ExceptionMessages.NO_INTERNET_CONNECTION));
+      return left(const Failure.serverFailure(exception: ExceptionMessages.NO_INTERNET_CONNECTION));
+    }
+  }
+  
+  @override
+  Future<Either<Failure<ExceptionMessage>, NewsSectionModel>> allNews()async {
+     if ((await _networkInfo.isConnected)) {
+      try {
+        final userInfoModel = await _remoteDataSource.allNews();
+        return right(userInfoModel);
+      } on ExceptionType<ExceptionMessage> catch (e) {
+        return left(Failure.serverFailure(exception: e));
+      }
+    } else {
+      return left(const Failure.serverFailure( exception: ExceptionMessages.NO_INTERNET_CONNECTION));
     }
   }
 

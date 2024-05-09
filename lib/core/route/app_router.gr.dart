@@ -67,10 +67,21 @@ abstract class _$AppRouter extends RootStackRouter {
         child: WrappedRoute(child: const CreateAccountPage()),
       );
     },
-    DetailNewsRoute.name: (routeData) {
+    DashboardRoute.name: (routeData) {
       return AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: WrappedRoute(child: const DetailNewsScreen()),
+        child: WrappedRoute(child: const DashboardScreen()),
+      );
+    },
+    DetailNewsRoute.name: (routeData) {
+      final args = routeData.argsAs<DetailNewsRouteArgs>();
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: WrappedRoute(
+            child: DetailNewsScreen(
+          key: args.key,
+          newModel: args.newModel,
+        )),
       );
     },
     EmailVerificationRoute.name: (routeData) {
@@ -83,6 +94,12 @@ abstract class _$AppRouter extends RootStackRouter {
       return AutoRoutePage<dynamic>(
         routeData: routeData,
         child: const FirstScreenOndoard(),
+      );
+    },
+    ForgotPasswordInRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: WrappedRoute(child: const ForgotPasswordInPage()),
       );
     },
     IntendingMigrantRoute.name: (routeData) {
@@ -340,17 +357,55 @@ class CreateAccountRoute extends PageRouteInfo<void> {
 }
 
 /// generated route for
-/// [DetailNewsScreen]
-class DetailNewsRoute extends PageRouteInfo<void> {
-  const DetailNewsRoute({List<PageRouteInfo>? children})
+/// [DashboardScreen]
+class DashboardRoute extends PageRouteInfo<void> {
+  const DashboardRoute({List<PageRouteInfo>? children})
       : super(
+          DashboardRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'DashboardRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
+/// [DetailNewsScreen]
+class DetailNewsRoute extends PageRouteInfo<DetailNewsRouteArgs> {
+  DetailNewsRoute({
+    Key? key,
+    required NewsModel newModel,
+    List<PageRouteInfo>? children,
+  }) : super(
           DetailNewsRoute.name,
+          args: DetailNewsRouteArgs(
+            key: key,
+            newModel: newModel,
+          ),
           initialChildren: children,
         );
 
   static const String name = 'DetailNewsRoute';
 
-  static const PageInfo<void> page = PageInfo<void>(name);
+  static const PageInfo<DetailNewsRouteArgs> page =
+      PageInfo<DetailNewsRouteArgs>(name);
+}
+
+class DetailNewsRouteArgs {
+  const DetailNewsRouteArgs({
+    this.key,
+    required this.newModel,
+  });
+
+  final Key? key;
+
+  final NewsModel newModel;
+
+  @override
+  String toString() {
+    return 'DetailNewsRouteArgs{key: $key, newModel: $newModel}';
+  }
 }
 
 /// generated route for
@@ -377,6 +432,20 @@ class FirstRouteOndoard extends PageRouteInfo<void> {
         );
 
   static const String name = 'FirstRouteOndoard';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
+/// [ForgotPasswordInPage]
+class ForgotPasswordInRoute extends PageRouteInfo<void> {
+  const ForgotPasswordInRoute({List<PageRouteInfo>? children})
+      : super(
+          ForgotPasswordInRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'ForgotPasswordInRoute';
 
   static const PageInfo<void> page = PageInfo<void>(name);
 }

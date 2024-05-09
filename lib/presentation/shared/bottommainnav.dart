@@ -40,10 +40,10 @@ class BottomMainNav extends StatelessWidget {
                   ? "assets/svg/homeactivenew.svg"
                   : "assets/svg/homenotfill.svg",
               color: value.pageIndex == 0
-                  ? CustomTypography.kPrimaryColor200
+                  ? CustomTypography.kPrimaryColor300
                   : CustomTypography.kGreyColor80,
               svgColor: value.pageIndex == 0
-                  ? CustomTypography.kPrimaryColor200
+                  ? CustomTypography.kPrimaryColor300
                   : CustomTypography.kGreyColor80,
             ),
             BottomNavWidget(
@@ -57,10 +57,10 @@ class BottomMainNav extends StatelessWidget {
                   ? "assets/svg/chat.svg"
                   : "assets/svg/chat.svg",
               color: value.pageIndex == 1
-                ? CustomTypography.kPrimaryColor200
+                ? CustomTypography.kPrimaryColor300
                   : CustomTypography.kGreyColor80,
               svgColor: value.pageIndex == 1
-                  ? CustomTypography.kPrimaryColor200
+                  ? CustomTypography.kPrimaryColor300
                   : CustomTypography.kGreyColor80,
             ),
   
@@ -74,10 +74,10 @@ class BottomMainNav extends StatelessWidget {
                   ? "assets/svg/globefill.svg"
                   : "assets/svg/globe.svg",
               color: value.pageIndex == 2
-               ? CustomTypography.kPrimaryColor200
+               ? CustomTypography.kPrimaryColor300
                   : CustomTypography.kGreyColor80,
               svgColor: value.pageIndex == 2
-                  ? CustomTypography.kPrimaryColor200
+                  ? CustomTypography.kPrimaryColor300
                   : CustomTypography.kGreyColor80,
             ),
             BottomNavWidget(
@@ -89,10 +89,10 @@ class BottomMainNav extends StatelessWidget {
                   ? "assets/svg/accountfill.svg"
                   : "assets/svg/account.svg",
               color: value.pageIndex == 3
-                  ? CustomTypography.kPrimaryColor200
+                  ? CustomTypography.kPrimaryColor300
                   : CustomTypography.kGreyColor80,
               svgColor: value.pageIndex == 3
-                  ? CustomTypography.kPrimaryColor200
+                  ? CustomTypography.kPrimaryColor300
                   : CustomTypography.kGreyColor80,
             ),
           ]),

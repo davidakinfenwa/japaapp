@@ -81,7 +81,7 @@ class _TabScreenState extends State<TabScreen> {
   // }
 
   List<Widget> pageList = [
-    const DashboardTab(),
+    const DashboardScreen(),
     const MyProcessTabScreen(nav: "home",),
     const ThriveScreen(),
     const AccountTab()

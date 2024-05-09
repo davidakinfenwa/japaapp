@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:japaapp/domain/model/news/news_model.dart';
 import 'package:japaapp/presentation/screens/process/process.dart';
 import 'package:japaapp/presentation/screens/profile/account.dart';
 import 'package:japaapp/presentation/screens/journey/journey.dart';
@@ -41,6 +42,7 @@ class AppRouter extends _$AppRouter {
         AutoRoute(page: IntendingMigrantRoute.page),
         AutoRoute(page: NewsUpdateRoute.page),
         AutoRoute(page: DetailNewsRoute.page),
+        AutoRoute(page: ForgotPasswordInRoute.page),
 
 
 
