@@ -162,57 +162,62 @@ class _OTPVerificationPageState extends State<OTPVerificationPage> {
     // final bool isKeyboardVisible = KeyboardUtil.isKeyboardVisible(context);
 
     return Scaffold(
-      body: SafeArea(
-        child: Stack(
-          children: [
-            Column(
-              // mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                WidthConstraint(context).withHorizontalSymmetricalPadding(
-                    child: const CustomBackButton())
-              ],
-            ),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                SingleChildScrollView(
-                  child:
-                      WidthConstraint(context).withHorizontalSymmetricalPadding(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(height: (Sizing.kSizingMultiple * 4).h),
-                        _buildTopSection(),
-
-                        SizedBox(height: (Sizing.kSizingMultiple).h),
-                        _buildFormSection(),
-                        SizedBox(
-                            height:
-                                (MediaQuery.sizeOf(context).height * 0.1).h),
-
-                       
-                      ],
+      body: GestureDetector(
+           onTap: (){
+          FocusScope.of(context).requestFocus(new FocusNode());
+        },
+        child: SafeArea(
+          child: Stack(
+            children: [
+              Column(
+                // mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  WidthConstraint(context).withHorizontalSymmetricalPadding(
+                      child: const CustomBackButton())
+                ],
+              ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SingleChildScrollView(
+                    child:
+                        WidthConstraint(context).withHorizontalSymmetricalPadding(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(height: (Sizing.kSizingMultiple * 4).h),
+                          _buildTopSection(),
+        
+                          SizedBox(height: (Sizing.kSizingMultiple).h),
+                          _buildFormSection(),
+                          SizedBox(
+                              height:
+                                  (MediaQuery.sizeOf(context).height * 0.1).h),
+        
+                         
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              ],
-            ),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Padding(
-                  padding: EdgeInsets.only(bottom: Sizing.kHSpacing50.h),
-                  child:
-                      WidthConstraint(context).withHorizontalSymmetricalPadding(
-                          child: Column(
-                    children: [
-                      _buildActionButton(),
-                    ],
-                  )),
-                )
-              ],
-            ),
-          ],
+                ],
+              ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(bottom: Sizing.kHSpacing50.h),
+                    child:
+                        WidthConstraint(context).withHorizontalSymmetricalPadding(
+                            child: Column(
+                      children: [
+                        _buildActionButton(),
+                      ],
+                    )),
+                  )
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

@@ -1,19 +1,43 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:japaapp/business/blocs/bloc_state.dart';
+import 'package:japaapp/business/blocs/news_bloc/all_community_form_cubit.dart';
+import 'package:japaapp/business/snapshot_cache/news_snapshot_cache.dart';
 import 'package:japaapp/core/constants.dart';
+import 'package:japaapp/core/dependence/dependence.dart';
+import 'package:japaapp/core/exceptions/exceptions.dart';
+import 'package:japaapp/core/route/app_router.dart';
 import 'package:japaapp/core/theme/custom_typography.dart';
 import 'package:japaapp/core/util/width_constraints.dart';
+import 'package:japaapp/domain/model/models.dart';
+import 'package:japaapp/presentation/shared/response_indicators/error_indicator.dart';
 import 'package:japaapp/presentation/widget/form_field.dart';
 
-class ThriveScreen extends StatefulWidget {
+class ThriveScreen extends StatefulWidget implements AutoRouteWrapper{
   const ThriveScreen({super.key});
 
   @override
   State<ThriveScreen> createState() => _ThriveScreenState();
+
+   @override
+  Widget wrappedRoute(BuildContext context) {
+    //final userInfo = context.read<AccountSnapshotCache>().userInfo;
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<AllCommunityCubit>(
+          create: (context) => getIt<AllCommunityCubit>()..recentCommunity(),
+        ),
+       
+      ],
+      child: this,
+    );
+  }
 }
 
 class _ThriveScreenState extends State<ThriveScreen>
@@ -27,6 +51,7 @@ class _ThriveScreenState extends State<ThriveScreen>
       _tabController = TabController(length: 4, vsync: this);
       _tabController.addListener(_handleTabChange);
       _searchTextFieldController = TextEditingController();
+      print(_tabController.index);
     });
 
     super.initState();
@@ -159,79 +184,109 @@ class _ThriveScreenState extends State<ThriveScreen>
   }
 
   Widget _buildTabView() {
-    final List<Map<String, dynamic>> items = [
-      {
-        "image": "assets/images/com12.png",
-        "count": "45 members",
-        "title": 'Nigerians Living in the UK'
-      },
-      {
-        "image": "assets/images/com13.png",
-        "count": "20 members",
-        "title": 'Global Africa Community'
-      },
-      {
-        "image": "assets/images/com14.png",
-        "count": "10 members",
-        "title": 'Personal Savings'
-      },
-      {
-        "image": "assets/images/com12.png",
-        "count": "45 members",
-        "title": 'Nigerians Living in the UK'
-      },
-      {
-        "image": "assets/images/com14.png",
-        "count": "20 members",
-        "title": 'Global Africa Community'
-      },
-      {
-        "image": "assets/images/com13.png",
-        "count": "10 members",
-        "title": 'Personal Savings'
-      },
-    ];
+   
     return SingleChildScrollView(
       child: SizedBox(
         height: MediaQuery.of(context).size.height * 0.7.h,
         child: TabBarView(controller: _tabController, children: [
-          GridView.builder(
-              shrinkWrap: true,
-              physics: const BouncingScrollPhysics(),
-              padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 10,
-                mainAxisSpacing: 10,
-                childAspectRatio: 0.6,
-              ),
-              itemCount: items.length,
-              itemBuilder: (context, index) {
-                final data = items[index];
-                return _buildCommunityList(
-                    data['title'], data['image'], data['count']);
-              }),
+          _buildCommunitySection(),
           _buildJobListSection(),
           _buildHouseSection(),
           _buildMentorshipBox(),
-          // GridView.builder(
-          //     shrinkWrap: true,
-          //     physics: const BouncingScrollPhysics(),
-          //     padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-          //     gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          //       crossAxisCount: 2,
-          //       crossAxisSpacing: 10,
-          //       mainAxisSpacing: 10,
-          //       childAspectRatio: 1,
-          //     ),
-          //     itemCount: items.length,
-          //     itemBuilder: (context, index) {
-          //       final data = items[index];
-          //       return _buildCommunityList(
-          //           data['title'], data['image'], data['count']);
-          //     }),
+        
         ]),
       ),
+    );
+  }
+
+  Widget _buildCommunitySection() {
+    return BlocBuilder<AllCommunityCubit,BlocState<Failure<ExceptionMessage>, AllCommunitiesModel>>(
+      builder: (context, state) {
+            final items = context.read<NewsSnapshotCache>().allCommunitiesModel;
+           return state.maybeMap(
+              orElse: () {
+            if (items.communities.communities.isNotEmpty) {
+               return GridView.builder(
+            shrinkWrap: true,
+            physics: const BouncingScrollPhysics(),
+            padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              crossAxisSpacing: 10,
+              mainAxisSpacing: 10,
+              childAspectRatio: 0.6,
+            ),
+            itemCount: items.communities.communities.length,
+            itemBuilder: (context, index) {
+              final data = items.communities.communities[index];
+              return _buildCommunityList(
+                  data.communityName, data.logo, data.totalMembers);
+            });
+            }
+
+            return const Center(child: CircularProgressIndicator.adaptive());
+          },
+          success: (_) {
+             return GridView.builder(
+            shrinkWrap: true,
+            physics: const BouncingScrollPhysics(),
+            padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              crossAxisSpacing: 10,
+              mainAxisSpacing: 10,
+              childAspectRatio: 0.6,
+            ),
+            itemCount: items.communities.communities.length,
+            itemBuilder: (context, index) {
+              final data = items.communities.communities[index];
+              return InkWell(
+                onTap: (){
+                  context.router
+                  .push(CommunityDetailRoute(title: data.communityName));
+                },
+                child: _buildCommunityList(
+                    data.communityName, data.logo, data.totalMembers),
+              );
+            });
+          },
+          error: (state) {
+            if (items.communities.communities.isNotEmpty) {
+                 return GridView.builder(
+            shrinkWrap: true,
+            physics: const BouncingScrollPhysics(),
+            padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              crossAxisSpacing: 10,
+              mainAxisSpacing: 10,
+              childAspectRatio: 0.6,
+            ),
+            itemCount: items.communities.communities.length,
+            itemBuilder: (context, index) {
+              final data = items.communities.communities[index];
+              return _buildCommunityList(
+                  data.communityName, data.logo, data.totalMembers);
+            });
+
+            }
+
+            return Center(
+              child:
+                  WidthConstraint(context).withHorizontalSymmetricalPadding(
+                child: ErrorIndicator(
+                  type: ErrorIndicatorType.simple(
+                   // onRetryCallback: () => _onGetSenderIdListCallback(),
+                    code: state.failure.exception.code,
+                    message: state.failure.exception.message.toString(),
+                  ),
+                ),
+              ),
+            );
+          },
+          );
+       
+      },
     );
   }
 
@@ -251,7 +306,7 @@ class _ThriveScreenState extends State<ThriveScreen>
                       topLeft: Radius.circular(Sizing.kSizingMultiple.r),
                       topRight: Radius.circular(Sizing.kSizingMultiple.r)),
                   child: Image.asset(
-                    img,
+                    "assets/images/com13.png",
                     height: MediaQuery.sizeOf(context).height,
                     width: MediaQuery.sizeOf(context).width,
                     fit: BoxFit.cover,
@@ -895,25 +950,24 @@ class _ThriveScreenState extends State<ThriveScreen>
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(
-                                    'Paul Pastur 86.',
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .titleMedium
-                                        ?.copyWith(
-                                          fontWeight: FontWeight.w700,
-                                        )
-                                  ),
+                                  Text('Paul Pastur 86.',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleMedium
+                                          ?.copyWith(
+                                            fontWeight: FontWeight.w700,
+                                          )),
                                   Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
                                     children: [
                                       Row(
                                         children: [
                                           SvgPicture.asset(
                                               "assets/svg/bed.svg"),
-                                               SizedBox(
-                                        width: Sizing.kSizingMultiple.h,
-                                      ),
+                                          SizedBox(
+                                            width: Sizing.kSizingMultiple.h,
+                                          ),
                                           Text(
                                             '3',
                                             style: Theme.of(context)
@@ -928,15 +982,15 @@ class _ThriveScreenState extends State<ThriveScreen>
                                         ],
                                       ),
                                       SizedBox(
-                                        width: Sizing.kSizingMultiple*2.h,
+                                        width: Sizing.kSizingMultiple * 2.h,
                                       ),
                                       Row(
                                         children: [
                                           SvgPicture.asset(
                                               "assets/svg/bath.svg"),
-                                               SizedBox(
-                                        width: Sizing.kSizingMultiple.h,
-                                      ),
+                                          SizedBox(
+                                            width: Sizing.kSizingMultiple.h,
+                                          ),
                                           Text(
                                             '3',
                                             style: Theme.of(context)
@@ -951,15 +1005,15 @@ class _ThriveScreenState extends State<ThriveScreen>
                                         ],
                                       ),
                                       SizedBox(
-                                        width: Sizing.kSizingMultiple*2.h,
+                                        width: Sizing.kSizingMultiple * 2.h,
                                       ),
                                       Row(
                                         children: [
                                           SvgPicture.asset(
                                               "assets/svg/size.svg"),
-                                               SizedBox(
-                                        width: Sizing.kSizingMultiple.h,
-                                      ),
+                                          SizedBox(
+                                            width: Sizing.kSizingMultiple.h,
+                                          ),
                                           Text(
                                             '334 sqft',
                                             style: Theme.of(context)
@@ -980,7 +1034,8 @@ class _ThriveScreenState extends State<ThriveScreen>
                               Expanded(
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.end,
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
                                       '\$342',
@@ -991,19 +1046,19 @@ class _ThriveScreenState extends State<ThriveScreen>
                                             fontWeight: FontWeight.w700,
                                           ),
                                     ),
-                                     SizedBox(
-                                        height: Sizing.kSizingMultiple/2.h,
-                                      ),
+                                    SizedBox(
+                                      height: Sizing.kSizingMultiple / 2.h,
+                                    ),
                                     Text(
                                       'Monthly',
-                                      style:  Theme.of(context)
-                                                .textTheme
-                                                .titleSmall
-                                                ?.copyWith(
-                                                  color: CustomTypography
-                                                      .kTitleMedium,
-                                                  fontWeight: FontWeight.w700,
-                                                ),
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleSmall
+                                          ?.copyWith(
+                                            color:
+                                                CustomTypography.kTitleMedium,
+                                            fontWeight: FontWeight.w700,
+                                          ),
                                     ),
                                   ],
                                 ),
@@ -1021,21 +1076,22 @@ class _ThriveScreenState extends State<ThriveScreen>
     );
   }
 
-Widget _buildMentorshipBox(){
-  return SingleChildScrollView(
-    physics:const BouncingScrollPhysics(),
-    child: Column(children: [
-      _buildMentorshipSection("I have interview coming up"),
-     // SizedBox(height: Sizing.kHSpacing10,),
-      _buildMentorshipSection("I want to grow my career"),
-     // SizedBox(height: Sizing.kHSpacing10,),
-      _buildMentorshipSection("I need legal advice"),
-    ],),
-  );
-}
+  Widget _buildMentorshipBox() {
+    return SingleChildScrollView(
+      physics: const BouncingScrollPhysics(),
+      child: Column(
+        children: [
+          _buildMentorshipSection("I have interview coming up"),
+          // SizedBox(height: Sizing.kHSpacing10,),
+          _buildMentorshipSection("I want to grow my career"),
+          // SizedBox(height: Sizing.kHSpacing10,),
+          _buildMentorshipSection("I need legal advice"),
+        ],
+      ),
+    );
+  }
 
-   Widget _buildMentorshipSection(String title) {
-    
+  Widget _buildMentorshipSection(String title) {
     final List<Map<String, dynamic>> items = [
       {
         "image": "assets/images/com12.png",
@@ -1065,7 +1121,7 @@ Widget _buildMentorshipBox(){
       {
         "image": "assets/images/com13.png",
         "count": "Data Engineer - Apple",
-       "title": 'Name Surname'
+        "title": 'Name Surname'
       },
     ];
     return SizedBox(
@@ -1093,7 +1149,7 @@ Widget _buildMentorshipBox(){
                       splashColor: Colors.transparent,
                       highlightColor: Colors.transparent,
                       onTap: () {
-                       // bottomNavCProvider.pageIndex = 2;
+                        // bottomNavCProvider.pageIndex = 2;
                         // context.router.push( MyProcessTabRoute(nav: "newMigrant"));
                         // context.router.push(route)
                       },
@@ -1117,7 +1173,7 @@ Widget _buildMentorshipBox(){
             height: Sizing.kHSpacing10,
           ),
           Container(
-           // color: Colors.red,
+            // color: Colors.red,
             height: 120.h,
             width: MediaQuery.sizeOf(context).width,
             child: ListView.builder(
@@ -1168,12 +1224,11 @@ Widget _buildMentorshipBox(){
                 width: 100,
                 //height: 50,
                 child: Text(
-                   title,
+                  title,
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        color: const Color(0xFF344054),
-                        fontWeight: FontWeight.w400,
-                        fontSize: 13.sp
-                      ),
+                      color: const Color(0xFF344054),
+                      fontWeight: FontWeight.w400,
+                      fontSize: 13.sp),
                   maxLines: constraints.maxHeight > 50 ? null : 1,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -1185,16 +1240,16 @@ Widget _buildMentorshipBox(){
           // ),
           Text(
             count,
-            style: Theme.of(context).textTheme.titleSmall?.copyWith(
-              fontSize: 9.sp,
-              fontWeight: FontWeight.w400
-                 // color: const Color(0xFF344054),
-                  //height: 0.9,
-                ),
+            style: Theme.of(context)
+                .textTheme
+                .titleSmall
+                ?.copyWith(fontSize: 9.sp, fontWeight: FontWeight.w400
+                    // color: const Color(0xFF344054),
+                    //height: 0.9,
+                    ),
           ),
         ],
       ),
     );
   }
-
 }

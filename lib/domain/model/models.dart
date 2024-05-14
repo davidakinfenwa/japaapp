@@ -9,5 +9,8 @@ export 'account/profile_drop_down_model.dart';
 export 'journey/country_prediction_model.dart';
 export 'journey/intending_migrant_model.dart';
 export 'journey/task_action_model.dart';
+export 'journey/new_migrant_model.dart';
+export 'news/communitiy_model.dart';
+export 'news/news_model.dart';
 
 

@@ -1,15 +1,14 @@
 import 'package:dartz/dartz.dart';
 import 'package:japaapp/core/constants.dart';
-import 'package:japaapp/core/exceptions/exception_code.dart';
 import 'package:japaapp/core/exceptions/exceptions.dart';
-import 'package:japaapp/core/exceptions/failure.dart';
 import 'package:japaapp/core/network/network.dart';
 import 'package:japaapp/data/remote_data/journey_remote_data.dart';
+import 'package:japaapp/domain/form_params/journey/new_migrants_form_params.dart';
 import 'package:japaapp/domain/form_params/journey/task_form_params.dart';
 import 'package:japaapp/domain/form_params/journey/visa_selection_form_params.dart';
 import 'package:japaapp/domain/model/journey/country_prediction_model.dart';
 import 'package:japaapp/domain/model/journey/intending_migrant_model.dart';
-import 'package:japaapp/domain/model/journey/task_action_model.dart';
+import 'package:japaapp/domain/model/journey/new_migrant_model.dart';
 import 'package:japaapp/domain/repositories/journey_repository.dart';
 
 class JourneyRepoImp implements JoruneyRepository{
@@ -100,6 +99,21 @@ class JourneyRepoImp implements JoruneyRepository{
     if ((await _networkInfo.isConnected)) {
       try {
         final userInfoModel = await _remoteDataSource.setDueDate(setDueDateFormParams: setDueDateFormParams);
+        return right(userInfoModel);
+      } on ExceptionType<ExceptionMessage> catch (e) {
+        return left(Failure.serverFailure(exception: e));
+      }
+    } else {
+      return left(const Failure.serverFailure(
+          exception: ExceptionMessages.NO_INTERNET_CONNECTION));
+    }
+  }
+
+  @override
+  Future<Either<Failure<ExceptionMessage>, NewMigrantResponseModel>> newMigrantProcess({required NewMigrantFormParams newMigrantFormParams}) async{
+      if ((await _networkInfo.isConnected)) {
+      try {
+        final userInfoModel = await _remoteDataSource.newMigrantProcess(newMigrantFormParams: newMigrantFormParams);
         return right(userInfoModel);
       } on ExceptionType<ExceptionMessage> catch (e) {
         return left(Failure.serverFailure(exception: e));

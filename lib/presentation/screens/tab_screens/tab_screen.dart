@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:japaapp/business/blocs/account_bloc/get_all_user_data_form_cubit.dart';
 import 'package:japaapp/business/blocs/account_bloc/get_user_drop_down_form_cubit.dart';
+import 'package:japaapp/business/blocs/news_bloc/all_community_form_cubit.dart';
+import 'package:japaapp/business/blocs/news_bloc/recent_community_form_cubit.dart';
 import 'package:japaapp/business/blocs/news_bloc/recent_news_form_cubit.dart';
 import 'package:japaapp/business/snapshot/tabscreen_provider.dart';
 import 'package:japaapp/business/snapshot_cache/snapshot_cache.dart';
@@ -35,6 +37,13 @@ class TabScreen extends StatefulWidget implements AutoRouteWrapper  {
         ),
         BlocProvider<RecentNewCubit>(
           create: (context) => getIt<RecentNewCubit>()..recentNews(),
+        ),
+              BlocProvider<RecentCommunityCubit>(
+          create: (context) => getIt<RecentCommunityCubit>()..recentCommunity(),
+        ),
+        
+        BlocProvider<AllCommunityCubit>(
+          create: (context) => getIt<AllCommunityCubit>()..recentCommunity(),
         ),
       ],
       child: this,

@@ -179,11 +179,10 @@ class _AccountBasicInfoPageState extends State<AccountBasicInfoPage> {
     if (pickedFile != null) {
       setState(() {
         imageFile = pickedFile;
-       
       });
     }
   }
-     void _onUserSignUpCallback() async{
+    void _onUserSignUpCallback() async{
     KeyboardUtil.hideKeyboard(context);
     
     final basicInformationFormParams = BasicInformationFormParams(countryOfOrigin: _countryOriginTextFieldController.text, countryOfResidence: _countryResidenceTextFieldController.text, dateOfBirth: userDOB.toString(), gender: selectedGenderString, firstName: _firstNameTextFieldController.text, otherName: _otherNameTextFieldController.text, surname: _lastNameTextFieldController.text);

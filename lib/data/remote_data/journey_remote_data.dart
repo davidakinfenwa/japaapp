@@ -11,6 +11,8 @@ abstract class JourneyRemoteDataSource {
    Future< IntendingMigrantProcessModel> markAsDone({required MarkTaskDoneFormParams markTaskDoneFormParams});
   Future< IntendingMigrantProcessModel>setDueDate({required SetDueDateFormParams setDueDateFormParams});
   Future< IntendingMigrantProcessModel> deleteTask({required DeleteTaskFormParams deleteTaskFormParams});
+  Future<NewMigrantResponseModel> newMigrantProcess({required NewMigrantFormParams newMigrantFormParams});
+
 
 
 }
@@ -54,6 +56,12 @@ class JourneyRemoteDataSourceImpl implements JourneyRemoteDataSource{
   Future<IntendingMigrantProcessModel> setDueDate({required SetDueDateFormParams setDueDateFormParams})async {
     var apiRes= await _services.post(uri:Endpoints.setDueDateTask,data: setDueDateFormParams, authorization: "Bearer Bearer ${await TokenService().retrieveToken()}");
     return IntendingMigrantProcessModel.fromJson(apiRes.data);
+  }
+  
+  @override
+  Future<NewMigrantResponseModel> newMigrantProcess({required NewMigrantFormParams newMigrantFormParams})async {
+   var apiRes= await _services.get(uri:Endpoints.newMigrant,queryParameters: newMigrantFormParams.toJson(), authorization: "Bearer Bearer ${await TokenService().retrieveToken()}");
+    return NewMigrantResponseModel.fromJson(apiRes.data);
   }
   
 }

@@ -8,6 +8,7 @@ class JourneySnapshotCache with ChangeNotifier {
   static CountryPredictionModel? _visaPredictionModel;
   static IntendingMigrantProcessModel? _intendingMigrantProcessModel;
    static IntendingMigrantProcessModel? _actionModel;
+   static NewMigrantResponseModel? _migrantResponseModel;
 
 
   CountryPredictionModel get countryPredictionModel => _countryPredictionModel ?? CountryPredictionModel.empty();
@@ -34,6 +35,12 @@ class JourneySnapshotCache with ChangeNotifier {
    IntendingMigrantProcessModel get actionModel => _actionModel ?? IntendingMigrantProcessModel.empty();
   set actionModel(IntendingMigrantProcessModel user) {
     _actionModel= user;
+    notifyListeners();
+  }
+
+NewMigrantResponseModel get migrantResponseModel  => _migrantResponseModel ?? NewMigrantResponseModel.empty();
+  set migrantResponseModel(NewMigrantResponseModel user) {
+    _migrantResponseModel= user;
     notifyListeners();
   }
 
