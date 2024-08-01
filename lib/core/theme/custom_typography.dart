@@ -13,8 +13,8 @@ class CustomTypography {
   static final kPrimaryColor200 = ColorUtil.colorFromHex('#0A7EEA');
   //static final kPrimaryColor200 = ColorUtil.colorFromHex('#3f6576');
   // static final kPrimaryColor300 = ColorUtil.colorFromHex('#18465a');
-  //static final kPrimaryColor300 = ColorUtil.colorFromHex('#0A7EEA');
-  static final kPrimaryColor300 = ColorUtil.colorFromHex('#FCA311');
+  static final kPrimaryColor300 = ColorUtil.colorFromHex('#0A7EEA');
+  //static final kPrimaryColor300 = ColorUtil.colorFromHex('#FCA311');
   static final kPrimaryColor400 = ColorUtil.colorFromHex('#11313f');
   static final kPrimaryColor500 = ColorUtil.colorFromHex('#0f2b37');
  

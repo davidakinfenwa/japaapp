@@ -14,9 +14,12 @@ import 'package:japaapp/business/blocs/auth_blocs/signin_form_cubit/signin_form_
 import 'package:japaapp/business/blocs/auth_blocs/signup_form_cubit/signup_form_cubit.dart';
 import 'package:japaapp/business/blocs/journey/country_prediction_form_cubit.dart';
 import 'package:japaapp/business/blocs/journey/intending_migrant_form_cubit.dart';
+import 'package:japaapp/business/blocs/journey/new_migrant_process_form_cubit.dart';
 
 import 'package:japaapp/business/blocs/journey/visa_prediction_form_cubit.dart';
+import 'package:japaapp/business/blocs/news_bloc/all_community_form_cubit.dart';
 import 'package:japaapp/business/blocs/news_bloc/all_news_form_cubit.dart';
+import 'package:japaapp/business/blocs/news_bloc/recent_community_form_cubit.dart';
 import 'package:japaapp/business/blocs/news_bloc/recent_news_form_cubit.dart';
 import 'package:japaapp/business/snapshot_cache/journey_snapshot_cache.dart';
 import 'package:japaapp/business/snapshot_cache/news_snapshot_cache.dart';
@@ -31,7 +34,7 @@ import 'package:japaapp/data/repository_impl/auth_repo_impl.dart';
 import 'package:japaapp/data/repository_impl/journey_repo_impl.dart';
 import 'package:japaapp/data/repository_impl/news_repo_impl.dart';
 import 'package:japaapp/domain/repositories/journey_repository.dart';
-import 'package:japaapp/domain/repositories/news.repository.dart';
+import 'package:japaapp/domain/repositories/news_repository.dart';
 import 'package:japaapp/domain/repositories/repositories.dart';
 
 void authDependenciesInit(GetIt getIt) {
@@ -54,6 +57,9 @@ void authDependenciesInit(GetIt getIt) {
   getIt.registerFactory<IntendingMigrantCubit>(() => IntendingMigrantCubit( repository: getIt(), snapshotCache: getIt()));
   getIt.registerFactory<RecentNewCubit>(() => RecentNewCubit( repository: getIt(), snapshotCache: getIt()));
   getIt.registerFactory<AllNewsCubit>(() => AllNewsCubit( repository: getIt(), snapshotCache: getIt()));
+  getIt.registerFactory<NewMigrantCubit>(() => NewMigrantCubit( repository: getIt(), snapshotCache: getIt()));
+  getIt.registerFactory<RecentCommunityCubit>(() => RecentCommunityCubit( repository: getIt(), snapshotCache: getIt()));
+  getIt.registerFactory<AllCommunityCubit>(() => AllCommunityCubit( repository: getIt(), snapshotCache: getIt()));
  // getIt.registerFactory<TaskActionCubit>(() => TaskActionCubit( repository: getIt(), snapshotCache: getIt()));
 
 

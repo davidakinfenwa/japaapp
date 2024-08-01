@@ -20,7 +20,7 @@ import 'package:japaapp/core/theme/custom_typography.dart';
 
 import 'package:japaapp/core/util/width_constraints.dart';
 import 'package:japaapp/domain/model/news/news_model.dart';
-import 'package:japaapp/presentation/shared/alert_dialog.dart';
+import 'package:japaapp/presentation/shared/response_indicators/error_indicator.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 import 'package:japaapp/presentation/widget/custom_app_bar.dart';
@@ -175,65 +175,72 @@ class _NewsUpdateScreenState extends State<NewsUpdateScreen> {
   }
 
   Widget _buildNewsListSection() {
-
     return SizedBox(
       height: MediaQuery.sizeOf(context).height,
       child: BlocBuilder<AllNewsCubit,
           BlocState<Failure<ExceptionMessage>, NewsSectionModel>>(
         builder: (context, state) {
-    final items = context.read<NewsSnapshotCache>().newsSectionModel;
-          final isLoading =
-              state is Loading<Failure<ExceptionMessage>, NewsSectionModel>;
-          return isLoading == true
-              ? const Center(child: CircularProgressIndicator.adaptive())
-              : SizedBox(
-                  //height: 380.h,
-                  width: MediaQuery.sizeOf(context).width,
-                  child: ListView.builder(
-                    // padEnds: false,
-                    padding: EdgeInsets.fromLTRB(0, 0, 0.w, 0),
-                    shrinkWrap: true,
+          final items = context.read<NewsSnapshotCache>().newsSectionModel;
+          return state.maybeMap(
+              orElse: () {
+            if (items.news.newsData.isNotEmpty) {
+              return newListBloc(context, items);
+            }
 
-                    // scrollDirection: Axis.vertical,
-                    physics: const BouncingScrollPhysics(),
-                    itemCount: items.news.newsData.length,
+            return const Center(child: CircularProgressIndicator.adaptive());
+          },
+          success: (_) => newListBloc(context, items),
+          error: (state) {
+            if (items.news.newsData.isNotEmpty) {
+              return newListBloc(context, items);
+            }
 
-                    itemBuilder: (context, index) {
-                      final data = items.news.newsData[index];
-                      return InkWell(
-                        onTap: () {
-                          context.router.push(DetailNewsRoute(newModel: data));
-                        },
-                        child: _buildNewsList(data.title, data.mediaImageUrl,
-                            data.postedBy, data.time, data.date.toString()),
-                      );
-                    },
+            return Center(
+              child:
+                  WidthConstraint(context).withHorizontalSymmetricalPadding(
+                child: ErrorIndicator(
+                  type: ErrorIndicatorType.simple(
+                   // onRetryCallback: () => _onGetSenderIdListCallback(),
+                    code: state.failure.exception.code,
+                    message: state.failure.exception.message.toString(),
                   ),
-                );
+                ),
+              ),
+            );
+          },
+          );
+         
         },
       ),
     );
 
-    // ListView.builder(
-    //   // padEnds: false,
-    //   padding: EdgeInsets.fromLTRB(0, 0, 0.w, 0),
-    //   shrinkWrap: true,
-    //   //dragStartBehavior: DragStartBehavior.start,
-    //   //scrollDirection: Axis.vertical,
-    //   physics: const NeverScrollableScrollPhysics(),
-    //   itemCount: items.length,
+  }
 
-    //   itemBuilder: (context, index) {
-    //     final data = items[index];
-    //     return InkWell(
-    //       onTap: (){
-    //        // context.router.replace(const DetailNewsRoute());
-    //       },
-    //       child: _buildNewsList(
-    //           data['title'], data['image'], data['count']),
-    //     );
-    //   },
-    // );
+  SizedBox newListBloc(BuildContext context, NewsSectionModel items) {
+    return SizedBox(
+      //height: 380.h,
+      width: MediaQuery.sizeOf(context).width,
+      child: ListView.builder(
+        // padEnds: false,
+        padding: EdgeInsets.fromLTRB(0, 0, 0.w, 0),
+        shrinkWrap: true,
+
+        // scrollDirection: Axis.vertical,
+        physics: const BouncingScrollPhysics(),
+        itemCount: items.news.newsData.length,
+
+        itemBuilder: (context, index) {
+          final data = items.news.newsData[index];
+          return InkWell(
+            onTap: () {
+              context.router.push(DetailNewsRoute(newModel: data));
+            },
+            child: _buildNewsList(data.title, data.mediaImageUrl, data.postedBy,
+                data.time, data.date.toString()),
+          );
+        },
+      ),
+    );
   }
 
   String formatTimeAgo(DateTime time) {

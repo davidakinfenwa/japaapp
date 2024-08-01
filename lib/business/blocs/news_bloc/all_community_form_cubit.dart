@@ -7,38 +7,37 @@ import 'package:japaapp/business/blocs/bloc_state.dart';
 import 'package:japaapp/business/snapshot_cache/news_snapshot_cache.dart';
 
 import 'package:japaapp/core/exceptions/exceptions.dart';
-import 'package:japaapp/domain/model/journey/country_prediction_model.dart';
-import 'package:japaapp/domain/model/news/news_model.dart';
+import 'package:japaapp/domain/model/news/communitiy_model.dart';
+
 
 import 'package:japaapp/domain/repositories/news_repository.dart';
 
 
 
-class RecentNewCubit extends Cubit<BlocState<Failure<ExceptionMessage>, RecentNewsModel>> {
+class AllCommunityCubit extends Cubit<BlocState<Failure<ExceptionMessage>, AllCommunitiesModel>> {
   final NewsRepository _repository;
   final NewsSnapshotCache _snapshotCache;
 
-  RecentNewCubit({
+  AllCommunityCubit({
     required NewsRepository repository,
     required NewsSnapshotCache snapshotCache,
   })  : _repository = repository,
         _snapshotCache = snapshotCache,
-        super(const BlocState<Failure<ExceptionMessage>,
-            RecentNewsModel>.initial());
+        super(const BlocState<Failure<ExceptionMessage>, AllCommunitiesModel>.initial());
 
-  Future<void> recentNews() async {
-    emit(const BlocState<Failure<ExceptionMessage>, RecentNewsModel>.loading());
+  Future<void> recentCommunity() async {
+    emit(const BlocState<Failure<ExceptionMessage>, AllCommunitiesModel>.loading());
 
-    final _repoEither = await _repository.recentNews();
+    final _repoEither = await _repository.allCommunity();
   
     final _state = _repoEither.fold(
-      (failure) => BlocState<Failure<ExceptionMessage>, RecentNewsModel>.error(
+      (failure) => BlocState<Failure<ExceptionMessage>, AllCommunitiesModel>.error(
           failure: failure),
       (response) {
         // cache snapshot
-          _snapshotCache.newsModel = response;
+          _snapshotCache.allCommunitiesModel = response;
         
-        return BlocState<Failure<ExceptionMessage>, RecentNewsModel>.success(data: response);
+        return BlocState<Failure<ExceptionMessage>, AllCommunitiesModel>.success(data: response);
       },
     );
 

@@ -7,10 +7,9 @@ import 'package:japaapp/business/blocs/bloc_state.dart';
 import 'package:japaapp/business/snapshot_cache/news_snapshot_cache.dart';
 
 import 'package:japaapp/core/exceptions/exceptions.dart';
-import 'package:japaapp/domain/model/journey/country_prediction_model.dart';
 import 'package:japaapp/domain/model/news/news_model.dart';
 
-import 'package:japaapp/domain/repositories/news.repository.dart';
+import 'package:japaapp/domain/repositories/news_repository.dart';
 
 
 

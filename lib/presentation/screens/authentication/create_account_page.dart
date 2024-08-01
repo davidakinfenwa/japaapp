@@ -158,38 +158,43 @@ return countryCode;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        child: WidthConstraint(context).withHorizontalSymmetricalPadding(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const CustomBackButton(),
-              Expanded(
-                child: SingleChildScrollView(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          SizedBox(height: (Sizing.kSizingMultiple * 4).h),
-                          _buildTopSection(),
-                          SizedBox(height: (Sizing.kSizingMultiple).h),
-                          _buildFormSection(),
-                          SizedBox(
-                              height:
-                                  (MediaQuery.sizeOf(context).height * 0.05).h),
-                          _buildActionButton(),
-                          SizedBox(
-                              height:
-                                  (MediaQuery.sizeOf(context).height * 0.1).h),
-                        ],
-                      ),
-                    ],
+      body: GestureDetector(
+           onTap: (){
+          FocusScope.of(context).requestFocus(new FocusNode());
+        },
+        child: SafeArea(
+          child: WidthConstraint(context).withHorizontalSymmetricalPadding(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const CustomBackButton(),
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SizedBox(height: (Sizing.kSizingMultiple * 4).h),
+                            _buildTopSection(),
+                            SizedBox(height: (Sizing.kSizingMultiple).h),
+                            _buildFormSection(),
+                            SizedBox(
+                                height:
+                                    (MediaQuery.sizeOf(context).height * 0.05).h),
+                            _buildActionButton(),
+                            SizedBox(
+                                height:
+                                    (MediaQuery.sizeOf(context).height * 0.1).h),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:bot_toast/bot_toast.dart';
+import 'package:country_picker/country_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -7,7 +10,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:japaapp/business/blocs/bloc_state.dart';
 import 'package:japaapp/business/blocs/journey/intending_migrant_form_cubit.dart';
-import 'package:japaapp/business/blocs/journey/task_action_form_cubit.dart';
+import 'package:japaapp/business/blocs/journey/new_migrant_process_form_cubit.dart';
 import 'package:japaapp/business/snapshot/tabscreen_provider.dart';
 import 'package:japaapp/business/snapshot_cache/journey_snapshot_cache.dart';
 import 'package:japaapp/core/constants.dart';
@@ -16,15 +19,18 @@ import 'package:japaapp/core/exceptions/exceptions.dart';
 import 'package:japaapp/core/route/app_router.dart';
 
 import 'package:japaapp/core/theme/custom_typography.dart';
+import 'package:japaapp/core/util/keyboard_util.dart';
 import 'package:japaapp/core/util/width_constraints.dart';
 import 'package:japaapp/domain/form_params/form_params.dart';
 import 'package:japaapp/domain/model/journey/intending_migrant_model.dart';
-import 'package:japaapp/domain/model/journey/task_action_model.dart';
+import 'package:japaapp/domain/model/journey/new_migrant_model.dart';
 import 'package:japaapp/presentation/shared/alert_dialog.dart';
 import 'package:japaapp/presentation/shared/custom_button.dart';
+import 'package:japaapp/presentation/shared/response_indicators/error_indicator.dart';
 
 import 'package:japaapp/presentation/widget/custom_app_bar.dart';
 import 'package:provider/provider.dart';
+import 'package:http/http.dart' as http;
 
 @RoutePage()
 class IntendingMigrantScreen extends StatefulWidget
@@ -38,11 +44,14 @@ class IntendingMigrantScreen extends StatefulWidget
   Widget wrappedRoute(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider<IntendingMigrantCubit>(create: (context) =>  getIt<IntendingMigrantCubit>()..intendingMigrant()),
+        BlocProvider<IntendingMigrantCubit>(
+            create: (context) =>
+                getIt<IntendingMigrantCubit>()..intendingMigrant()),
+
+        BlocProvider<NewMigrantCubit>(
+            create: (context) => getIt<NewMigrantCubit>()),
 
         // BlocProvider<TaskActionCubit>(create: (context) => getIt<TaskActionCubit>()),
-
-        
       ],
       child: this,
     );
@@ -52,43 +61,55 @@ class IntendingMigrantScreen extends StatefulWidget
 class _IntendingMigrantScreenState extends State<IntendingMigrantScreen> {
   int selectedIteminList = -1;
   int selectedMeansOfPayment = -2;
+  Country? country;
+  String countryName="";
+
   // List<int> selectedItemsData = [];
 
-  final List<Map<String, dynamic>> items = [
-    {"title": 'Admission'},
-    {"title": 'Community'},
-    {"title": 'Employment'},
-    {"title": 'Houseing'},
-    {"title": 'Permanet Residency'},
+  final List<String> items = [
+    'Admission',
+     'Community',
+     'Employment',
+     'Housing',
+   'Permanent Residency',
   ];
   late List<bool> selectedItemsData;
   late List<bool> selectedItemsDataNew;
+
+  Future<String> fetchCountryCode() async {
+    final response = await http.get(Uri.parse("http://ip-api.com/json"));
+    print(response);
+    final result = json.decode(response.body);
+    final countryCode = result["country"];
+    return countryCode;
+  }
 
   @override
   void initState() {
     super.initState();
     selectedItemsData = List.filled(items.length, false, growable: true);
     setState(() {
-      
-     widget.nav=="home"? getIt<IntendingMigrantCubit>().intendingMigrant():"";
+      widget.nav == "home"
+          ? getIt<IntendingMigrantCubit>().intendingMigrant()
+          : "";
     });
     selectedItemsDataNew = List.filled(30, false, growable: true);
     // selectedItemsDataNew = List.filled(getIt<JourneySnapshotCache>().intendingMigrantProcessModel.data.length, false, growable: true);
-   // widget.nav == "home" ? LoadingData.showCustomDialog(context) : "";
+    // widget.nav == "home" ? LoadingData.showCustomDialog(context) : "";
+    fetchCountryCode().then((countrycode) {
+      setState(() {
+        //country = CountryParser.tryParseCountryCode(countrycode);
+        countryName=countrycode;
+      });
+    });
   }
-
-  // @override
-  // void didChangeDependencies() {
-  //   super.didChangeDependencies();
-  //   getIt<IntendingMigrantCubit>().intendingMigrant();
-  // }
 
   List<String> selectedTitles = [];
   DateTime userDOB = DateTime.now();
 
   String toDate = '';
 
-  Future<void> _selectDate(BuildContext context, String nav, String userId) async {
+  Future<void> _selectDate( BuildContext context, String nav, String userId) async {
     DateTime? picked = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
@@ -101,14 +122,18 @@ class _IntendingMigrantScreenState extends State<IntendingMigrantScreen> {
       setState(() {
         userDOB = picked;
         toDate = formattedDate;
-         context.read<IntendingMigrantCubit>().setDueDate(setDueDateFormParams: SetDueDateFormParams(id: userId.toString(),dueDate:formattedDate.toString() ));
-         context.read<JourneySnapshotCache>().notifyAllListeners();
+        context.read<IntendingMigrantCubit>().setDueDate(
+            setDueDateFormParams: SetDueDateFormParams(
+                id: userId.toString(), dueDate: formattedDate.toString()));
+        context.read<JourneySnapshotCache>().notifyAllListeners();
       });
     }
   }
 
   @override
   Widget build(BuildContext context) {
+   // print(country?.displayNameNoCountryCode);
+   print(countryName);
     var bottomNavCProvider = Provider.of<TabScreenNotifier>(context);
     return WillPopScope(
       onWillPop: () async {
@@ -144,11 +169,10 @@ class _IntendingMigrantScreenState extends State<IntendingMigrantScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          //SizedBox(height: (Sizing.kSizingMultiple).h),
+                          SizedBox(height: (Sizing.kSizingMultiple).h),
                           widget.nav == "home"
                               ? _buildIntendedImmigrantSection()
                               : _buildNewImmigrantInNeeedSection(),
-
                           SizedBox(height: (Sizing.kSizingMultiple).h),
                           widget.nav == "home"
                               ? const SizedBox()
@@ -191,248 +215,290 @@ class _IntendingMigrantScreenState extends State<IntendingMigrantScreen> {
   }
 
   Widget _buildIntendedImmigrantSection() {
-    
     var bottomNavCProvider = Provider.of<TabScreenNotifier>(context);
 
-      return BlocConsumer<IntendingMigrantCubit, BlocState<Failure<ExceptionMessage>, IntendingMigrantProcessModel>>(
-      listener: (context, state) {
-        state.maybeMap(
-          orElse: () => null,
-          success: (state) {
-            if (state.data.status == "success") {
-              // clear form inputs
-              // _formKey.currentState!.reset();
-            
-              if(state.data.message=="Analysis Completed"){
+    return BlocConsumer<IntendingMigrantCubit,
+            BlocState<Failure<ExceptionMessage>, IntendingMigrantProcessModel>>(
+        listener: (context, state) {
+      state.maybeMap(
+        orElse: () => null,
+        success: (state) {
+          if (state.data.status == "success") {
+            if (state.data.message == "Analysis Completed") {
+            } else {
+              showCustomAlertDialog(context,
+                  subtitle: state.data.message.toString(),
+                  title: 'Success',
+                  backgroundColor: true,
+                  buttonText: "Dismiss", onTap: () {
+                context.router.maybePop();
+              }, alertType: AlertType.success);
+            }
+            context.read<JourneySnapshotCache>().notifyAllListeners();
+          }
+        },
+        error: (state) {
+          showCustomAlertDialog(context,
+              subtitle: state.failure.exception.message.toString(),
+              title: 'Error',
+              backgroundColor: true,
+              buttonText: "Dismiss", onTap: () {
+            context.router.maybePop();
+            bottomNavCProvider.pageIndex = 1;
+            context.router.replaceAll([const TabRoute()]);
+          }, alertType: AlertType.warning);
+        },
+      );
+    }, builder: (context, state) {
+      final checkList =
+          context.read<JourneySnapshotCache>().intendingMigrantProcessModel;
+      return state.maybeMap(
+        orElse: () {
+          if (checkList != IntendingMigrantProcessModel.empty()) {
+            return intendingMigrantListBloc(checkList);
+          }
 
-              }
-              else{
-                 showCustomAlertDialog(context,
-                subtitle: state.data.message.toString(),
-                title: 'Success',
-                backgroundColor: true,
-                buttonText: "Dismiss", onTap: () {
-              context.router.maybePop();
-            }, alertType: AlertType.success);
-              }
-              context.read<JourneySnapshotCache>().notifyAllListeners();
-                BotToast.cleanAll();
+          return const Center(child: CircularProgressIndicator.adaptive());
+        },
+        success: (_) => intendingMigrantListBloc(checkList),
+        error: (state) {
+          if (checkList != IntendingMigrantProcessModel.empty()) {
+            return intendingMigrantListBloc(checkList);
+          }
 
-            } 
-          },
-          error: (state) {
-            BotToast.cleanAll();
-            showCustomAlertDialog(context,
-                subtitle: state.failure.exception.message.toString(),
-                title: 'Error',
-                backgroundColor: true,
-                buttonText: "Dismiss", onTap: () {
-              context.router.maybePop();
-               bottomNavCProvider.pageIndex = 1;
-        context.router.replaceAll([const TabRoute()]);
-            }, alertType: AlertType.warning);
-          },
-        );
-      },
-      builder:(context, state) {
-        final checkList = context.read<JourneySnapshotCache>().intendingMigrantProcessModel;
-         
-          final isLoading = state is Loading<Failure<ExceptionMessage>, IntendingMigrantProcessModel>;
-          print("this is the loading kkkkkk $isLoading");
-         //BotToast.cleanAll();
-      //  return  isLoading==true ?   Column(
-      //   crossAxisAlignment: CrossAxisAlignment.center,
-      //    children: [
-      //      Center(child:CircularProgressIndicator.adaptive()),
-      //    ],
-      //  ):
-       
-          return  Column(
-        children: [
-        ListView.builder(
-            physics: const BouncingScrollPhysics(),
-            shrinkWrap: true,
-            itemCount: checkList.data.length > 1
-                ? checkList.data.length - 1
-                : 0,
-            itemBuilder: (context, index) {
+          return Center(
+            child: WidthConstraint(context).withHorizontalSymmetricalPadding(
+              child: ErrorIndicator(
+                type: ErrorIndicatorType.simple(
+                  // onRetryCallback: () => _onGetSenderIdListCallback(),
+                  code: state.failure.exception.code,
+                  message: state.failure.exception.message.toString(),
+                ),
+              ),
+            ),
+          );
+        },
+      );
 
-              final isSelected = selectedItemsDataNew[index];
-              final result = checkList.data[index];
-                if ( checkList.data.isEmpty) {
-                  BotToast.cleanAll();
-                  return Center(child: Text("No data", style: TextStyle(color: Colors.black),),);
-                }
-                  BotToast.cleanAll();
+      // final isLoading = state is Loading<Failure<ExceptionMessage>, IntendingMigrantProcessModel>;
+      // print("this is the loading kkkkkk $isLoading");
 
-              return Padding(
-                padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
-                child: Row(
-          //mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // final isSelected = selectedItemsData.contains(index);
-            InkWell(
-              onTap: () {
-                setState(() {
-                  // Toggle selection for the tapped item
-                  selectedItemsDataNew[index] = !isSelected;
+      // return  intendingMigrantListBloc(checkList);
+    });
+  }
 
-                  if (isSelected || result.status == "completed") {
-                    // If already selected, remove title from list
-                     context.read<IntendingMigrantCubit>().markTask(markTaskDoneFormParams: MarkTaskDoneFormParams(id: result.id.toString(), status: "pending"));
-                    selectedTitles.remove(checkList.data[index].id);
-                  } else {
-                    // If not selected, add title to list
-                      context.read<IntendingMigrantCubit>().markTask(markTaskDoneFormParams: MarkTaskDoneFormParams(id: result.id.toString(), status: "completed"));
-                    selectedTitles.add(checkList.data[index].id);
-                  }
-                 // getIt<IntendingMigrantCubit>().intendingMigrant();
-                 context.read<JourneySnapshotCache>().notifyAllListeners();
-                });
-              },
+  Column intendingMigrantListBloc(IntendingMigrantProcessModel checkList) {
+    return Column(children: [
+      ListView.builder(
+          physics: const BouncingScrollPhysics(),
+          shrinkWrap: true,
+          padding: EdgeInsets.zero,
+          itemCount: checkList.data.length > 1 ? checkList.data.length - 1 : 0,
+          itemBuilder: (context, index) {
+            final isSelected = selectedItemsDataNew[index];
+            final result = checkList.data[index];
+            if (checkList.data.isEmpty) {
+              return Container(
+                padding: EdgeInsets.fromLTRB(0, 190.h, 0, 0),
+                alignment: Alignment.center,
+                height: MediaQuery.sizeOf(context).height * 0.5.h,
+                decoration: const BoxDecoration(
+                    image: DecorationImage(
+                        image: AssetImage("assets/images/empty.png"))),
+                child: Text(
+                  "Wait a minute, you have no record yet. Click the button below to get started.",
+                  style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                        // color: Colors.black,
+                        color: const Color(0xFF344054),
+
+                        fontWeight: FontWeight.w500,
+                      ),
+                  textAlign: TextAlign.center,
+                ),
+              );
+
+              //  (child: Text("No data", style: TextStyle(color: Colors.black),),);
+            }
+
+            return Padding(
+              padding: const EdgeInsets.fromLTRB(0, 0, 0, 5),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Padding(
-                      padding: EdgeInsets.all(2.h),
-                      child: Center(
-                          child: SvgPicture.asset(
-                       isSelected ||  result.status == "completed"
-                            ? "assets/svg/mcheck.svg"
-                            : "assets/svg/muncheck.svg",
-                        // height: 30.h,
-                        // width: 30,
-                      ))),
-                  SizedBox(
-                    width: Sizing.kSizingMultiple.h,
+                  // final isSelected = selectedItemsData.contains(index);
+                  InkWell(
+                    onTap: () {
+                      setState(() {
+                        // Toggle selection for the tapped item
+                        selectedItemsDataNew[index] = !isSelected;
+
+                        if (isSelected || result.status == "completed") {
+                          // If already selected, remove title from list
+                          context.read<IntendingMigrantCubit>().markTask(
+                              markTaskDoneFormParams: MarkTaskDoneFormParams(
+                                  id: result.id.toString(), status: "pending"));
+                          selectedTitles.remove(checkList.data[index].id);
+                        } else {
+                          // If not selected, add title to list
+                          context.read<IntendingMigrantCubit>().markTask(
+                              markTaskDoneFormParams: MarkTaskDoneFormParams(
+                                  id: result.id.toString(),
+                                  status: "completed"));
+                          selectedTitles.add(checkList.data[index].id);
+                        }
+                        // getIt<IntendingMigrantCubit>().intendingMigrant();
+                        context
+                            .read<JourneySnapshotCache>()
+                            .notifyAllListeners();
+                      });
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Padding(
+                            padding: EdgeInsets.all(2.h),
+                            child: Center(
+                                child: SvgPicture.asset(
+                              isSelected || result.status == "completed"
+                                  ? "assets/svg/mcheck.svg"
+                                  : "assets/svg/muncheck.svg",
+                              // height: 30.h,
+                              // width: 30,
+                            ))),
+                        SizedBox(
+                          width: Sizing.kSizingMultiple.h,
+                        ),
+                        SizedBox(
+                          width: MediaQuery.sizeOf(context).width * 0.65.w,
+                          child: Text(
+                            result.task,
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleSmall
+                                ?.copyWith(
+                                    // color: Colors.black,
+                                    color: const Color(0xFF344054),
+                                    fontWeight: FontWeight.w500,
+                                    decoration: isSelected ||
+                                            result.status == "completed"
+                                        ? TextDecoration.lineThrough
+                                        : TextDecoration.none),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                   SizedBox(
-                    width: MediaQuery.sizeOf(context).width * 0.65.w,
-                    child: Text(
-                      result.task,
-                      style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                          // color: Colors.black,
-                          color: const Color(0xFF344054),
-                         
-                          fontWeight: FontWeight.w500,
-                          decoration:isSelected|| result.status == "completed"
-                              ? TextDecoration.lineThrough
-                              : TextDecoration.none),
-                    ),
+                    width: Sizing.kWSpacing10.h,
+                  ),
+
+                  Expanded(
+                    child: PopupMenuButton(
+                        color: const Color(0xFFFFFFFF),
+                        shadowColor: Colors.white,
+                        surfaceTintColor: Colors.white,
+                        icon: Icon(
+                          Icons.more_horiz,
+                          color: CustomTypography.kPrimaryColor300,
+                          size: 24,
+                        ),
+                        //  elevation: 0,
+                        position: PopupMenuPosition.under,
+                        itemBuilder: (_) => <PopupMenuItem<String>>[
+                              PopupMenuItem<String>(
+                                value: 'due date',
+                                child: Row(
+                                  children: [
+                                    Image.asset(
+                                      'assets/images/datee.png',
+                                      width: 24,
+                                      height: 24,
+                                    ),
+                                    SizedBox(
+                                      width: Sizing.kWSpacing8,
+                                    ),
+                                    Text(
+                                      'Set due date',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleSmall
+                                          ?.copyWith(
+                                              fontWeight: FontWeight.w500,
+                                              color: const Color(0xFF344054),
+                                              // fontFamily: "inter",
+                                              fontStyle: FontStyle.normal,
+                                              fontSize: 14.0.sp),
+                                    ),
+                                  ],
+                                ),
+                                onTap: () {
+                                  _selectDate(
+                                      context, "home", result.id.toString());
+                                },
+                              ),
+                              PopupMenuItem<String>(
+                                value: 'Delete',
+                                child: Row(
+                                  children: [
+                                    SvgPicture.asset(
+                                        "assets/svg/deletebin.svg"),
+                                    SizedBox(
+                                      width: Sizing.kWSpacing8,
+                                    ),
+                                    Text(
+                                      'Delete',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleSmall
+                                          ?.copyWith(
+                                              fontWeight: FontWeight.w500,
+                                              color: const Color(0xFF344054),
+                                              // fontFamily: "inter",
+                                              fontStyle: FontStyle.normal,
+                                              fontSize: 14.0.sp),
+                                    ),
+                                  ],
+                                ),
+                                onTap: () {
+                                  showCustomAlertDialogWithWhite(context,
+                                      subtitle:
+                                          "Are you sure you want to delete",
+                                      title: 'Delete Task',
+                                      backgroundColor: true,
+                                      buttonText: "Dismiss", onTap: () {
+                                    context.router.maybePop();
+                                  }, onTapSeconButton: () {
+                                    setState(() {
+                                      context
+                                          .read<IntendingMigrantCubit>()
+                                          .deleteTask(
+                                              deleteTaskFormParams:
+                                                  DeleteTaskFormParams(
+                                                      id: result.id
+                                                          .toString()));
+                                      context
+                                          .read<JourneySnapshotCache>()
+                                          .notifyAllListeners();
+                                      context.router.maybePop();
+                                    });
+                                  }, alertType: AlertType.warning);
+                                },
+                              ),
+                            ]),
+                  ),
+
+                  SizedBox(
+                    width: 3.w,
                   ),
                 ],
               ),
-            ),
-            SizedBox(
-              width: Sizing.kWSpacing10.h,
-            ),
-
-            Expanded(
-              child: PopupMenuButton(
-                  color: const Color(0xFFFFFFFF),
-                  shadowColor: Colors.white,
-                  surfaceTintColor: Colors.white,
-                  icon: Icon(
-                    Icons.more_horiz,
-                    color: CustomTypography.kPrimaryColor300,
-                    size: 24,
-                  ),
-                  //  elevation: 0,
-                  position: PopupMenuPosition.under,
-                  itemBuilder: (_) => <PopupMenuItem<String>>[
-                        PopupMenuItem<String>(
-                          value: 'due date',
-                          child: Row(
-                            children: [
-                              Image.asset(
-                                'assets/images/datee.png',
-                                width: 24,
-                                height: 24,
-                              ),
-                              SizedBox(
-                                width: Sizing.kWSpacing8,
-                              ),
-                              Text(
-                                'Set due date',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .titleSmall
-                                    ?.copyWith(
-                                        fontWeight: FontWeight.w500,
-                                        color: const Color(0xFF344054),
-                                        // fontFamily: "inter",
-                                        fontStyle: FontStyle.normal,
-                                        fontSize: 14.0.sp),
-                              ),
-                            ],
-                          ),
-                          onTap: () {
-                            _selectDate(context, "home", result.id.toString());
-                          },
-                        ),
-                        PopupMenuItem<String>(
-                          value: 'Delete',
-                          child: Row(
-                            children: [
-                              SvgPicture.asset("assets/svg/deletebin.svg"),
-                              SizedBox(
-                                width: Sizing.kWSpacing8,
-                              ),
-                              Text(
-                                'Delete',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .titleSmall
-                                    ?.copyWith(
-                                        fontWeight: FontWeight.w500,
-                                        color: const Color(0xFF344054),
-                                        // fontFamily: "inter",
-                                        fontStyle: FontStyle.normal,
-                                        fontSize: 14.0.sp),
-                              ),
-                            ],
-                          ),
-                          onTap: () {
-                            showCustomAlertDialogWithWhite(context,
-                                subtitle: "Are you sure you want to delete",
-                                title: 'Delete Task',
-                                backgroundColor: true,
-                                buttonText: "Dismiss", onTap: () {
-                              context.router.maybePop();
-                            },
-                             onTapSeconButton: () {
-                              setState(() {
-                                context.read<IntendingMigrantCubit>().deleteTask(deleteTaskFormParams: DeleteTaskFormParams(id: result.id.toString()));
-                                context.read<JourneySnapshotCache>().notifyAllListeners();
-                                context.router.maybePop();
-                              });
-                              
-                            }, alertType: AlertType.warning);
-                          },
-                        ),
-                      ]),
-            ),
-
-            SizedBox(
-              width: 3.w,
-            ),
-          ],
-        ),
-              );
-            }),
-        SizedBox(height: (Sizing.kSizingMultiple * 4).h),
-        checkList.data.length > 1
-            ? _buildActionButton()
-            : const SizedBox()
-      ]);
-        
-  });
- 
+            );
+          }),
+      SizedBox(height: (Sizing.kSizingMultiple * 4).h),
+      checkList.data.length > 1 ? _buildActionButton() : const SizedBox()
+    ]);
   }
-
-
- 
 
   Widget _buildActionButton() {
     return Column(
@@ -445,8 +511,8 @@ class _IntendingMigrantScreenState extends State<IntendingMigrantScreen> {
               label: 'Speak with a consultant',
               isLoadingMode: false,
               //: CustomTypography.kPrimaryColor200,
-              borderColor: CustomTypography.kPrimaryColor200,
-              textColor: CustomTypography.kPrimaryColor200,
+              borderColor: CustomTypography.kPrimaryColor300,
+              textColor: CustomTypography.kPrimaryColor300,
               borderRadius: BorderRadius.all(
                   Radius.circular(Sizing.kBorderRadius * 7.r))),
         ),
@@ -466,7 +532,7 @@ class _IntendingMigrantScreenState extends State<IntendingMigrantScreen> {
 
         if (value) {
           selectedTitles =
-              items.map((item) => item["title"] as String).toList();
+              items.map((item) => item).toList();
         } else {
           selectedTitles.clear();
         }
@@ -534,10 +600,10 @@ class _IntendingMigrantScreenState extends State<IntendingMigrantScreen> {
 
                         if (isSelected) {
                           // If already selected, remove title from list
-                          selectedTitles.remove(data['title']);
+                          selectedTitles.remove(data);
                         } else {
                           // If not selected, add title to list
-                          selectedTitles.add(data['title']);
+                          selectedTitles.add(data);
                         }
                       });
                     },
@@ -549,7 +615,7 @@ class _IntendingMigrantScreenState extends State<IntendingMigrantScreen> {
                           SizedBox(
                             width: MediaQuery.sizeOf(context).width * 0.65.w,
                             child: Text(
-                              data['title'],
+                              data,
                               style: Theme.of(context)
                                   .textTheme
                                   .titleMedium
@@ -581,27 +647,103 @@ class _IntendingMigrantScreenState extends State<IntendingMigrantScreen> {
     );
   }
 
-  Widget _buildActionContinueButton() {
-    return Column(
-      children: [
-        CustomButton(
-          type: ButtonType.regularButton(
-              onTap: () {
-                context.router.replace(
-                    SelectedServicesRoute(selectedServices: selectedTitles));
-                //print(selectedTitles);
-              },
-              label: 'Continue',
-              isLoadingMode: false,
-              backgroundColor: CustomTypography.kPrimaryColor300,
-              textColor: CustomTypography.kWhiteColor,
-              borderRadius: BorderRadius.all(
-                  Radius.circular(Sizing.kBorderRadius * 7.r))),
-        ),
-      ],
-    );
+  // Widget _buildActionContinueButton() {
+  //   return Column(
+  //     children: [
+  //       CustomButton(
+  //         type: ButtonType.regularButton(
+  //             onTap: () {
+  //               context.router.replace(
+  //                   SelectedServicesRoute(selectedServices: selectedTitles));
+  //               //print(selectedTitles);
+  //             },
+  //             label: 'Continue',
+  //             isLoadingMode: false,
+  //             backgroundColor: CustomTypography.kPrimaryColor300,
+  //             textColor: CustomTypography.kWhiteColor,
+  //             borderRadius: BorderRadius.all(
+  //                 Radius.circular(Sizing.kBorderRadius * 7.r))),
+  //       ),
+  //     ],
+  //   );
+  // }
+
+  
+  void _onUserSignUpCallback() async {
+    KeyboardUtil.hideKeyboard(context);
+    
+
+   final newMigrantList=NewMigrantFormParams(countryOfResidence: countryName, interest: selectedTitles);
+    context.read<NewMigrantCubit>().newMigrant(migrantFormParams: newMigrantList);
   }
 
+Widget _buildActionContinueButton() {
+    return BlocConsumer<NewMigrantCubit,
+        BlocState<Failure<ExceptionMessage>, NewMigrantResponseModel>>(
+      listener: (context, state) {
+        state.maybeMap(
+          orElse: () => null,
+          success: (state) {
+            if (state.data.status == "success") {
+              // clear form inputs
+              context.router.replace(
+                    SelectedServicesRoute(selectedServices: selectedTitles));
+
+              context.router.replace(const TabRoute());
+            } else {
+              showCustomAlertDialog(context,
+                  subtitle: state.data.message,
+                  title: 'Error',
+                  backgroundColor: true,
+                  buttonText: "Dismiss", onTap: () {
+                context.router.maybePop();
+              }, alertType: AlertType.warning);
+              // SnackBarUtil.snackbarError<String>(
+              //   context,
+              //   code: ExceptionCode.UNDEFINED,
+              //   message: state.data.message,
+              // );
+            }
+          },
+          error: (state) {
+            showCustomAlertDialog(context,
+                subtitle: state.failure.exception.message.toString(),
+                title: 'Error',
+                backgroundColor: true,
+                buttonText: "Dismiss", onTap: () {
+              context.router.maybePop();
+            }, alertType: AlertType.warning);
+            // SnackBarUtil.snackbarError<String>(
+            //   context,
+            //   code: state.failure.exception.code,
+            //   message: state.failure.exception.message.toString(),
+            //   onRefreshCallback: () => _onUserSignUpCallback(),
+            // );
+          },
+        );
+      },
+      builder: (context, state) {
+        final isLoading =
+            state is Loading<Failure<ExceptionMessage>, NewMigrantResponseModel>;
+
+        return Column(
+          children: [
+            CustomButton(
+              type: ButtonType.regularButton(
+                  onTap: () => _onUserSignUpCallback(),
+                  label: 'Continue',
+                  isLoadingMode: isLoading,
+                  backgroundColor: CustomTypography.kPrimaryColor300,
+                  textColor: CustomTypography.kWhiteColor,
+                  borderRadius: BorderRadius.all(
+                      Radius.circular(Sizing.kBorderRadius * 7.r))),
+            ),
+           
+          ],
+        );
+      },
+    );
+  }
   Widget _buildNotice() {
     return Container(
       width: MediaQuery.sizeOf(context).width.w,

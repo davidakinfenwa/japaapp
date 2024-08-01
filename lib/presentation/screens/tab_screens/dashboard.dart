@@ -6,7 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:japaapp/business/blocs/bloc_state.dart';
-import 'package:japaapp/business/blocs/news_bloc/all_news_form_cubit.dart';
+import 'package:japaapp/business/blocs/news_bloc/recent_community_form_cubit.dart';
 import 'package:japaapp/business/blocs/news_bloc/recent_news_form_cubit.dart';
 import 'package:japaapp/business/snapshot/tabscreen_provider.dart';
 import 'package:japaapp/business/snapshot_cache/auth_snapshot_cache.dart';
@@ -17,8 +17,10 @@ import 'package:japaapp/core/exceptions/exceptions.dart';
 import 'package:japaapp/core/route/app_router.dart';
 import 'package:japaapp/core/theme/custom_typography.dart';
 import 'package:japaapp/core/util/width_constraints.dart';
+import 'package:japaapp/domain/model/news/communitiy_model.dart';
 import 'package:japaapp/domain/model/news/news_model.dart';
 import 'package:japaapp/presentation/shared/custom_button.dart';
+import 'package:japaapp/presentation/shared/response_indicators/error_indicator.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import 'package:timeago/timeago.dart' as timeago;
@@ -29,18 +31,17 @@ class DashboardScreen extends StatefulWidget implements AutoRouteWrapper {
 
   @override
   State<DashboardScreen> createState() => _DashboardScreenState();
-    @override
+  @override
   Widget wrappedRoute(BuildContext context) {
-     //final userInfo = context.read<AccountSnapshotCache>().userInfo;
+    //final userInfo = context.read<AccountSnapshotCache>().userInfo;
     return MultiBlocProvider(
       providers: [
-       
         BlocProvider<RecentNewCubit>(
           create: (context) => getIt<RecentNewCubit>()..recentNews(),
         ),
-          // BlocProvider<AllNewsCubit>(
-          //   create: (context) =>
-          //       getIt<AllNewsCubit>()..allNews())
+        // BlocProvider<RecentCommunityCubit>(
+        //   create: (context) =>
+        //       getIt<RecentCommunityCubit>())
       ],
       child: this,
     );
@@ -244,38 +245,7 @@ class _DashboardScreenState extends State<DashboardScreen>
 
   Widget _buildCommunitySection() {
     var bottomNavCProvider = Provider.of<TabScreenNotifier>(context);
-    final List<Map<String, dynamic>> items = [
-      {
-        "image": "assets/images/new1.jpg",
-        "count": "45 People",
-        "title": 'Nigerians Living in the UK'
-      },
-      {
-        "image": "assets/images/new2.jpg",
-        "count": "20 People",
-        "title": 'Global Africa Community'
-      },
-      {
-        "image": "assets/images/com14.png",
-        "count": "10 People",
-        "title": 'Personal Savings'
-      },
-      {
-        "image": "assets/images/com12.png",
-        "count": "45 People",
-        "title": 'Nigerians Living in the UK'
-      },
-      {
-        "image": "assets/images/com14.png",
-        "count": "20 People",
-        "title": 'Global Africa Community'
-      },
-      {
-        "image": "assets/images/com13.png",
-        "count": "10 People",
-        "title": 'Personal Savings'
-      },
-    ];
+
     return SizedBox(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -324,33 +294,73 @@ class _DashboardScreenState extends State<DashboardScreen>
           SizedBox(
             height: Sizing.kHSpacing10,
           ),
-          SizedBox(
-            // color: Colors.red,
-            height: 155.h,
-            width: MediaQuery.sizeOf(context).width,
-            child: ListView.builder(
-              // padEnds: false,
-              padding: EdgeInsets.fromLTRB(0, 0, 0.w, 0),
-              shrinkWrap: true,
-              dragStartBehavior: DragStartBehavior.start,
-              scrollDirection: Axis.horizontal,
-              physics: const BouncingScrollPhysics(),
-              itemCount: items.length,
-              itemBuilder: (context, index) {
-                final data = items[index];
-                return InkWell(
-                  onTap: () {
-                    context.router
-                        .push(CommunityDetailRoute(title: data['title']));
-                  },
-                  child: _buildCommunityList(
-                      data['title'], data['image'], data['count']),
-                );
-              },
-            ),
+          BlocBuilder<RecentCommunityCubit,
+              BlocState<Failure<ExceptionMessage>, RecentCommunitiesModel>>(
+            builder: (context, state) {
+              final items =
+                  context.read<NewsSnapshotCache>().recentCommunitiesModel;
+              return state.maybeMap(
+                orElse: () {
+                  if (items.communities.isNotEmpty) {
+                    return recentCommunityData(context, items);
+                  }
+
+                  return const Center(
+                      child: CircularProgressIndicator.adaptive());
+                },
+                success: (_) => recentCommunityData(context, items),
+                error: (state) {
+                  if (items.communities.isNotEmpty) {
+                    return recentCommunityData(context, items);
+                  }
+
+                  return Center(
+                    child: WidthConstraint(context)
+                        .withHorizontalSymmetricalPadding(
+                      child: ErrorIndicator(
+                        type: ErrorIndicatorType.simple(
+                          // onRetryCallback: () => _onGetSenderIdListCallback(),
+                          code: state.failure.exception.code,
+                          message: state.failure.exception.message.toString(),
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              );
+            },
           ),
           SizedBox(height: (Sizing.kSizingMultiple * 2.5).h),
         ],
+      ),
+    );
+  }
+
+  SizedBox recentCommunityData(
+      BuildContext context, RecentCommunitiesModel items) {
+    return SizedBox(
+      // color: Colors.red,
+      height: 155.h,
+      width: MediaQuery.sizeOf(context).width,
+      child: ListView.builder(
+        // padEnds: false,
+        padding: EdgeInsets.fromLTRB(0, 0, 0.w, 0),
+        shrinkWrap: true,
+        dragStartBehavior: DragStartBehavior.start,
+        scrollDirection: Axis.horizontal,
+        physics: const BouncingScrollPhysics(),
+        itemCount: items.communities.length,
+        itemBuilder: (context, index) {
+          final data = items.communities[index];
+          return InkWell(
+            onTap: () {
+              context.router
+                  .push(CommunityDetailRoute(title: data.communityName));
+            },
+            child: _buildCommunityList(
+                data.communityName, data.logo, data.totalMembers),
+          );
+        },
       ),
     );
   }
@@ -368,8 +378,8 @@ class _DashboardScreenState extends State<DashboardScreen>
             width: 90,
             height: 90,
             decoration: ShapeDecoration(
-              image: DecorationImage(
-                image: AssetImage(img),
+              image: const DecorationImage(
+                image: AssetImage("assets/images/com13.png"),
                 fit: BoxFit.cover,
               ),
               shape: RoundedRectangleBorder(
@@ -528,8 +538,6 @@ class _DashboardScreenState extends State<DashboardScreen>
               fit: BoxFit.cover,
             ),
           ),
-
-         
           Padding(
             padding: const EdgeInsets.only(left: 8),
             child: Column(
@@ -598,7 +606,6 @@ class _DashboardScreenState extends State<DashboardScreen>
   }
 
   Widget _buildNewsSection() {
-  
     return SizedBox(
       child: Container(
         padding: const EdgeInsets.all(10),
@@ -652,14 +659,16 @@ class _DashboardScreenState extends State<DashboardScreen>
             SizedBox(
               height: Sizing.kHSpacing10,
             ),
-            BlocBuilder<RecentNewCubit, BlocState<Failure<ExceptionMessage>, RecentNewsModel>>(
+            BlocBuilder<RecentNewCubit,
+                BlocState<Failure<ExceptionMessage>, RecentNewsModel>>(
               builder: (context, state) {
                 final items = context.read<NewsSnapshotCache>().newsModel;
-                final isLoading = state is Loading<Failure<ExceptionMessage>, RecentNewsModel>;
+                final isLoading = state
+                    is Loading<Failure<ExceptionMessage>, RecentNewsModel>;
                 return isLoading == true
                     ? const Center(child: CircularProgressIndicator.adaptive())
                     : SizedBox(
-                       // height: 380.h,
+                        // height: 380.h,
                         width: MediaQuery.sizeOf(context).width,
                         child: ListView.builder(
                           // padEnds: false,
@@ -673,11 +682,16 @@ class _DashboardScreenState extends State<DashboardScreen>
                           itemBuilder: (context, index) {
                             final data = items.news[index];
                             return InkWell(
-                              onTap: (){
-                                  context.router.push( DetailNewsRoute(newModel: data));
+                              onTap: () {
+                                context.router
+                                    .push(DetailNewsRoute(newModel: data));
                               },
                               child: _buildNewsList(
-                                  data.title, data.mediaImageUrl, data.postedBy,data.time,data.date.toString()),
+                                  data.title,
+                                  data.mediaImageUrl,
+                                  data.postedBy,
+                                  data.time,
+                                  data.date.toString()),
                             );
                           },
                         ),
@@ -690,20 +704,24 @@ class _DashboardScreenState extends State<DashboardScreen>
       ),
     );
   }
-String formatTimeAgo(DateTime time) {
-  DateTime currentTime = DateTime.now();
-  Duration difference = currentTime.difference(time);
-  return timeago.format(currentTime.subtract(difference));
-}
-  Widget _buildNewsList(String title, String img, String count, String time, String date) {
+
+  String formatTimeAgo(DateTime time) {
+    DateTime currentTime = DateTime.now();
+    Duration difference = currentTime.difference(time);
+    return timeago.format(currentTime.subtract(difference));
+  }
+
+  Widget _buildNewsList(
+      String title, String img, String count, String time, String date) {
     String providedDate = date.toString();
-  String providedTime = time.toString();
+    String providedTime = time.toString();
 
-  // Combine date and time into a single string
-  String combinedDateTimeString = '$providedDate $providedTime';
+    // Combine date and time into a single string
+    String combinedDateTimeString = '$providedDate $providedTime';
 
-  // Parse the combined string into a DateTime object
-  DateTime combinedDateTime = DateFormat('yyyy-MM-dd HH:mm:ss').parse(combinedDateTimeString);
+    // Parse the combined string into a DateTime object
+    DateTime combinedDateTime =
+        DateFormat('yyyy-MM-dd HH:mm:ss').parse(combinedDateTimeString);
 
     return Container(
       width: MediaQuery.sizeOf(context).width.w,
@@ -712,31 +730,31 @@ String formatTimeAgo(DateTime time) {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-           ClipRRect(
+          ClipRRect(
             borderRadius: BorderRadius.circular(8),
             child: Image.network(
-                  img,
-                   width: 90,
-                    height: 90,
-                  fit: BoxFit.cover,
-                  loadingBuilder: (BuildContext context, Widget child,
-                      ImageChunkEvent? loadingProgress) {
-                    if (loadingProgress == null) {
-                      return child;
-                    } else {
-                      return Center(
-                        child: CircularProgressIndicator.adaptive(
-                          // color: Custom,
-                          strokeWidth: 2,
-                          value: loadingProgress.expectedTotalBytes != null
-                              ? loadingProgress.cumulativeBytesLoaded /
-                                  (loadingProgress.expectedTotalBytes ?? 1)
-                              : null,
-                        ),
-                      );
-                    }
-                  },
-                ),
+              img,
+              width: 90,
+              height: 90,
+              fit: BoxFit.cover,
+              loadingBuilder: (BuildContext context, Widget child,
+                  ImageChunkEvent? loadingProgress) {
+                if (loadingProgress == null) {
+                  return child;
+                } else {
+                  return Center(
+                    child: CircularProgressIndicator.adaptive(
+                      // color: Custom,
+                      strokeWidth: 2,
+                      value: loadingProgress.expectedTotalBytes != null
+                          ? loadingProgress.cumulativeBytesLoaded /
+                              (loadingProgress.expectedTotalBytes ?? 1)
+                          : null,
+                    ),
+                  );
+                }
+              },
+            ),
           ),
           SizedBox(
             width: Sizing.kSizingMultiple * 2.h,
@@ -745,7 +763,6 @@ String formatTimeAgo(DateTime time) {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                
                 LayoutBuilder(
                   builder: (BuildContext context, BoxConstraints constraints) {
                     return SizedBox(
@@ -775,22 +792,21 @@ String formatTimeAgo(DateTime time) {
                 // ),
 
                 Text.rich(
+                  TextSpan(
+                    text: formatTimeAgo(combinedDateTime),
+                    children: [
                       TextSpan(
-                        text: formatTimeAgo(combinedDateTime),
-                        children: [
-                          TextSpan(
-                            text: ' . by $count',
-                            style:Theme.of(context).textTheme.titleSmall?.copyWith(
+                        text: ' . by $count',
+                        style: Theme.of(context).textTheme.titleSmall?.copyWith(
                             color: const Color(0xFF6C7072),
                             fontWeight: FontWeight.w400),
-                          ),
-                        ],
-                        style:
-                            Theme.of(context).textTheme.titleSmall?.copyWith(
-                      color: CustomTypography.kPrimaryColor300,
-                      fontWeight: FontWeight.w400),
                       ),
-                    ),
+                    ],
+                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                        color: CustomTypography.kPrimaryColor300,
+                        fontWeight: FontWeight.w400),
+                  ),
+                ),
               ],
             ),
           ),
@@ -1024,9 +1040,9 @@ String formatTimeAgo(DateTime time) {
                     _buildNewsSection(),
                     SizedBox(height: (Sizing.kSizingMultiple * 4).h),
 
-                    _buildToolsSection(),
-                    SizedBox(height: (Sizing.kSizingMultiple * 4).h),
-                    _buildConsultantSection(),
+                    // _buildToolsSection(),
+                    // SizedBox(height: (Sizing.kSizingMultiple * 4).h),
+                    // _buildConsultantSection(),
                     // // _buildFeaturesSection(),
                   ],
                 ),

@@ -24,10 +24,17 @@ class Endpoints {
   static const String deleteTask = 'profile/remove_task-im-myprocess';
   static const String markTask = 'profile/mark-task-im-myprocess';
   static const String setDueDateTask = 'profile/setduedate-im-myprocess';
+  static const String newMigrant = 'profile/new-migrant-myprocess';
 
   //News 
   static const String recentNews = 'dashboard/recentnews';
   static const String allNews = 'dashboard/news';
+
+  //community
+  static const String recentCommuity = 'dashboard/recentcommunities';
+  static const String allCommuity = 'dashboard/communities';
+ 
+
 
 
 
